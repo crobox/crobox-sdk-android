@@ -10,6 +10,6 @@ interface CroboxAPI {
     @POST("/promotions")
     fun promotions(@Body requestBody: RequestBody): Call<PromotionsResponse?>?
 
-    @POST("/promotions")
+    @POST("/socket.gif")
     fun socket(@Body requestBody: RequestBody): Call<PromotionsResponse?>?
 }
