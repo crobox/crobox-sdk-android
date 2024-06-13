@@ -17,18 +17,18 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main2)
 
+        croboxInstance.isDebug = true
+
+        croboxInstance.containerId = "xlhvci"
+
         // Create an instance of RequestQueryParams with some example data
         val requestParams = RequestQueryParams(
-            viewCounter = 0,
-            viewId = "exampleViewId",
-            visitorId = "exampleVisitorId",
+            viewCounter = 28,
+            viewId = "An0N-dq0ThWeiUJX12cpVA",
+            visitorId = "H9O1I0kYSaekKFrzS_JWCg",
             currencyCode = "USD",
             localeCode = LocaleCode.EN_US,
-            userId = "exampleUserId",
-            timestamp = "lu9znf91",
-            timezone = -4,
             pageType = PageType.PageComplete,
-            customProperties = mapOf("cp.mobileUser" to "yes"),
             pageUrl = this.localClassName,
             referrerUrl = this.localClassName
         )
@@ -44,6 +44,5 @@ class MainActivity : AppCompatActivity() {
         }
 
         croboxInstance.promotions(requestParams,promotionView)
-
     }
 }
