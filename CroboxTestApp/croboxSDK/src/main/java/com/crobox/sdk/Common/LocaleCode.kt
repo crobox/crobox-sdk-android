@@ -1,132 +1,109 @@
 package com.crobox.sdk.Common
 
-object LocaleCode {
-    const val af_ZA = "af_ZA" // Afrikaans
-    const val sq_AL = "sq_AL" // Albanian
-    const val am_ET = "am_ET" // Amharic
-    const val ar_DZ = "ar_DZ" // Arabic (Algeria)
-    const val ar_BH = "ar_BH" // Arabic (Bahrain)
-    const val ar_EG = "ar_EG" // Arabic (Egypt)
-    const val ar_IQ = "ar_IQ" // Arabic (Iraq)
-    const val ar_JO = "ar_JO" // Arabic (Jordan)
-    const val ar_KW = "ar_KW" // Arabic (Kuwait)
-    const val ar_LB = "ar_LB" // Arabic (Lebanon)
-    const val ar_LY = "ar_LY" // Arabic (Libya)
-    const val ar_MA = "ar_MA" // Arabic (Morocco)
-    const val ar_OM = "ar_OM" // Arabic (Oman)
-    const val ar_QA = "ar_QA" // Arabic (Qatar)
-    const val ar_SA = "ar_SA" // Arabic (Saudi Arabia)
-    const val ar_SY = "ar_SY" // Arabic (Syria)
-    const val ar_TN = "ar_TN" // Arabic (Tunisia)
-    const val ar_AE = "ar_AE" // Arabic (UAE)
-    const val ar_YE = "ar_YE" // Arabic (Yemen)
-    const val hy_AM = "hy_AM" // Armenian
-    const val as_IN = "as_IN" // Assamese
-    const val az_AZ = "az_AZ" // Azerbaijani
-    const val eu_ES = "eu_ES" // Basque
-    const val be_BY = "be_BY" // Belarusian
-    const val bn_BD = "bn_BD" // Bengali
-    const val bn_IN = "bn_IN" // Bengali (India)
-    const val bs_BA = "bs_BA" // Bosnian
-    const val bg_BG = "bg_BG" // Bulgarian
-    const val my_MM = "my_MM" // Burmese
-    const val ca_ES = "ca_ES" // Catalan
-    const val zh_CN = "zh_CN" // Chinese (Simplified)
-    const val zh_HK = "zh_HK" // Chinese (Hong Kong)
-    const val zh_TW = "zh_TW" // Chinese (Traditional)
-    const val hr_HR = "hr_HR" // Croatian
-    const val cs_CZ = "cs_CZ" // Czech
-    const val da_DK = "da_DK" // Danish
-    const val nl_BE = "nl_BE" // Dutch (Belgium)
-    const val nl_NL = "nl_NL" // Dutch (Netherlands)
-    const val en_AU = "en_AU" // English (Australia)
-    const val en_CA = "en_CA" // English (Canada)
-    const val en_IN = "en_IN" // English (India)
-    const val en_IE = "en_IE" // English (Ireland)
-    const val en_MT = "en_MT" // English (Malta)
-    const val en_NZ = "en_NZ" // English (New Zealand)
-    const val en_PH = "en_PH" // English (Philippines)
-    const val en_SG = "en_SG" // English (Singapore)
-    const val en_ZA = "en_ZA" // English (South Africa)
-    const val en_GB = "en_GB" // English (United Kingdom)
-    const val en_US = "en_US" // English (United States)
-    const val et_EE = "et_EE" // Estonian
-    const val fi_FI = "fi_FI" // Finnish
-    const val fr_BE = "fr_BE" // French (Belgium)
-    const val fr_CA = "fr_CA" // French (Canada)
-    const val fr_FR = "fr_FR" // French (France)
-    const val fr_LU = "fr_LU" // French (Luxembourg)
-    const val fr_CH = "fr_CH" // French (Switzerland)
-    const val ka_GE = "ka_GE" // Georgian
-    const val de_AT = "de_AT" // German (Austria)
-    const val de_DE = "de_DE" // German (Germany)
-    const val de_LU = "de_LU" // German (Luxembourg)
-    const val de_CH = "de_CH" // German (Switzerland)
-    const val el_GR = "el_GR" // Greek
-    const val gu_IN = "gu_IN" // Gujarati
-    const val he_IL = "he_IL" // Hebrew
-    const val hi_IN = "hi_IN" // Hindi
-    const val hu_HU = "hu_HU" // Hungarian
-    const val is_IS = "is_IS" // Icelandic
-    const val id_ID = "id_ID" // Indonesian
-    const val it_IT = "it_IT" // Italian (Italy)
-    const val it_CH = "it_CH" // Italian (Switzerland)
-    const val ja_JP = "ja_JP" // Japanese
-    const val kn_IN = "kn_IN" // Kannada
-    const val kk_KZ = "kk_KZ" // Kazakh
-    const val km_KH = "km_KH" // Khmer
-    const val ko_KR = "ko_KR" // Korean
-    const val ky_KG = "ky_KG" // Kyrgyz
-    const val lo_LA = "lo_LA" // Lao
-    const val lv_LV = "lv_LV" // Latvian
-    const val lt_LT = "lt_LT" // Lithuanian
-    const val mk_MK = "mk_MK" // Macedonian
-    const val ms_MY = "ms_MY" // Malay
-    const val ml_IN = "ml_IN" // Malayalam
-    const val mr_IN = "mr_IN" // Marathi
-    const val mn_MN = "mn_MN" // Mongolian
-    const val ne_NP = "ne_NP" // Nepali
-    const val no_NO = "no_NO" // Norwegian
-    const val or_IN = "or_IN" // Odia (Oriya)
-    const val fa_IR = "fa_IR" // Persian
-    const val pl_PL = "pl_PL" // Polish
-    const val pt_BR = "pt_BR" // Portuguese (Brazil)
-    const val pt_PT = "pt_PT" // Portuguese (Portugal)
-    const val pa_IN = "pa_IN" // Punjabi
-    const val ro_RO = "ro_RO" // Romanian
-    const val ru_RU = "ru_RU" // Russian
-    const val sr_RS = "sr_RS" // Serbian
-    const val si_LK = "si_LK" // Sinhala
-    const val sk_SK = "sk_SK" // Slovak
-    const val sl_SI = "sl_SI" // Slovenian
-    const val es_AR = "es_AR" // Spanish (Argentina)
-    const val es_BO = "es_BO" // Spanish (Bolivia)
-    const val es_CL = "es_CL" // Spanish (Chile)
-    const val es_CO = "es_CO" // Spanish (Colombia)
-    const val es_CR = "es_CR" // Spanish (Costa Rica)
-    const val es_DO = "es_DO" // Spanish (Dominican Republic)
-    const val es_EC = "es_EC" // Spanish (Ecuador)
-    const val es_SV = "es_SV" // Spanish (El Salvador)
-    const val es_GT = "es_GT" // Spanish (Guatemala)
-    const val es_HN = "es_HN" // Spanish (Honduras)
-    const val es_MX = "es_MX" // Spanish (Mexico)
-    const val es_NI = "es_NI" // Spanish (Nicaragua)
-    const val es_PA = "es_PA" // Spanish (Panama)
-    const val es_PY = "es_PY" // Spanish (Paraguay)
-    const val es_PE = "es_PE" // Spanish (Peru)
-    const val es_PR = "es_PR" // Spanish (Puerto Rico)
-    const val es_ES = "es_ES" // Spanish (Spain)
-    const val es_UY = "es_UY" // Spanish (Uruguay)
-    const val es_VE = "es_VE" // Spanish (Venezuela)
-    const val sw_KE = "sw_KE" // Swahili
-    const val sv_SE = "sv_SE" // Swedish
-    const val ta_IN = "ta_IN" // Tamil
-    const val te_IN = "te_IN" // Telugu
-    const val th_TH = "th_TH" // Thai
-    const val tr_TR = "tr_TR" // Turkish
-    const val uk_UA = "uk_UA" // Ukrainian
-    const val ur_PK = "ur_PK" // Urdu
-    const val uz_UZ = "uz_UZ" // Uzbek
-    const val vi_VN = "vi_VN" // Vietnamese
-    const val cy_GB = "cy_GB" // Welsh
+enum class LocaleCode(val code: String) {
+    EN_US("en_US"),
+    EN_GB("en_GB"),
+    EN_CA("en_CA"),
+    EN_AU("en_AU"),
+    EN_IN("en_IN"),
+    EN_NZ("en_NZ"),
+    ES_ES("es_ES"),
+    ES_MX("es_MX"),
+    FR_FR("fr_FR"),
+    FR_CA("fr_CA"),
+    DE_DE("de_DE"),
+    IT_IT("it_IT"),
+    JA_JP("ja_JP"),
+    KO_KR("ko_KR"),
+    PT_PT("pt_PT"),
+    PT_BR("pt_BR"),
+    RU_RU("ru_RU"),
+    ZH_CN("zh_CN"),
+    ZH_TW("zh_TW"),
+    AR_SA("ar_SA"),
+    TR_TR("tr_TR"),
+    AF_ZA("af_ZA"),
+    SQ_AL("sq_AL"),
+    AM_ET("am_ET"),
+    HY_AM("hy_AM"),
+    EU_ES("eu_ES"),
+    BE_BY("be_BY"),
+    BN_BD("bn_BD"),
+    BS_BA("bs_BA"),
+    BG_BG("bg_BG"),
+    CA_ES("ca_ES"),
+    HR_HR("hr_HR"),
+    CS_CZ("cs_CZ"),
+    DA_DK("da_DK"),
+    NL_NL("nl_NL"),
+    EO("eo"),
+    ET_EE("et_EE"),
+    FO_FO("fo_FO"),
+    FI_FI("fi_FI"),
+    GL_ES("gl_ES"),
+    KA_GE("ka_GE"),
+    EL_GR("el_GR"),
+    GU_IN("gu_IN"),
+    HE_IL("he_IL"),
+    HI_IN("hi_IN"),
+    HU_HU("hu_HU"),
+    IS_IS("is_IS"),
+    ID_ID("id_ID"),
+    GA_IE("ga_IE"),
+    IT_IT_NY("it_IT_NY"),
+    JV_ID("jv_ID"),
+    KN_IN("kn_IN"),
+    KK_KZ("kk_KZ"),
+    KM_KH("km_KH"),
+    RW_RW("rw_RW"),
+    KO_KP("ko_KP"),
+    KY_KG("ky_KG"),
+    LO_LA("lo_LA"),
+    LA_VA("la_VA"),
+    LV_LV("lv_LV"),
+    LT_LT("lt_LT"),
+    MK_MK("mk_MK"),
+    MS_MY("ms_MY"),
+    ML_IN("ml_IN"),
+    MR_IN("mr_IN"),
+    MN_MN("mn_MN"),
+    NE_NP("ne_NP"),
+    NB_NO("nb_NO"),
+    NN_NO("nn_NO"),
+    OC_FR("oc_FR"),
+    OR_IN("or_IN"),
+    PA_IN("pa_IN"),
+    FA_IR("fa_IR"),
+    PL_PL("pl_PL"),
+    PT_PT_VR("pt_PT_VR"),
+    PT_PT_TR("pt_PT_TR"),
+    PA_PK("pa_PK"),
+    RO_RO("ro_RO"),
+    RM_CH("rm_CH"),
+    SA_IN("sa_IN"),
+    SR_RS("sr_RS"),
+    SI_LK("si_LK"),
+    SK_SK("sk_SK"),
+    SL_SI("sl_SI"),
+    ES_419("es_419"),
+    SU_ID("su_ID"),
+    SW_KE("sw_KE"),
+    SV_SE("sv_SE"),
+    TL_PH("tl_PH"),
+    TG_TJ("tg_TJ"),
+    TA_IN("ta_IN"),
+    TT_RU("tt_RU"),
+    TE_IN("te_IN"),
+    TH_TH("th_TH"),
+    TR_CY("tr_CY"),
+    UK_UA("uk_UA"),
+    UR_PK("ur_PK"),
+    UZ_UZ("uz_UZ"),
+    VI_VN("vi_VN"),
+    CY_GB("cy_GB"),
+    XH_ZA("xh_ZA"),
+    YI_DE("yi_DE"),
+    YO_NG("yo_NG"),
+    ZU_ZA("zu_ZA")
 }
+
