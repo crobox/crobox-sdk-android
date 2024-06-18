@@ -94,7 +94,7 @@ data class RequestQueryParams(
     val userId: String? = null,         // UserId (optional)
     val timestamp: String? = null,      // Timestamp (optional)
     val timezone: Int? = null,          // Timezone (optional)
-    val pageType: PageType? = null,     // PageType (optional)
+    var pageType: PageType? = null,     // PageType (optional)
     val customProperties: Map<String, String>? = null, // Custom Properties (optional)
     val pageUrl: String? = null,        // ViewController (optional)
     val referrerUrl: String? = null     // referrerUrl (optional)
