@@ -4,10 +4,12 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.crobox.sdk.Common.LocaleCode
 import com.crobox.sdk.Core.Crobox
+import com.crobox.sdk.Data.Model.AddCartQueryParams
 import com.crobox.sdk.Data.Model.PageType
 import com.crobox.sdk.Data.Model.RequestQueryParams
 import com.crobox.sdk.Domian.PromotionsResponse
 import com.crobox.sdk.Presenter.PromotionView
+import com.crobox.sdk.Presenter.SocketView
 
 class MainActivity : AppCompatActivity() {
 
@@ -44,5 +46,23 @@ class MainActivity : AppCompatActivity() {
         }
 
         croboxInstance.promotions(requestParams,promotionView)
+
+
+        //socket event test
+        val socketView = object : SocketView {
+
+            override fun onSocketSuccess(dictionary: Map<String, String>) {
+                super.onSocketSuccess(dictionary)
+                println("sockets onSuccess: $dictionary")
+            }
+            override fun onError(msg: String?) {
+                println("Promotions onError: $msg")
+            }
+        }
+
+        // AddCart event with addCartQueryParams
+        val addCartQueryParams = AddCartQueryParams(productId = "", category = "", price = 1.0, quantity = 2)
+        croboxInstance.pageViewAddCart(requestParams, addCartQueryParams = addCartQueryParams, socketView = socketView)
+
     }
 }
