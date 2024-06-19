@@ -1,6 +1,6 @@
 package com.crobox.sdk.Presenter
 
-import com.crobox.sdk.Domian.PromotionsResponse
+import com.crobox.sdk.Domain.PromotionsResponse
 
 interface PromotionView  {
     fun onPromotions(promotionsResponse: PromotionsResponse?) {}

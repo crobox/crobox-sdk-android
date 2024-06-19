@@ -1,6 +1,5 @@
-package com.crobox.sdk.Domian
+package com.crobox.sdk.Domain
 
-import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 class Experiment {

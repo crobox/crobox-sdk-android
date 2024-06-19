@@ -7,7 +7,7 @@ import com.crobox.sdk.Core.Crobox
 import com.crobox.sdk.Data.Model.AddCartQueryParams
 import com.crobox.sdk.Data.Model.PageType
 import com.crobox.sdk.Data.Model.RequestQueryParams
-import com.crobox.sdk.Domian.PromotionsResponse
+import com.crobox.sdk.Domain.PromotionsResponse
 import com.crobox.sdk.Presenter.PromotionView
 import com.crobox.sdk.Presenter.SocketView
 

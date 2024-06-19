@@ -1,6 +1,6 @@
 package com.crobox.sdk.Data.API
 
-import com.crobox.sdk.Domian.Constant
+import com.crobox.sdk.Domain.Constant
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.Request

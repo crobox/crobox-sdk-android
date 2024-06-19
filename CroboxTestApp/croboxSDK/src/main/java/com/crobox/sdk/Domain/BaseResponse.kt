@@ -1,6 +1,6 @@
-package com.crobox.sdk.Domian
+package com.crobox.sdk.Domain
 
-class PromotionParameter(jsonData: Map<String, String>) {
+class BaseResponse(jsonData: Map<String, String>) {
     val data: MutableMap<String, String> = mutableMapOf()
     init {
         data.putAll(jsonData)

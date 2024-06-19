@@ -4,8 +4,8 @@ import com.crobox.sdk.Core.Crobox
 import com.crobox.sdk.Data.API.CroboxAPI
 import com.crobox.sdk.Data.API.CroboxAPIClient
 import com.crobox.sdk.Data.Model.*
-import com.crobox.sdk.Domian.BaseResponse
-import com.crobox.sdk.Domian.PromotionsResponse
+import com.crobox.sdk.Domain.BaseResponse
+import com.crobox.sdk.Domain.PromotionsResponse
 import com.google.gson.Gson
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody
