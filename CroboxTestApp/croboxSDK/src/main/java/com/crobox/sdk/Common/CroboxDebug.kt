@@ -1,29 +1,28 @@
 package com.crobox.sdk.Common
 
+import android.util.Log
 import com.crobox.sdk.Core.Crobox
 
 class CroboxDebug {
 
     private object InstanceHolder {
-        var instance = CroboxDebug()
+        val instance = CroboxDebug()
     }
 
     companion object {
-        val instance: Crobox
-            get() = CroboxDebug.instance
+        val instance: CroboxDebug
+            get() = InstanceHolder.instance
     }
 
-    var isDebug = false;
-
-    fun printText(text: Any) {
+    fun printText(text: String) {
         if (Crobox.instance.isDebug) {
-            println(text)
+            Log.d("croboxSDK LOG", "croboxSDK LOG: $text")
         }
     }
 
     fun printParams(params: Map<String, Any>) {
         if (Crobox.instance.isDebug) {
-            println(params)
+            Log.d("croboxSDK LOG", "croboxSDK LOG: $params")
         }
     }
 }

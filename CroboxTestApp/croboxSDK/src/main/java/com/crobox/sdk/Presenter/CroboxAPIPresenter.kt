@@ -1,5 +1,6 @@
 package com.crobox.sdk.Presenter
 
+import com.crobox.sdk.Common.CroboxDebug
 import com.crobox.sdk.Core.Crobox
 import com.crobox.sdk.Data.API.CroboxAPI
 import com.crobox.sdk.Data.API.CroboxAPIClient
@@ -7,9 +8,6 @@ import com.crobox.sdk.Data.Model.*
 import com.crobox.sdk.Domain.BaseResponse
 import com.crobox.sdk.Domain.PromotionsResponse
 import com.google.gson.Gson
-import okhttp3.MediaType.Companion.toMediaTypeOrNull
-import okhttp3.RequestBody
-import okhttp3.RequestBody.Companion.toRequestBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -21,12 +19,12 @@ class CroboxAPIPresenter {
     )
     private val gson = Gson()
 
-    fun promotions(promotionView: PromotionView, params: RequestQueryParams) {
+    fun promotions(promotionView: PromotionView, placeholderId:String, queryParams: RequestQueryParams) {
 
-        val json = gson.toJson(params)
-        val requestBody = json.toRequestBody("application/json".toMediaTypeOrNull())
+        val parameters = createRequestBodyForPromotions(placeholderId,queryParams)
+        val stringParameters = parameters.mapValues { it.value.toString() }
 
-        apiInterface.promotions(requestBody)
+        apiInterface.promotions(stringParameters)
             ?.enqueue(object : Callback<PromotionsResponse?> {
                 override fun onResponse(
                     call: Call<PromotionsResponse?>,
@@ -38,13 +36,16 @@ class CroboxAPIPresenter {
                         } else {
                             promotionView.onError(response.body().toString())
                         }
+                        CroboxDebug.instance.printText(response.body().toString())
                     } catch (ex: Exception) {
                         promotionView.onError(ex.message ?: "")
+                        CroboxDebug.instance.printText(ex.message.toString())
                     }
                 }
 
                 override fun onFailure(call: Call<PromotionsResponse?>, t: Throwable) {
                     promotionView.onError(t.message ?: "")
+                    CroboxDebug.instance.printText(t.message.toString())
                 }
             })
     }
@@ -55,9 +56,11 @@ class CroboxAPIPresenter {
         queryParams: RequestQueryParams,
         additionalParams: Any?
     ) {
-        val requestBody = createRequestBody(queryParams, additionalParams, eventType)
 
-        apiInterface.socket(requestBody)
+        /*val parameters = createRequestBodyForSocket(queryParams, additionalParams, eventType)
+        val stringParameters = parameters.mapValues { it.value.toString() }
+
+        apiInterface.socket(stringParameters)
             ?.enqueue(object : Callback<BaseResponse?> {
                 override fun onResponse(
                     call: Call<BaseResponse?>,
@@ -71,23 +74,26 @@ class CroboxAPIPresenter {
                         } else {
                             socketView.onError(response.body().toString())
                         }
+                        CroboxDebug.instance.printText(response.body().toString())
                     } catch (ex: Exception) {
                         socketView.onError(ex.message ?: "")
+                        CroboxDebug.instance.printText(ex.message.toString())
                     }
                 }
 
                 override fun onFailure(call: Call<BaseResponse?>, t: Throwable) {
                     socketView.onError(t.message ?: "")
+                    CroboxDebug.instance.printText(t.message.toString())
                 }
-            })
+            })*/
     }
 
-    private fun createRequestBody(
+
+    private fun createRequestBodyForSocket(
         queryParams: RequestQueryParams,
         additionalParams: Any?,
         eventType: EventType
-    ): RequestBody {
-        val gson = Gson()
+    ): Map<String, Any> {
 
         // Mandatory parameters
         val parameters = mutableMapOf<String, Any>(
@@ -100,11 +106,11 @@ class CroboxAPIPresenter {
 
         // Optional parameters
         queryParams.currencyCode?.let { parameters["cc"] = it }
-        queryParams.localeCode?.let { parameters["lc"] = it }
+        queryParams.localeCode?.let { parameters["lc"] = it.toString() }
         queryParams.userId?.let { parameters["uid"] = it }
         queryParams.timestamp?.let { parameters["ts"] = it }
         queryParams.timezone?.let { parameters["tz"] = it }
-        queryParams.pageType?.let { parameters["pt"] = it }
+        queryParams.pageType?.let { parameters["pt"] = it.value }
         queryParams.pageUrl?.let { parameters["cp"] = it }
         queryParams.customProperties?.let { parameters["lh"] = it }
 
@@ -145,9 +151,40 @@ class CroboxAPIPresenter {
             }
         }
 
-        // Convert parameters map to JSON and create request body
-        val mergedJson = gson.toJson(parameters)
-        return mergedJson.toRequestBody("application/json".toMediaTypeOrNull())
+        CroboxDebug.instance.printParams(parameters)
+
+        return parameters
+    }
+
+
+
+    private fun createRequestBodyForPromotions(placeholderId:String,
+        queryParams: RequestQueryParams
+    ): Map<String, Any> {
+        val gson = Gson()
+
+        // Mandatory parameters
+        val parameters = mutableMapOf<String, Any>(
+            "cid" to Crobox.instance.containerId,
+            "vpid" to placeholderId,
+            "e" to queryParams.viewCounter,
+            "vid" to queryParams.viewId,
+            "pid" to queryParams.visitorId
+        )
+
+        // Optional parameters
+        queryParams.currencyCode?.let { parameters["cc"] = it }
+        queryParams.localeCode?.let { parameters["lc"] = it.toString() }
+        queryParams.userId?.let { parameters["uid"] = it }
+        queryParams.timestamp?.let { parameters["ts"] = it }
+        queryParams.timezone?.let { parameters["tz"] = it }
+        queryParams.pageType?.let { parameters["pt"] = it.value }
+        queryParams.pageUrl?.let { parameters["cp"] = it }
+        queryParams.customProperties?.let { parameters["lh"] = it }
+
+        CroboxDebug.instance.printParams(parameters)
+
+        return parameters
     }
 
     /***

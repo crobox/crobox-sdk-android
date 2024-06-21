@@ -126,7 +126,7 @@ enum class PageType(val value: Int) {
     PageCart(4),
     PageCheckout(5),
     PageComplete(6),
-    PageSearch(7)
+    PageSearch(7);
 }
 
 /*

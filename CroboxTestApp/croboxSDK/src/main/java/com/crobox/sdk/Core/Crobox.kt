@@ -7,7 +7,7 @@ import com.crobox.sdk.Presenter.SocketView
 
 class Crobox {
 
-    private  val presenter = CroboxAPIPresenter()
+    private val presenter = CroboxAPIPresenter()
 
     private object InstanceHolder {
         var instance = Crobox()
@@ -21,9 +21,16 @@ class Crobox {
     var isDebug = false
     var containerId: String = ""
 
-    fun promotions(queryParams: RequestQueryParams,
-                   promotionView: PromotionView){
-        presenter.promotions(promotionView = promotionView, params = queryParams)
+    fun promotions(
+        promotionView: PromotionView,
+        placeholderId: String,
+        queryParams: RequestQueryParams,
+    ) {
+        presenter.promotions(
+            promotionView = promotionView,
+            placeholderId = placeholderId,
+            queryParams = queryParams
+        )
     }
 
     // Usage functions
@@ -32,7 +39,12 @@ class Crobox {
         clickQueryParams: ClickQueryParams? = null,
         socketView: SocketView
     ) {
-        presenter.socket(socketView = socketView, eventType = EventType.Click, queryParams = queryParams, additionalParams = clickQueryParams)
+        presenter.socket(
+            socketView = socketView,
+            eventType = EventType.Click,
+            queryParams = queryParams,
+            additionalParams = clickQueryParams
+        )
     }
 
     fun pageViewAddCart(
@@ -40,7 +52,12 @@ class Crobox {
         addCartQueryParams: AddCartQueryParams? = null,
         socketView: SocketView
     ) {
-        presenter.socket(socketView = socketView, eventType = EventType.AddCart, queryParams = queryParams, additionalParams = addCartQueryParams)
+        presenter.socket(
+            socketView = socketView,
+            eventType = EventType.AddCart,
+            queryParams = queryParams,
+            additionalParams = addCartQueryParams
+        )
     }
 
     fun pageViewRemoveCart(
@@ -48,7 +65,12 @@ class Crobox {
         removeFromCartQueryParams: RemoveFromCartQueryParams? = null,
         socketView: SocketView
     ) {
-        presenter.socket(socketView = socketView, eventType = EventType.RemoveCart, queryParams = queryParams, additionalParams = removeFromCartQueryParams)
+        presenter.socket(
+            socketView = socketView,
+            eventType = EventType.RemoveCart,
+            queryParams = queryParams,
+            additionalParams = removeFromCartQueryParams
+        )
     }
 
     fun pageViewError(
@@ -56,7 +78,12 @@ class Crobox {
         errorQueryParams: ErrorQueryParams? = null,
         socketView: SocketView
     ) {
-        presenter.socket(socketView = socketView, eventType = EventType.Error, queryParams = queryParams, additionalParams = errorQueryParams)
+        presenter.socket(
+            socketView = socketView,
+            eventType = EventType.Error,
+            queryParams = queryParams,
+            additionalParams = errorQueryParams
+        )
     }
 
     fun pageViewEvent(
@@ -64,7 +91,12 @@ class Crobox {
         customQueryParams: CustomQueryParams? = null,
         socketView: SocketView
     ) {
-        presenter.socket(socketView = socketView, eventType = EventType.CustomEvent, queryParams = queryParams, additionalParams = customQueryParams)
+        presenter.socket(
+            socketView = socketView,
+            eventType = EventType.CustomEvent,
+            queryParams = queryParams,
+            additionalParams = customQueryParams
+        )
     }
 
 

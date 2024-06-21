@@ -1,6 +1,7 @@
 package com.crobox.sdk.Data.API
 
 import com.crobox.sdk.Domain.Constant
+import com.google.gson.GsonBuilder
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -8,6 +9,8 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
+import java.util.logging.Level
+
 
 internal object CroboxAPIClient {
     val clientWithOutToken: Retrofit
@@ -29,10 +32,14 @@ internal object CroboxAPIClient {
                         chain.proceed(request.build())
                     }).build()
 
+            val gson = GsonBuilder()
+                .setLenient()
+                .create()
+
             return Retrofit.Builder()
                 .client(client)
                 .baseUrl(Constant.API_URL)
-                .addConverterFactory(GsonConverterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create(gson))
                 .build()
         }
 }

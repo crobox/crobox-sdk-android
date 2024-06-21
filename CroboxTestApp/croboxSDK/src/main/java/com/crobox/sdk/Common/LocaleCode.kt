@@ -104,6 +104,10 @@ enum class LocaleCode(val code: String) {
     XH_ZA("xh_ZA"),
     YI_DE("yi_DE"),
     YO_NG("yo_NG"),
-    ZU_ZA("zu_ZA")
+    ZU_ZA("zu_ZA");
+
+    override fun toString(): String {
+        return code
+    }
 }
 

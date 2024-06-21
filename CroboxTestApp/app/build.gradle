@@ -7,13 +7,17 @@ android {
     namespace 'com.crobox.sdk.testapp'
     compileSdk 34
 
+    buildFeatures {
+        buildConfig = true
+        viewBinding true
+    }
+
     defaultConfig {
         applicationId "com.crobox.sdk.testapp"
         minSdk 22
         targetSdk 34
         versionCode 1
         versionName "1.0"
-
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
