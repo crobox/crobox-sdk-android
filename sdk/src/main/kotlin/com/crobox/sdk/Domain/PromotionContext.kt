@@ -1,4 +1,5 @@
 package com.crobox.sdk.domain
+
 import com.google.gson.annotations.SerializedName
 
 class PromotionContext {
