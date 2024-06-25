@@ -16,4 +16,4 @@ dependencyResolutionManagement {
 }
 rootProject.name = "Crobox SDK Android"
 include ':app'
-include ':croboxSDK'
+include ':sdk'
