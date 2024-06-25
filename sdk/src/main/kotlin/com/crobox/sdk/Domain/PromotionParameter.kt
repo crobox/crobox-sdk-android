@@ -1,4 +1,4 @@
-package com.crobox.sdk.Domain
+package com.crobox.sdk.domain
 
 class PromotionParameter(jsonData: Map<String, String>) {
     val data: MutableMap<String, String> = mutableMapOf()

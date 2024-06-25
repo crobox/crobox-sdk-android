@@ -1,12 +1,11 @@
-package com.crobox.sdk.Presenter
+package com.crobox.sdk.presenter
 
-import com.crobox.sdk.Common.CroboxDebug
-import com.crobox.sdk.Core.Crobox
-import com.crobox.sdk.Data.API.CroboxAPI
-import com.crobox.sdk.Data.API.CroboxAPIClient
-import com.crobox.sdk.Data.Model.*
-import com.crobox.sdk.Domain.BaseResponse
-import com.crobox.sdk.Domain.PromotionsResponse
+import com.crobox.sdk.common.CroboxDebug
+import com.crobox.sdk.core.Crobox
+import com.crobox.sdk.data.api.CroboxAPI
+import com.crobox.sdk.data.api.CroboxAPIClient
+import com.crobox.sdk.data.model.*
+import com.crobox.sdk.domain.PromotionsResponse
 import com.google.gson.Gson
 import retrofit2.Call
 import retrofit2.Callback

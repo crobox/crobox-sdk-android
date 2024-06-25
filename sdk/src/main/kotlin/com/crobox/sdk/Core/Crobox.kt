@@ -1,9 +1,9 @@
-package com.crobox.sdk.Core
+package com.crobox.sdk.core
 
-import com.crobox.sdk.Data.Model.*
-import com.crobox.sdk.Presenter.CroboxAPIPresenter
-import com.crobox.sdk.Presenter.PromotionView
-import com.crobox.sdk.Presenter.SocketView
+import com.crobox.sdk.data.model.*
+import com.crobox.sdk.presenter.CroboxAPIPresenter
+import com.crobox.sdk.presenter.PromotionView
+import com.crobox.sdk.presenter.SocketView
 
 class Crobox {
 

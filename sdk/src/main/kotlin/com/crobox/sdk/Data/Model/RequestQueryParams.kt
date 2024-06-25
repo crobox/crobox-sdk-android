@@ -1,5 +1,5 @@
-package com.crobox.sdk.Data.Model
-import com.crobox.sdk.Common.LocaleCode
+package com.crobox.sdk.data.model
+import com.crobox.sdk.common.LocaleCode
 import java.util.*
 /*
 

@@ -1,4 +1,4 @@
-package com.crobox.sdk.Data.Model
+package com.crobox.sdk.data.model
 
 class ItemModel {
     val id: String? = null

@@ -1,5 +1,4 @@
-package com.crobox.sdk.Domain
-import com.google.gson.annotations.Expose
+package com.crobox.sdk.domain
 import com.google.gson.annotations.SerializedName
 
 class PromotionsResponse(

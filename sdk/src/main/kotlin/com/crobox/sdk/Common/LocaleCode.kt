@@ -1,4 +1,4 @@
-package com.crobox.sdk.Common
+package com.crobox.sdk.common
 
 enum class LocaleCode(val code: String) {
     EN_US("en_US"),

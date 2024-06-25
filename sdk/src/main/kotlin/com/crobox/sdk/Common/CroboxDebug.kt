@@ -1,7 +1,7 @@
-package com.crobox.sdk.Common
+package com.crobox.sdk.common
 
 import android.util.Log
-import com.crobox.sdk.Core.Crobox
+import com.crobox.sdk.core.Crobox
 
 class CroboxDebug {
 

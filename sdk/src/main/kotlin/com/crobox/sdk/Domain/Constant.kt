@@ -1,4 +1,4 @@
-package com.crobox.sdk.Domain
+package com.crobox.sdk.domain
 
 object Constant {
     const val API_URL = "https://api.crobox.com"

@@ -1,7 +1,7 @@
-package com.crobox.sdk.Data.API
+package com.crobox.sdk.data.api
 
-import com.crobox.sdk.Domain.BaseResponse
-import com.crobox.sdk.Domain.PromotionsResponse
+import com.crobox.sdk.domain.BaseResponse
+import com.crobox.sdk.domain.PromotionsResponse
 import retrofit2.Call
 import retrofit2.http.*
 

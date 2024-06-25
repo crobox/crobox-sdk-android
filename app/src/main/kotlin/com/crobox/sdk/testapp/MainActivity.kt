@@ -3,14 +3,14 @@ package com.crobox.sdk.testapp
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import com.crobox.sdk.Common.LocaleCode
-import com.crobox.sdk.Core.Crobox
-import com.crobox.sdk.Data.Model.AddCartQueryParams
-import com.crobox.sdk.Data.Model.PageType
-import com.crobox.sdk.Data.Model.RequestQueryParams
-import com.crobox.sdk.Domain.PromotionsResponse
-import com.crobox.sdk.Presenter.PromotionView
-import com.crobox.sdk.Presenter.SocketView
+import com.crobox.sdk.common.LocaleCode
+import com.crobox.sdk.core.Crobox
+import com.crobox.sdk.data.model.AddCartQueryParams
+import com.crobox.sdk.data.model.PageType
+import com.crobox.sdk.data.model.RequestQueryParams
+import com.crobox.sdk.domain.PromotionsResponse
+import com.crobox.sdk.presenter.PromotionView
+import com.crobox.sdk.presenter.SocketView
 
 class MainActivity : AppCompatActivity() {
 
