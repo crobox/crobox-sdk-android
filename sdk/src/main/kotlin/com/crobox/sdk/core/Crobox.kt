@@ -22,7 +22,7 @@ class Crobox private constructor(containerId: String) {
     }
 
     fun enableDebug() {
-        CroboxDebug.instance.isDebug = true
+        CroboxDebug.isDebug = true
     }
 
     fun promotions(

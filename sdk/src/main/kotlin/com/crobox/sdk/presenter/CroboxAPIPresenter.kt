@@ -35,16 +35,16 @@ class CroboxAPIPresenter(private val containerId: String) {
                         } else {
                             promotionView.onError(response.body().toString())
                         }
-                        CroboxDebug.instance.printText(response.body().toString())
+                        CroboxDebug.printText(response.body().toString())
                     } catch (ex: Exception) {
                         promotionView.onError(ex.message ?: "")
-                        CroboxDebug.instance.printText(ex.message.toString())
+                        CroboxDebug.printText(ex.message.toString())
                     }
                 }
 
                 override fun onFailure(call: Call<PromotionsResponse?>, t: Throwable) {
                     promotionView.onError(t.message ?: "")
-                    CroboxDebug.instance.printText(t.message.toString())
+                    CroboxDebug.printText(t.message.toString())
                 }
             })
     }
@@ -73,16 +73,16 @@ class CroboxAPIPresenter(private val containerId: String) {
                         } else {
                             socketView.onError(response.body().toString())
                         }
-                        CroboxDebug.instance.printText(response.body().toString())
+                        CroboxDebug.printText(response.body().toString())
                     } catch (ex: Exception) {
                         socketView.onError(ex.message ?: "")
-                        CroboxDebug.instance.printText(ex.message.toString())
+                        CroboxDebug.printText(ex.message.toString())
                     }
                 }
 
                 override fun onFailure(call: Call<BaseResponse?>, t: Throwable) {
                     socketView.onError(t.message ?: "")
-                    CroboxDebug.instance.printText(t.message.toString())
+                    CroboxDebug.printText(t.message.toString())
                 }
             })*/
     }
@@ -150,7 +150,7 @@ class CroboxAPIPresenter(private val containerId: String) {
             }
         }
 
-        CroboxDebug.instance.printParams(parameters)
+        CroboxDebug.printParams(parameters)
 
         return parameters
     }
@@ -181,7 +181,7 @@ class CroboxAPIPresenter(private val containerId: String) {
         queryParams.pageUrl?.let { parameters["cp"] = it }
         queryParams.customProperties?.let { parameters["lh"] = it }
 
-        CroboxDebug.instance.printParams(parameters)
+        CroboxDebug.printParams(parameters)
 
         return parameters
     }

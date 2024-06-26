@@ -2,8 +2,8 @@
 # compiler_version: 8.1.56
 # common_typos_disable
 # {"id":"com.android.tools.r8.mapping","version":"2.2"}
-# pg_map_id: abf0107
-# pg_map_hash: SHA-256 abf0107782979ed3a97d0a599a219a33e96370d311562ec1953b0517a0f1d7fa
+# pg_map_id: 3d8d481
+# pg_map_hash: SHA-256 3d8d481508153cac70bc221a5bf16b0c8a5b07c26596aee09cc20ec9fd1870a2
 com.crobox.sdk.BuildConfig -> com.crobox.sdk.BuildConfig:
 # {"id":"sourceFile","fileName":"BuildConfig.java"}
     1:1:void <init>():6:6 -> <init>
@@ -12,24 +12,13 @@ com.crobox.sdk.common.CroboxDebug -> com.crobox.sdk.common.CroboxDebug:
     boolean isDebug -> a
     1:1:void <init>():5:5 -> <init>
     1:1:boolean isDebug():7:7 -> isDebug
-    1:2:void printParams(java.util.Map):25:26 -> printParams
-    1:2:void printText(java.lang.String):19:20 -> printText
+    1:2:void printParams(java.util.Map):16:17 -> printParams
+    1:2:void printText(java.lang.String):10:11 -> printText
     1:1:void setDebug(boolean):7:7 -> setDebug
-com.crobox.sdk.common.CroboxDebug$Companion -> com.crobox.sdk.common.CroboxDebug$Companion:
-# {"id":"sourceFile","fileName":"CroboxDebug.kt"}
-    1:1:void <init>(kotlin.jvm.internal.DefaultConstructorMarker):0:0 -> <init>
-    2:2:void <init>():13:13 -> <init>
-    1:1:com.crobox.sdk.common.CroboxDebug getInstance():15:15 -> getInstance
-    2:2:com.crobox.sdk.common.CroboxDebug com.crobox.sdk.common.CroboxDebug$InstanceHolder.getInstance():10:10 -> getInstance
-    2:2:com.crobox.sdk.common.CroboxDebug getInstance():15 -> getInstance
-com.crobox.sdk.common.CroboxDebug$InstanceHolder -> a.a:
-# {"id":"sourceFile","fileName":"CroboxDebug.kt"}
-    com.crobox.sdk.common.CroboxDebug instance -> a
-    1:1:void <clinit>():10:10 -> <clinit>
 com.crobox.sdk.common.LocaleCode -> com.crobox.sdk.common.LocaleCode:
 # {"id":"sourceFile","fileName":"LocaleCode.kt"}
-    java.lang.String code -> a
-    com.crobox.sdk.common.LocaleCode[] $VALUES -> b
+    com.crobox.sdk.common.LocaleCode[] $VALUES -> a
+    java.lang.String code -> b
     1:104:void <clinit>():4:107 -> <clinit>
     105:105:com.crobox.sdk.common.LocaleCode[] $values():0:0 -> <clinit>
     105:105:void <clinit>():107 -> <clinit>
