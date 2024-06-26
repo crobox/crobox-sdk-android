@@ -25,6 +25,10 @@ class Crobox private constructor(containerId: String) {
         CroboxDebug.isDebug = true
     }
 
+    fun disableDebug() {
+        CroboxDebug.isDebug = false
+    }
+
     fun promotions(
         promotionView: PromotionView,
         placeholderId: String,

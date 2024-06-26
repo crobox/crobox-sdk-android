@@ -43,7 +43,7 @@ class MainActivity : AppCompatActivity() {
         }
         croboxInstance.promotions( promotionView = promotionView, placeholderId = "14", queryParams = queryParams)
 
-
+        croboxInstance.disableDebug()
 
         //socket event test
         val socketView = object : SocketView {
