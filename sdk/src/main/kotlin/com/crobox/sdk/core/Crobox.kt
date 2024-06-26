@@ -42,7 +42,7 @@ class Crobox private constructor(config: CroboxConfig) {
     }
 
     // Usage functions
-    fun pageViewClick(
+    fun clickEvent(
         queryParams: RequestQueryParams,
         clickQueryParams: ClickQueryParams? = null,
         socketView: SocketView
@@ -55,7 +55,7 @@ class Crobox private constructor(config: CroboxConfig) {
         )
     }
 
-    fun pageViewAddCart(
+    fun addToCartEvent(
         queryParams: RequestQueryParams,
         addCartQueryParams: AddCartQueryParams? = null,
         socketView: SocketView
@@ -68,7 +68,7 @@ class Crobox private constructor(config: CroboxConfig) {
         )
     }
 
-    fun pageViewRemoveCart(
+    fun removeFromCartEvent(
         queryParams: RequestQueryParams,
         removeFromCartQueryParams: RemoveFromCartQueryParams? = null,
         socketView: SocketView
@@ -81,7 +81,7 @@ class Crobox private constructor(config: CroboxConfig) {
         )
     }
 
-    fun pageViewError(
+    fun errorEvent(
         queryParams: RequestQueryParams,
         errorQueryParams: ErrorQueryParams? = null,
         socketView: SocketView

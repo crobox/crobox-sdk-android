@@ -1,9 +1,9 @@
 package com.crobox.sdk.testapp
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.ActionMode
+import androidx.appcompat.app.AppCompatActivity
 import com.crobox.sdk.common.LocaleCode
 import com.crobox.sdk.core.Crobox
 import com.crobox.sdk.data.model.AddCartQueryParams
@@ -16,12 +16,14 @@ import com.crobox.sdk.presenter.SocketView
 
 class MainActivity : AppCompatActivity() {
 
-    var croboxInstance = Crobox.getInstance(CroboxConfig(
-        containerId = "xlhvci",
-        visitorId = "H9O1I0kYSaekKFrzS_JWCg",
-        currencyCode = "USD",
-        localeCode = LocaleCode.EN_US
-    ) )
+    var croboxInstance = Crobox.getInstance(
+        CroboxConfig(
+            containerId = "xlhvci",
+            visitorId = "H9O1I0kYSaekKFrzS_JWCg",
+            currencyCode = "USD",
+            localeCode = LocaleCode.EN_US
+        )
+    )
 
     override fun onActionModeStarted(mode: ActionMode?) {
         super.onActionModeStarted(mode)
@@ -44,13 +46,14 @@ class MainActivity : AppCompatActivity() {
         // Implement the PromotionView interface
         val promotionView = object : PromotionView {
             override fun onPromotions(response: PromotionsResponse?) {
-              Log.d("PromotionView"," onPromotions "+ response?.context?.pid);
+                Log.d("PromotionView", " onPromotions " + response?.context?.pid);
             }
+
             override fun onError(msg: String?) {
-                Log.d("PromotionView onError",""+ msg);
+                Log.d("PromotionView onError", "" + msg);
             }
         }
-        croboxInstance.promotions( promotionView = promotionView, placeholderId = "14", queryParams = queryParams)
+        croboxInstance.promotions(promotionView = promotionView, placeholderId = "14", queryParams = queryParams)
 
         croboxInstance.disableDebug()
 
@@ -61,13 +64,14 @@ class MainActivity : AppCompatActivity() {
                 super.onSocketSuccess(dictionary)
                 println("SocketView onSuccess: $dictionary")
             }
+
             override fun onError(msg: String?) {
-                Log.d("SocketView onError",""+ msg);
+                Log.d("SocketView onError", "" + msg);
             }
         }
 
         // AddCart event with addCartQueryParams
         val addCartQueryParams = AddCartQueryParams(productId = "", category = "", price = 1.0, quantity = 2)
-        croboxInstance.pageViewAddCart(queryParams, addCartQueryParams = addCartQueryParams, socketView = socketView)
+        croboxInstance.addToCartEvent(queryParams, addCartQueryParams = addCartQueryParams, socketView = socketView)
     }
 }
