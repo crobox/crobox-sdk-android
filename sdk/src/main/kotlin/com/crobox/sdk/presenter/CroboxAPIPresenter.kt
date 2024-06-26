@@ -9,8 +9,9 @@ import com.google.gson.Gson
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.util.*
 
-class CroboxAPIPresenter(private val containerId: String) {
+class CroboxAPIPresenter(private val config: CroboxConfig) {
 
     private val apiInterface: CroboxAPI = CroboxAPIClient.clientWithOutToken.create(
         CroboxAPI::class.java
@@ -95,21 +96,21 @@ class CroboxAPIPresenter(private val containerId: String) {
 
         // Mandatory parameters
         val parameters = mutableMapOf<String, Any>(
-            "cid" to containerId,
+            "cid" to config.containerId,
             "e" to queryParams.viewCounter,
             "vid" to queryParams.viewId,
-            "pid" to queryParams.visitorId,
+            "pid" to config.visitorId,
             "t" to eventType
         )
 
         // Optional parameters
-        queryParams.currencyCode?.let { parameters["cc"] = it }
-        queryParams.localeCode?.let { parameters["lc"] = it.toString() }
-        queryParams.userId?.let { parameters["uid"] = it }
-        queryParams.timestamp?.let { parameters["ts"] = it }
-        queryParams.timezone?.let { parameters["tz"] = it }
+        config.currencyCode?.let { parameters["cc"] = it }
+        config.localeCode?.let { parameters["lc"] = it.toString() }
+        config.userId?.let { parameters["uid"] = it }
+        parameters["ts"] = Date() // TODO check formatting
+        config.timezone?.let { parameters["tz"] = it }
         queryParams.pageType?.let { parameters["pt"] = it.value }
-        queryParams.pageView?.let { parameters["cp"] = it }
+        queryParams.pageName?.let { parameters["cp"] = it }
         queryParams.customProperties?.let { parameters["lh"] = it }
 
         // Additional parameters based on event type
@@ -163,21 +164,21 @@ class CroboxAPIPresenter(private val containerId: String) {
 
         // Mandatory parameters
         val parameters = mutableMapOf<String, Any>(
-            "cid" to containerId,
+            "cid" to config.containerId,
             "vpid" to placeholderId,
             "e" to queryParams.viewCounter,
             "vid" to queryParams.viewId,
-            "pid" to queryParams.visitorId
+            "pid" to config.visitorId
         )
 
         // Optional parameters
-        queryParams.currencyCode?.let { parameters["cc"] = it }
-        queryParams.localeCode?.let { parameters["lc"] = it.toString() }
-        queryParams.userId?.let { parameters["uid"] = it }
-        queryParams.timestamp?.let { parameters["ts"] = it }
-        queryParams.timezone?.let { parameters["tz"] = it }
+        config.currencyCode?.let { parameters["cc"] = it }
+        config.localeCode?.let { parameters["lc"] = it.toString() }
+        config.userId?.let { parameters["uid"] = it }
+        parameters["ts"] = Date()
+        config.timezone?.let { parameters["tz"] = it }
         queryParams.pageType?.let { parameters["pt"] = it.value }
-        queryParams.pageView?.let { parameters["cp"] = it }
+        queryParams.pageName?.let { parameters["cp"] = it }
         queryParams.customProperties?.let { parameters["lh"] = it }
 
         CroboxDebug.printParams(parameters)

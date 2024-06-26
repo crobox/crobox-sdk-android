@@ -86,18 +86,21 @@ import java.util.*
 // "cp.xyz" : Custom Property xyz
 
 data class RequestQueryParams(
-    val viewCounter: Int,               // ViewCounter (mandatory)
-    val viewId: String,                 // ViewId (mandatory)
+    val viewCounter: Int,               // ViewCounter (mandatory) // TODO hide and autogenerate
+    val viewId: String,                 // ViewId (mandatory) //TODO try to auto-generate
+    var pageType: PageType? = null,     // PageType (optional)
+    val customProperties: Map<String, String>? = null, // Custom Properties (optional)
+    val pageName: String? = null        // ViewController (optional)
+)
+
+data class CroboxConfig(
+    val containerId: String,            // ContainerId (mandatory)
     val visitorId: String,              // VisitorId (mandatory)
     val currencyCode: String? = null,   // CurrencyCode (optional)
     val localeCode: LocaleCode? = null, // LocaleCode (optional)
     val userId: String? = null,         // UserId (optional)
-    val timestamp: String? = null,      // Timestamp (optional)
     val timezone: Int? = null,          // Timezone (optional)
-    var pageType: PageType? = null,     // PageType (optional)
     val customProperties: Map<String, String>? = null, // Custom Properties (optional)
-    val pageView: String? = null,        // ViewController (optional)
-    val referrerUrl: String? = null     // referrerUrl (optional)
 )
 
 /*

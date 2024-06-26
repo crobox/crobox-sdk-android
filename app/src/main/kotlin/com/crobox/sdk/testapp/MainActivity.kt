@@ -3,9 +3,11 @@ package com.crobox.sdk.testapp
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.ActionMode
 import com.crobox.sdk.common.LocaleCode
 import com.crobox.sdk.core.Crobox
 import com.crobox.sdk.data.model.AddCartQueryParams
+import com.crobox.sdk.data.model.CroboxConfig
 import com.crobox.sdk.data.model.PageType
 import com.crobox.sdk.data.model.RequestQueryParams
 import com.crobox.sdk.domain.PromotionsResponse
@@ -14,7 +16,16 @@ import com.crobox.sdk.presenter.SocketView
 
 class MainActivity : AppCompatActivity() {
 
-    var croboxInstance = Crobox.getInstance(containerId = "xlhvci")
+    var croboxInstance = Crobox.getInstance(CroboxConfig(
+        containerId = "xlhvci",
+        visitorId = "H9O1I0kYSaekKFrzS_JWCg",
+        currencyCode = "USD",
+        localeCode = LocaleCode.EN_US
+    ) )
+
+    override fun onActionModeStarted(mode: ActionMode?) {
+        super.onActionModeStarted(mode)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -26,9 +37,7 @@ class MainActivity : AppCompatActivity() {
         val queryParams = RequestQueryParams(
             viewCounter = 28,
             viewId = "An0N-dq0ThWeiUJX12cpVA",
-            visitorId = "H9O1I0kYSaekKFrzS_JWCg",
-            currencyCode = "USD",
-            localeCode = LocaleCode.EN_US,
+
             pageType = PageType.PageDetail
         )
 

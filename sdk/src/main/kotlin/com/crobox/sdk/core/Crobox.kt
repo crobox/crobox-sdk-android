@@ -6,18 +6,18 @@ import com.crobox.sdk.presenter.CroboxAPIPresenter
 import com.crobox.sdk.presenter.PromotionView
 import com.crobox.sdk.presenter.SocketView
 
-class Crobox private constructor(containerId: String) {
+class Crobox private constructor(config: CroboxConfig) {
 
-    private val presenter = CroboxAPIPresenter(containerId)
+    private val presenter = CroboxAPIPresenter(config)
 
     companion object {
 
         @Volatile
         private var instance: Crobox? = null
 
-        fun getInstance(containerId: String): Crobox =
+        fun getInstance(config: CroboxConfig): Crobox =
             instance ?: synchronized (this) {
-                instance ?: Crobox(containerId).also { instance = it }
+                instance ?: Crobox(config).also { instance = it }
             }
     }
 
