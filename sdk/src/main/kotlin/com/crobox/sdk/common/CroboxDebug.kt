@@ -1,9 +1,10 @@
 package com.crobox.sdk.common
 
 import android.util.Log
-import com.crobox.sdk.core.Crobox
 
 class CroboxDebug {
+
+    var isDebug = false
 
     private object InstanceHolder {
         val instance = CroboxDebug()
@@ -15,13 +16,13 @@ class CroboxDebug {
     }
 
     fun printText(text: String) {
-        if (Crobox.instance.isDebug) {
+        if (isDebug) {
             Log.d("croboxSDK LOG", "croboxSDK LOG: $text")
         }
     }
 
     fun printParams(params: Map<String, Any>) {
-        if (Crobox.instance.isDebug) {
+        if (isDebug) {
             Log.d("croboxSDK LOG", "croboxSDK LOG: $params")
         }
     }

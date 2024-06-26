@@ -1,25 +1,29 @@
 package com.crobox.sdk.core
 
+import com.crobox.sdk.common.CroboxDebug
 import com.crobox.sdk.data.model.*
 import com.crobox.sdk.presenter.CroboxAPIPresenter
 import com.crobox.sdk.presenter.PromotionView
 import com.crobox.sdk.presenter.SocketView
 
-class Crobox {
+class Crobox private constructor(containerId: String) {
 
-    private val presenter = CroboxAPIPresenter()
-
-    private object InstanceHolder {
-        var instance = Crobox()
-    }
+    private val presenter = CroboxAPIPresenter(containerId)
 
     companion object {
-        val instance: Crobox
-            get() = InstanceHolder.instance
+
+        @Volatile
+        private var instance: Crobox? = null
+
+        fun getInstance(containerId: String): Crobox =
+            instance ?: synchronized (this) {
+                instance ?: Crobox(containerId).also { instance = it }
+            }
     }
 
-    var isDebug = false
-    var containerId: String = ""
+    fun enableDebug() {
+        CroboxDebug.instance.isDebug = true
+    }
 
     fun promotions(
         promotionView: PromotionView,

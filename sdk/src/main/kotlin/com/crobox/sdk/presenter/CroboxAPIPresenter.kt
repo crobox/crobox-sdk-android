@@ -11,7 +11,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class CroboxAPIPresenter {
+class CroboxAPIPresenter(private val containerId: String) {
 
     private val apiInterface: CroboxAPI = CroboxAPIClient.clientWithOutToken.create(
         CroboxAPI::class.java
@@ -96,7 +96,7 @@ class CroboxAPIPresenter {
 
         // Mandatory parameters
         val parameters = mutableMapOf<String, Any>(
-            "cid" to Crobox.instance.containerId,
+            "cid" to containerId,
             "e" to queryParams.viewCounter,
             "vid" to queryParams.viewId,
             "pid" to queryParams.visitorId,
@@ -164,7 +164,7 @@ class CroboxAPIPresenter {
 
         // Mandatory parameters
         val parameters = mutableMapOf<String, Any>(
-            "cid" to Crobox.instance.containerId,
+            "cid" to containerId,
             "vpid" to placeholderId,
             "e" to queryParams.viewCounter,
             "vid" to queryParams.viewId,

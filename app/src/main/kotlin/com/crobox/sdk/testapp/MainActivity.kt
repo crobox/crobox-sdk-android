@@ -14,15 +14,13 @@ import com.crobox.sdk.presenter.SocketView
 
 class MainActivity : AppCompatActivity() {
 
-    var croboxInstance = Crobox.instance
+    var croboxInstance = Crobox.getInstance(containerId = "xlhvci")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main2)
 
-        croboxInstance.isDebug = true
-
-        croboxInstance.containerId = "xlhvci"
+        croboxInstance.enableDebug()
 
         // Create an instance of RequestQueryParams with some example data
         val queryParams = RequestQueryParams(
