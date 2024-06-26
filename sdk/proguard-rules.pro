@@ -1,6 +1,3 @@
--keepattributes SourceFile,LineNumberTable
--renamesourcefileattribute SourceFile
--printmapping out.map
 -keepparameternames
 -renamesourcefileattribute SourceFile
 -keepattributes Exceptions,InnerClasses,Signature,Deprecated,SourceFile,LineNumberTable,EnclosingMethod

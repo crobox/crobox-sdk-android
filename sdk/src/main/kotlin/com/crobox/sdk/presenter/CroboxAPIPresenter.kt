@@ -1,7 +1,6 @@
 package com.crobox.sdk.presenter
 
 import com.crobox.sdk.common.CroboxDebug
-import com.crobox.sdk.core.Crobox
 import com.crobox.sdk.data.api.CroboxAPI
 import com.crobox.sdk.data.api.CroboxAPIClient
 import com.crobox.sdk.data.model.*
@@ -110,7 +109,7 @@ class CroboxAPIPresenter(private val containerId: String) {
         queryParams.timestamp?.let { parameters["ts"] = it }
         queryParams.timezone?.let { parameters["tz"] = it }
         queryParams.pageType?.let { parameters["pt"] = it.value }
-        queryParams.pageUrl?.let { parameters["cp"] = it }
+        queryParams.pageView?.let { parameters["cp"] = it }
         queryParams.customProperties?.let { parameters["lh"] = it }
 
         // Additional parameters based on event type
@@ -178,7 +177,7 @@ class CroboxAPIPresenter(private val containerId: String) {
         queryParams.timestamp?.let { parameters["ts"] = it }
         queryParams.timezone?.let { parameters["tz"] = it }
         queryParams.pageType?.let { parameters["pt"] = it.value }
-        queryParams.pageUrl?.let { parameters["cp"] = it }
+        queryParams.pageView?.let { parameters["cp"] = it }
         queryParams.customProperties?.let { parameters["lh"] = it }
 
         CroboxDebug.printParams(parameters)
