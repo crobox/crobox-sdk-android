@@ -9,6 +9,5 @@ class Promotion {
     @SerializedName("variantId")val variantId: Int? = null
     @SerializedName("campaignId")val campaignId: Int? = null
     @SerializedName("content") val content:  PromotionContent? = null
-    @SerializedName("parameters") val parameters:  PromotionParameter? = null
 }
 

@@ -8,9 +8,12 @@ import com.crobox.sdk.core.Crobox
 import com.crobox.sdk.config.CroboxConfig
 import com.crobox.sdk.data.model.CartQueryParams
 import com.crobox.sdk.data.model.ClickQueryParams
+import com.crobox.sdk.data.model.ErrorQueryParams
 import com.crobox.sdk.data.model.PageType
 import com.crobox.sdk.data.model.RequestQueryParams
+import com.crobox.sdk.domain.PromotionsResponse
 import com.crobox.sdk.presenter.EventCallback
+import com.crobox.sdk.presenter.PromotionCallback
 import java.util.UUID
 
 class MainActivity : AppCompatActivity() {
@@ -31,13 +34,7 @@ class MainActivity : AppCompatActivity() {
         // Enable debugging
         croboxInstance.enableDebug()
 
-        // Create an instance of RequestQueryParams with data specific to this viewing
-        val queryParams = RequestQueryParams(
-            viewId = UUID.randomUUID(),
-            pageType = PageType.PageDetail
-        )
-
-
+        // stub implementation for callbacks
         val eventCallback = object : EventCallback {
 
             override fun onSuccess(dictionary: Map<String, String>) {
@@ -50,9 +47,15 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+        // RequestQueryParams contains page specific parameters, shared by all requests fired from the same page/view.
+        val overviewPageParams = RequestQueryParams(
+            viewId = UUID.randomUUID(),
+            pageType = PageType.PageOverview
+        )
+
         // Sending Click events
         croboxInstance.clickEvent(
-            queryParams,
+            overviewPageParams,
             clickQueryParams = ClickQueryParams(
                 productId = "0001ABC",
                 price = 1.0,
@@ -63,7 +66,7 @@ class MainActivity : AppCompatActivity() {
 
         // Sending AddToCart events
         croboxInstance.addToCartEvent(
-            queryParams,
+            overviewPageParams,
             addCartQueryParams = CartQueryParams(
                 productId = "001ABC",
                 price = 1.0,
@@ -72,9 +75,15 @@ class MainActivity : AppCompatActivity() {
             eventCallback = eventCallback
         )
 
-        // Sending AddToCart events
+        // When user visits another page, eg. CartPage, new request params must be created
+        val cartPageParams = RequestQueryParams(
+            viewId = UUID.randomUUID(),
+            pageType = PageType.PageCart
+        )
+
+        // Sending Remove From Cart events
         croboxInstance.removeFromCartEvent(
-            queryParams,
+            cartPageParams,
             removeFromCartQueryParams = CartQueryParams(
                 productId = "001ABC",
                 price = 1.0,
@@ -83,19 +92,52 @@ class MainActivity : AppCompatActivity() {
             eventCallback = eventCallback
         )
 
+        // Sending Error events from another page
+        val indexPageParams = RequestQueryParams(
+            viewId = UUID.randomUUID(),
+            pageType = PageType.PageIndex
+        )
+        croboxInstance.errorEvent(
+            indexPageParams,
+            errorQueryParams = ErrorQueryParams(
+                tag = "ParsingError",
+                name = "IllegalArgumentException",
+                message = "bad input",
+                file = "MainActivity",
+                line = 100
+            ),
+            eventCallback = eventCallback
+        )
 
-        // Implement the PromotionView interface
-//        val promotionView = object : PromotionView {
-//            override fun onPromotions(response: PromotionsResponse?) {
-//                Log.d("PromotionView", " onPromotions " + response?.context?.pid);
-//            }
-//
-//            override fun onError(msg: String?) {
-//                Log.d("PromotionView onError", "" + msg);
-//            }
-//        }
-//        croboxInstance.promotions(promotionView = promotionView, placeholderId = "14", queryParams = queryParams)
+        // Sending View events from another page
+        val detailPageParams = RequestQueryParams(
+            viewId = UUID.randomUUID(),
+            pageType = PageType.PageDetail
+        )
+        croboxInstance.pageViewEvent(
+            detailPageParams,
+            eventCallback = eventCallback
+        )
 
+        // Requesting for a Promotion
+        croboxInstance.promotions(
+            placeholderId = "14",
+            queryParams = detailPageParams,
+            promotionCallback = object : PromotionCallback {
+                override fun onPromotions(response: PromotionsResponse?) {
+                    response?.context?.experiments?.forEach { experiment ->
+                        Log.d("PromotionView", "experiment : " + experiment.id);
+                    }
+                    response?.promotions?.forEach { promotion ->
+                        Log.d("PromotionView", "promotion : " + promotion.productId);
+                    }
+
+                }
+
+                override fun onError(msg: String?) {
+                    Log.d("PromotionView onError", "" + msg);
+                }
+            })
 
         croboxInstance.disableDebug()
 

@@ -30,10 +30,15 @@ class Crobox private constructor(config: CroboxConfig) {
         CroboxDebug.isDebug = false
     }
 
+
+    /**
+     * For retrieval of Promotions
+     *
+     */
     fun promotions(
-        promotionCallback: PromotionCallback,
         placeholderId: String,
         queryParams: RequestQueryParams,
+        promotionCallback: PromotionCallback
     ) {
         presenter.promotions(
             promotionCallback = promotionCallback,
@@ -43,7 +48,7 @@ class Crobox private constructor(config: CroboxConfig) {
     }
 
     /**
-     * Use for sending a Click Event, to track the ratio of visits on impressions.
+     * For sending a Click Event, to track the ratio of visits on impressions.
      *
      * Click events forms the measurement data for Click-through rate (CTR) for campaigns.
      *
@@ -63,7 +68,7 @@ class Crobox private constructor(config: CroboxConfig) {
 
 
     /**
-     * Use for sending an Add To Cart Event, to track the metrics of customer's intention of making a purchase.
+     * For sending an Add To Cart Event, to track the metrics of customer's intention of making a purchase.
      *
      */
     fun addToCartEvent(
@@ -79,6 +84,10 @@ class Crobox private constructor(config: CroboxConfig) {
         )
     }
 
+    /**
+     * For sending an Remove From Cart Event, to track the metrics of product's removal from a purchase.
+     *
+     */
     fun removeFromCartEvent(
         queryParams: RequestQueryParams,
         removeFromCartQueryParams: CartQueryParams? = null,
@@ -92,6 +101,10 @@ class Crobox private constructor(config: CroboxConfig) {
         )
     }
 
+    /**
+     * For reporting a general-purpose error event
+     *
+     */
     fun errorEvent(
         queryParams: RequestQueryParams,
         errorQueryParams: ErrorQueryParams? = null,

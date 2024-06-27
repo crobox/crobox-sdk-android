@@ -200,10 +200,6 @@ class CroboxAPIPresenter(private val config: CroboxConfig) {
         errorQueryParams.message?.let { parameters["msg"] = it }
         errorQueryParams.file?.let { parameters["f"] = it }
         errorQueryParams.line?.let { parameters["l"] = it }
-        errorQueryParams.devicePixelRatio?.let { parameters["dpr"] = it }
-        errorQueryParams.deviceLanguage?.let { parameters["ul"] = it }
-        errorQueryParams.viewPortSize?.let { parameters["vp"] = it }
-        errorQueryParams.screenResolutionSize?.let { parameters["sr"] = it }
     }
 
     /***
