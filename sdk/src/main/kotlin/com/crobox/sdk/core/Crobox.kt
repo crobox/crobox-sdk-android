@@ -4,7 +4,7 @@ import com.crobox.sdk.common.CroboxDebug
 import com.crobox.sdk.data.model.*
 import com.crobox.sdk.presenter.CroboxAPIPresenter
 import com.crobox.sdk.presenter.PromotionView
-import com.crobox.sdk.presenter.SocketView
+import com.crobox.sdk.presenter.EventView
 
 class Crobox private constructor(config: CroboxConfig) {
 
@@ -45,10 +45,10 @@ class Crobox private constructor(config: CroboxConfig) {
     fun clickEvent(
         queryParams: RequestQueryParams,
         clickQueryParams: ClickQueryParams? = null,
-        socketView: SocketView
+        eventView: EventView
     ) {
         presenter.socket(
-            socketView = socketView,
+            eventView = eventView,
             eventType = EventType.Click,
             queryParams = queryParams,
             additionalParams = clickQueryParams
@@ -58,10 +58,10 @@ class Crobox private constructor(config: CroboxConfig) {
     fun addToCartEvent(
         queryParams: RequestQueryParams,
         addCartQueryParams: AddCartQueryParams? = null,
-        socketView: SocketView
+        eventView: EventView
     ) {
         presenter.socket(
-            socketView = socketView,
+            eventView = eventView,
             eventType = EventType.AddCart,
             queryParams = queryParams,
             additionalParams = addCartQueryParams
@@ -71,10 +71,10 @@ class Crobox private constructor(config: CroboxConfig) {
     fun removeFromCartEvent(
         queryParams: RequestQueryParams,
         removeFromCartQueryParams: RemoveFromCartQueryParams? = null,
-        socketView: SocketView
+        eventView: EventView
     ) {
         presenter.socket(
-            socketView = socketView,
+            eventView = eventView,
             eventType = EventType.RemoveCart,
             queryParams = queryParams,
             additionalParams = removeFromCartQueryParams
@@ -84,10 +84,10 @@ class Crobox private constructor(config: CroboxConfig) {
     fun errorEvent(
         queryParams: RequestQueryParams,
         errorQueryParams: ErrorQueryParams? = null,
-        socketView: SocketView
+        eventView: EventView
     ) {
         presenter.socket(
-            socketView = socketView,
+            eventView = eventView,
             eventType = EventType.Error,
             queryParams = queryParams,
             additionalParams = errorQueryParams
@@ -97,10 +97,10 @@ class Crobox private constructor(config: CroboxConfig) {
     fun pageViewEvent(
         queryParams: RequestQueryParams,
         customQueryParams: CustomQueryParams? = null,
-        socketView: SocketView
+        eventView: EventView
     ) {
         presenter.socket(
-            socketView = socketView,
+            eventView = eventView,
             eventType = EventType.CustomEvent,
             queryParams = queryParams,
             additionalParams = customQueryParams

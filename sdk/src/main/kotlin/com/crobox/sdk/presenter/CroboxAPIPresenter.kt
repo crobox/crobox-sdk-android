@@ -50,7 +50,7 @@ class CroboxAPIPresenter(private val config: CroboxConfig) {
     }
 
     fun socket(
-        socketView: SocketView,
+        eventView: EventView,
         eventType: EventType,
         queryParams: RequestQueryParams,
         additionalParams: Any?
