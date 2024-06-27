@@ -6,8 +6,6 @@ import com.crobox.sdk.data.model.*
 import com.crobox.sdk.presenter.CroboxAPIPresenter
 import com.crobox.sdk.presenter.EventCallback
 import com.crobox.sdk.presenter.PromotionCallback
-import retrofit2.Call
-import retrofit2.Response
 
 class Crobox private constructor(config: CroboxConfig) {
 
@@ -45,7 +43,7 @@ class Crobox private constructor(config: CroboxConfig) {
     }
 
     /**
-     * Invoked for a sending Click Events, to track the ratio of visits on impressions.
+     * Use for sending a Click Event, to track the ratio of visits on impressions.
      *
      * Click events forms the measurement data for Click-through rate (CTR) for campaigns.
      *
@@ -63,6 +61,11 @@ class Crobox private constructor(config: CroboxConfig) {
         )
     }
 
+
+    /**
+     * Use for sending an Add To Cart Event, to track the metrics of customer's intention of making a purchase.
+     *
+     */
     fun addToCartEvent(
         queryParams: RequestQueryParams,
         addCartQueryParams: AddCartQueryParams? = null,

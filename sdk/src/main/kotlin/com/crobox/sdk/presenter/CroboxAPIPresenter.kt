@@ -99,7 +99,7 @@ class CroboxAPIPresenter(private val config: CroboxConfig) {
         // Mandatory parameters
         val parameters = mutableMapOf<String, Any>(
             "cid" to config.containerId,
-            "e" to queryParams.viewCounter,
+            "e" to queryParams.viewCounter(),
             "vid" to queryParams.viewId,
             "pid" to config.visitorId,
             "t" to eventType.type
@@ -168,7 +168,7 @@ class CroboxAPIPresenter(private val config: CroboxConfig) {
         val parameters = mutableMapOf<String, Any>(
             "cid" to config.containerId,
             "vpid" to placeholderId,
-            "e" to queryParams.viewCounter,
+            "e" to queryParams.viewCounter(),
             "vid" to queryParams.viewId,
             "pid" to config.visitorId
         )
@@ -213,7 +213,6 @@ class CroboxAPIPresenter(private val config: CroboxConfig) {
      */
     private fun clickEvent(clickParams: ClickQueryParams, parameters: MutableMap<String, Any>) {
         clickParams.productId?.let { parameters["pi"] = it }
-        clickParams.category?.let { parameters["cat"] = it }
         clickParams.price?.let { parameters["price"] = it }
         clickParams.quantity?.let { parameters["qty"] = it }
     }
