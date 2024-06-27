@@ -1,10 +1,12 @@
 package com.crobox.sdk.presenter
 
+import com.crobox.sdk.common.CroboxEncoder
 import com.crobox.sdk.common.CroboxDebug
 import com.crobox.sdk.config.CroboxConfig
 import com.crobox.sdk.data.api.CroboxAPI
 import com.crobox.sdk.data.api.CroboxAPIClient
 import com.crobox.sdk.data.model.*
+import com.crobox.sdk.domain.BaseResponse
 import com.crobox.sdk.domain.PromotionsResponse
 import com.google.gson.Gson
 import retrofit2.Call
@@ -19,7 +21,7 @@ class CroboxAPIPresenter(private val config: CroboxConfig) {
     )
     private val gson = Gson()
 
-    fun promotions(promotionView: PromotionView, placeholderId:String, queryParams: RequestQueryParams) {
+    fun promotions(promotionCallback: PromotionCallback, placeholderId:String, queryParams: RequestQueryParams) {
 
         val parameters = createRequestBodyForPromotions(placeholderId,queryParams)
         val stringParameters = parameters.mapValues { it.value.toString() }
@@ -32,32 +34,32 @@ class CroboxAPIPresenter(private val config: CroboxConfig) {
                 ) {
                     try {
                         if (response.isSuccessful) {
-                            promotionView.onPromotions(response.body())
+                            promotionCallback.onPromotions(response.body())
                         } else {
-                            promotionView.onError(response.body().toString())
+                            promotionCallback.onError(response.body().toString())
                         }
                         CroboxDebug.printText(response.body().toString())
                     } catch (ex: Exception) {
-                        promotionView.onError(ex.message ?: "")
+                        promotionCallback.onError(ex.message ?: "")
                         CroboxDebug.printText(ex.message.toString())
                     }
                 }
 
                 override fun onFailure(call: Call<PromotionsResponse?>, t: Throwable) {
-                    promotionView.onError(t.message ?: "")
+                    promotionCallback.onError(t.message ?: "")
                     CroboxDebug.printText(t.message.toString())
                 }
             })
     }
 
     fun event(
-        eventView: EventView,
         eventType: EventType,
         queryParams: RequestQueryParams,
-        additionalParams: Any?
+        additionalParams: Any?,
+        eventCallback: EventCallback
     ) {
 
-        /*val parameters = createRequestBodyForEvent(queryParams, additionalParams, eventType)
+        val parameters = createEventRequestBody(queryParams, additionalParams, eventType)
         val stringParameters = parameters.mapValues { it.value.toString() }
 
         apiInterface.event(stringParameters)
@@ -69,25 +71,24 @@ class CroboxAPIPresenter(private val config: CroboxConfig) {
                     try {
                         if (response.isSuccessful) {
                             response.body()?.let {
-                                eventView.onEventSuccess(it.data)
+                                eventCallback.onSuccess(it.data)
                             }
                         } else {
-                            eventView.onError(response.body().toString())
+                            eventCallback.onError(response.body().toString())
                         }
                         CroboxDebug.printText(response.body().toString())
                     } catch (ex: Exception) {
-                        eventView.onError(ex.message ?: "")
+                        eventCallback.onError(ex.message ?: "")
                         CroboxDebug.printText(ex.message.toString())
                     }
                 }
 
                 override fun onFailure(call: Call<BaseResponse?>, t: Throwable) {
-                    eventView.onError(t.message ?: "")
+                    eventCallback.onError(t.message ?: "")
                     CroboxDebug.printText(t.message.toString())
                 }
-            })*/
+            })
     }
-
 
     private fun createEventRequestBody(
         queryParams: RequestQueryParams,
@@ -101,14 +102,14 @@ class CroboxAPIPresenter(private val config: CroboxConfig) {
             "e" to queryParams.viewCounter,
             "vid" to queryParams.viewId,
             "pid" to config.visitorId,
-            "t" to eventType
+            "t" to eventType.type
         )
 
         // Optional parameters
         config.currencyCode?.let { parameters["cc"] = it }
         config.localeCode?.let { parameters["lc"] = it.toString() }
         config.userId?.let { parameters["uid"] = it }
-        parameters["ts"] = Date() // TODO check formatting
+        parameters["ts"] = CroboxEncoder.toBase36(System.currentTimeMillis())
         config.timezone?.let { parameters["tz"] = it }
         queryParams.pageType?.let { parameters["pt"] = it.value }
         queryParams.pageName?.let { parameters["cp"] = it }

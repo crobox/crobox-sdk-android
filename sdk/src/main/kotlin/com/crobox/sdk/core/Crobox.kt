@@ -4,8 +4,10 @@ import com.crobox.sdk.common.CroboxDebug
 import com.crobox.sdk.config.CroboxConfig
 import com.crobox.sdk.data.model.*
 import com.crobox.sdk.presenter.CroboxAPIPresenter
-import com.crobox.sdk.presenter.PromotionView
-import com.crobox.sdk.presenter.EventView
+import com.crobox.sdk.presenter.EventCallback
+import com.crobox.sdk.presenter.PromotionCallback
+import retrofit2.Call
+import retrofit2.Response
 
 class Crobox private constructor(config: CroboxConfig) {
 
@@ -17,7 +19,7 @@ class Crobox private constructor(config: CroboxConfig) {
         private var instance: Crobox? = null
 
         fun getInstance(config: CroboxConfig): Crobox =
-            instance ?: synchronized (this) {
+            instance ?: synchronized(this) {
                 instance ?: Crobox(config).also { instance = it }
             }
     }
@@ -31,38 +33,43 @@ class Crobox private constructor(config: CroboxConfig) {
     }
 
     fun promotions(
-        promotionView: PromotionView,
+        promotionCallback: PromotionCallback,
         placeholderId: String,
         queryParams: RequestQueryParams,
     ) {
         presenter.promotions(
-            promotionView = promotionView,
+            promotionCallback = promotionCallback,
             placeholderId = placeholderId,
             queryParams = queryParams
         )
     }
 
-    // Usage functions
+    /**
+     * Invoked for a sending Click Events, to track the ratio of visits on impressions.
+     *
+     * Click events forms the measurement data for Click-through rate (CTR) for campaigns.
+     *
+     */
     fun clickEvent(
         queryParams: RequestQueryParams,
         clickQueryParams: ClickQueryParams? = null,
-        eventView: EventView
+        eventCallback: EventCallback
     ) {
         presenter.event(
-            eventView = eventView,
             eventType = EventType.Click,
             queryParams = queryParams,
-            additionalParams = clickQueryParams
+            additionalParams = clickQueryParams,
+            eventCallback = eventCallback,
         )
     }
 
     fun addToCartEvent(
         queryParams: RequestQueryParams,
         addCartQueryParams: AddCartQueryParams? = null,
-        eventView: EventView
+        eventCallback: EventCallback
     ) {
         presenter.event(
-            eventView = eventView,
+            eventCallback = eventCallback,
             eventType = EventType.AddCart,
             queryParams = queryParams,
             additionalParams = addCartQueryParams
@@ -72,10 +79,10 @@ class Crobox private constructor(config: CroboxConfig) {
     fun removeFromCartEvent(
         queryParams: RequestQueryParams,
         removeFromCartQueryParams: RemoveFromCartQueryParams? = null,
-        eventView: EventView
+        eventCallback: EventCallback
     ) {
         presenter.event(
-            eventView = eventView,
+            eventCallback = eventCallback,
             eventType = EventType.RemoveCart,
             queryParams = queryParams,
             additionalParams = removeFromCartQueryParams
@@ -85,10 +92,10 @@ class Crobox private constructor(config: CroboxConfig) {
     fun errorEvent(
         queryParams: RequestQueryParams,
         errorQueryParams: ErrorQueryParams? = null,
-        eventView: EventView
+        eventCallback: EventCallback
     ) {
         presenter.event(
-            eventView = eventView,
+            eventCallback = eventCallback,
             eventType = EventType.Error,
             queryParams = queryParams,
             additionalParams = errorQueryParams
@@ -98,10 +105,10 @@ class Crobox private constructor(config: CroboxConfig) {
     fun pageViewEvent(
         queryParams: RequestQueryParams,
         customQueryParams: CustomQueryParams? = null,
-        eventView: EventView
+        eventCallback: EventCallback
     ) {
         presenter.event(
-            eventView = eventView,
+            eventCallback = eventCallback,
             eventType = EventType.CustomEvent,
             queryParams = queryParams,
             additionalParams = customQueryParams

@@ -1,6 +1,6 @@
 package com.crobox.sdk.presenter
 
-interface EventView  {
+interface EventCallback  {
     fun onSuccess(dictionary: Map<String, String>) {}
     fun onError(msg: String?)
 }
