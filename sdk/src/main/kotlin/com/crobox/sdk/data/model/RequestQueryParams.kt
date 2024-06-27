@@ -85,13 +85,6 @@ data class CartQueryParams(
     val quantity: Int? = null
 )
 
-// "nm" : Name
-// "promoId" : Promotion ID
-// "pi" : Product ID
-// "cat" : Category
-// "price" : Price
-// "qty" : Quantity
-
 /**
  * Type specific parameters for general-purpose Custom events
  *

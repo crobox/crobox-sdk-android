@@ -12,21 +12,26 @@ import com.google.gson.Gson
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import java.util.*
 
 class CroboxAPIPresenter(private val config: CroboxConfig) {
 
     private val apiInterface: CroboxAPI = CroboxAPIClient.clientWithOutToken.create(
         CroboxAPI::class.java
     )
-    private val gson = Gson()
 
-    fun promotions(promotionCallback: PromotionCallback, placeholderId:String, queryParams: RequestQueryParams) {
+    fun promotions(
+        placeholderId: Int,
+        queryParams: RequestQueryParams,
+        impressions: List<String>,
+        promotionCallback: PromotionCallback
+    ) {
 
-        val parameters = createRequestBodyForPromotions(placeholderId,queryParams)
+        val parameters = createRequestBodyForPromotions(placeholderId, queryParams)
         val stringParameters = parameters.mapValues { it.value.toString() }
+        val body = promotionRequestBody(impressions)
+        CroboxDebug.printText(body)
 
-        apiInterface.promotions(stringParameters)
+        apiInterface.promotions(stringParameters, body)
             ?.enqueue(object : Callback<PromotionsResponse?> {
                 override fun onResponse(
                     call: Call<PromotionsResponse?>,
@@ -123,30 +128,35 @@ class CroboxAPIPresenter(private val config: CroboxConfig) {
                     parameters
                 )
             }
+
             EventType.Click -> (additionalParams as? ClickQueryParams)?.let {
                 clickEvent(
                     it,
                     parameters
                 )
             }
+
             EventType.AddCart -> (additionalParams as? CartQueryParams)?.let {
                 addToCartEvent(
                     it,
                     parameters
                 )
             }
+
             EventType.RemoveCart -> (additionalParams as? CartQueryParams)?.let {
                 removeFromCartEvent(
                     it,
                     parameters
                 )
             }
+
             EventType.CustomEvent -> (additionalParams as? CustomQueryParams)?.let {
                 customEvent(
                     it,
                     parameters
                 )
             }
+
             else -> {
                 // do nothing
             }
@@ -158,8 +168,15 @@ class CroboxAPIPresenter(private val config: CroboxConfig) {
     }
 
 
+    private fun promotionRequestBody(
+        impressions: List<String>
+    ): String {
+        return impressions.indices.zip(impressions)
+            .joinToString("&") { t -> "${t.first}=${t.second}" }
+    }
 
-    private fun createRequestBodyForPromotions(placeholderId:String,
+    private fun createRequestBodyForPromotions(
+        placeholderId: Int,
         queryParams: RequestQueryParams
     ): Map<String, Any> {
         val gson = Gson()
@@ -167,7 +184,7 @@ class CroboxAPIPresenter(private val config: CroboxConfig) {
         // Mandatory parameters
         val parameters = mutableMapOf<String, Any>(
             "cid" to config.containerId,
-            "vpid" to placeholderId,
+            "vpid" to placeholderId.toString(),
             "e" to queryParams.viewCounter(),
             "vid" to queryParams.viewId,
             "pid" to config.visitorId
@@ -177,7 +194,7 @@ class CroboxAPIPresenter(private val config: CroboxConfig) {
         config.currencyCode?.let { parameters["cc"] = it }
         config.localeCode?.let { parameters["lc"] = it.toString() }
         config.userId?.let { parameters["uid"] = it }
-        parameters["ts"] = Date()
+        parameters["ts"] = CroboxEncoder.toBase36(System.currentTimeMillis())
         config.timezone?.let { parameters["tz"] = it }
         queryParams.pageType?.let { parameters["pt"] = it.value }
         queryParams.pageName?.let { parameters["cp"] = it }

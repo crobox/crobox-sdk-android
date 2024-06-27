@@ -20,7 +20,7 @@ class MainActivity : AppCompatActivity() {
 
     val croboxInstance = Crobox.getInstance(
         CroboxConfig(
-            containerId = "xlhvci",
+            containerId = "xlrc9t",
             visitorId = "H9O1I0kYSaekKFrzS_JWCg",
             currencyCode = "USD",
             localeCode = LocaleCode.EN_US
@@ -119,26 +119,42 @@ class MainActivity : AppCompatActivity() {
             eventCallback = eventCallback
         )
 
-        // Requesting for a Promotion
+
+        val stubPromotionCallback = object : PromotionCallback {
+            override fun onPromotions(response: PromotionsResponse?) {
+                response?.context?.experiments?.forEach { experiment ->
+                    Log.d("PromotionView", "experiment : " + experiment.id);
+                }
+                response?.promotions?.forEach { promotion ->
+                    Log.d("PromotionView", "promotion : " + promotion.productId);
+                }
+
+            }
+
+            override fun onError(msg: String?) {
+                Log.d("PromotionView onError", "" + msg);
+            }
+        }
+
+        // Requesting for a promotion from an overview Page
+        val impressions: List<String> = listOf("001ABC", "002DEF")
         croboxInstance.promotions(
-            placeholderId = "14",
+            placeholderId = 1,
+            queryParams = overviewPageParams,
+            impressions = impressions,
+            promotionCallback = stubPromotionCallback
+        )
+
+        // Requesting for a promotion from a product detail page
+        croboxInstance.promotions(
+            placeholderId = 2,
             queryParams = detailPageParams,
-            promotionCallback = object : PromotionCallback {
-                override fun onPromotions(response: PromotionsResponse?) {
-                    response?.context?.experiments?.forEach { experiment ->
-                        Log.d("PromotionView", "experiment : " + experiment.id);
-                    }
-                    response?.promotions?.forEach { promotion ->
-                        Log.d("PromotionView", "promotion : " + promotion.productId);
-                    }
+            impressions = listOf("001ABC"),
+            promotionCallback = stubPromotionCallback
+        )
 
-                }
 
-                override fun onError(msg: String?) {
-                    Log.d("PromotionView onError", "" + msg);
-                }
-            })
-
+        // Disable debugging
         croboxInstance.disableDebug()
 
     }

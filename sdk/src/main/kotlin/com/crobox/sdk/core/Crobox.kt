@@ -36,14 +36,16 @@ class Crobox private constructor(config: CroboxConfig) {
      *
      */
     fun promotions(
-        placeholderId: String,
+        placeholderId: Int,
         queryParams: RequestQueryParams,
+        impressions: List<String>,
         promotionCallback: PromotionCallback
     ) {
         presenter.promotions(
-            promotionCallback = promotionCallback,
             placeholderId = placeholderId,
-            queryParams = queryParams
+            queryParams = queryParams,
+            impressions = impressions,
+            promotionCallback = promotionCallback
         )
     }
 

@@ -7,7 +7,7 @@ import retrofit2.http.*
 
 interface CroboxAPI {
     @POST("/promotions")
-    fun promotions(@QueryMap options: Map<String, String>): Call<PromotionsResponse?>?
+    fun promotions(@QueryMap options: Map<String, String>, @Body impressions: String): Call<PromotionsResponse?>?
 
     @GET("/socket.gif")
     fun event(@QueryMap options: Map<String, String>): Call<BaseResponse?>
