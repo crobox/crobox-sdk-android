@@ -93,16 +93,6 @@ data class RequestQueryParams(
     val pageName: String? = null        // ViewController (optional)
 )
 
-data class CroboxConfig(
-    val containerId: String,            // ContainerId (mandatory)
-    val visitorId: String,              // VisitorId (mandatory)
-    val currencyCode: String? = null,   // CurrencyCode (optional)
-    val localeCode: LocaleCode? = null, // LocaleCode (optional)
-    val userId: String? = null,         // UserId (optional)
-    val timezone: Int? = null,          // Timezone (optional)
-    val customProperties: Map<String, String>? = null, // Custom Properties (optional)
-)
-
 /*
 
  PageType

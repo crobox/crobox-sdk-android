@@ -1,6 +1,7 @@
 package com.crobox.sdk.core
 
 import com.crobox.sdk.common.CroboxDebug
+import com.crobox.sdk.config.CroboxConfig
 import com.crobox.sdk.data.model.*
 import com.crobox.sdk.presenter.CroboxAPIPresenter
 import com.crobox.sdk.presenter.PromotionView

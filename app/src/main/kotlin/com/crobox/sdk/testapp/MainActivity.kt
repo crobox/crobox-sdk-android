@@ -7,7 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.crobox.sdk.common.LocaleCode
 import com.crobox.sdk.core.Crobox
 import com.crobox.sdk.data.model.AddCartQueryParams
-import com.crobox.sdk.data.model.CroboxConfig
+import com.crobox.sdk.config.CroboxConfig
 import com.crobox.sdk.data.model.PageType
 import com.crobox.sdk.data.model.RequestQueryParams
 import com.crobox.sdk.domain.PromotionsResponse
