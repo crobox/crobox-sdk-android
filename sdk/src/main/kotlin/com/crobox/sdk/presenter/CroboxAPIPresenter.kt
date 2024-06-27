@@ -129,13 +129,13 @@ class CroboxAPIPresenter(private val config: CroboxConfig) {
                     parameters
                 )
             }
-            EventType.AddCart -> (additionalParams as? AddCartQueryParams)?.let {
+            EventType.AddCart -> (additionalParams as? CartQueryParams)?.let {
                 addToCartEvent(
                     it,
                     parameters
                 )
             }
-            EventType.RemoveCart -> (additionalParams as? RemoveFromCartQueryParams)?.let {
+            EventType.RemoveCart -> (additionalParams as? CartQueryParams)?.let {
                 removeFromCartEvent(
                     it,
                     parameters
@@ -223,11 +223,10 @@ class CroboxAPIPresenter(private val config: CroboxConfig) {
 
      */
     private fun addToCartEvent(
-        addCartQueryParams: AddCartQueryParams,
+        addCartQueryParams: CartQueryParams,
         parameters: MutableMap<String, Any>
     ) {
         addCartQueryParams.productId?.let { parameters["pi"] = it }
-        addCartQueryParams.category?.let { parameters["cat"] = it }
         addCartQueryParams.price?.let { parameters["price"] = it }
         addCartQueryParams.quantity?.let { parameters["qty"] = it }
     }
@@ -238,11 +237,10 @@ class CroboxAPIPresenter(private val config: CroboxConfig) {
 
      */
     private fun removeFromCartEvent(
-        removeFromCartQueryParams: RemoveFromCartQueryParams,
+        removeFromCartQueryParams: CartQueryParams,
         parameters: MutableMap<String, Any>
     ) {
         removeFromCartQueryParams.productId?.let { parameters["pi"] = it }
-        removeFromCartQueryParams.category?.let { parameters["cat"] = it }
         removeFromCartQueryParams.price?.let { parameters["price"] = it }
         removeFromCartQueryParams.quantity?.let { parameters["qty"] = it }
     }

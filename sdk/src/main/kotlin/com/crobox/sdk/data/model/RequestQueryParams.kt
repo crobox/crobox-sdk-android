@@ -158,16 +158,15 @@ data class ClickQueryParams(
     val quantity: Int? = null
 )
 
-data class AddCartQueryParams(
+/**
+ * Type specific parameters for Add/Remove Cart events
+ *
+ *  @param productId : Unique identifier for a product
+ *  @param price : Product price, if available
+ *  @param quantity : Quantity, if available
+ */
+data class CartQueryParams(
     val productId: String? = null,
-    val category: String? = null,
-    val price: Double? = null,
-    val quantity: Int? = null
-)
-
-data class RemoveFromCartQueryParams(
-    val productId: String? = null,
-    val category: String? = null,
     val price: Double? = null,
     val quantity: Int? = null
 )

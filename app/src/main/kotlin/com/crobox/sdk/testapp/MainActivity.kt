@@ -5,8 +5,8 @@ import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.crobox.sdk.common.LocaleCode
 import com.crobox.sdk.core.Crobox
-import com.crobox.sdk.data.model.AddCartQueryParams
 import com.crobox.sdk.config.CroboxConfig
+import com.crobox.sdk.data.model.CartQueryParams
 import com.crobox.sdk.data.model.ClickQueryParams
 import com.crobox.sdk.data.model.PageType
 import com.crobox.sdk.data.model.RequestQueryParams
@@ -37,15 +37,8 @@ class MainActivity : AppCompatActivity() {
             pageType = PageType.PageDetail
         )
 
-        //Sending Click events
-        croboxInstance.clickEvent(
-            queryParams,
-            clickQueryParams = ClickQueryParams(
-                productId = "0001ABC",
-                price = 1.0,
-                quantity = 1
-            ),
-            eventCallback = object : EventCallback {
+
+        val eventCallback = object : EventCallback {
 
             override fun onSuccess(dictionary: Map<String, String>) {
                 super.onSuccess(dictionary)
@@ -55,29 +48,40 @@ class MainActivity : AppCompatActivity() {
             override fun onError(msg: String?) {
                 Log.d("EventView onError", "" + msg);
             }
-        })
+        }
 
+        // Sending Click events
+        croboxInstance.clickEvent(
+            queryParams,
+            clickQueryParams = ClickQueryParams(
+                productId = "0001ABC",
+                price = 1.0,
+                quantity = 1
+            ),
+            eventCallback = eventCallback
+        )
 
-        //Sending AddToCart events
+        // Sending AddToCart events
         croboxInstance.addToCartEvent(
             queryParams,
-            addCartQueryParams = AddCartQueryParams(
-                productId = "",
-                category = "",
+            addCartQueryParams = CartQueryParams(
+                productId = "001ABC",
                 price = 1.0,
-                quantity = 2
+                quantity = 1
             ),
-            eventCallback = object : EventCallback {
+            eventCallback = eventCallback
+        )
 
-                override fun onSuccess(dictionary: Map<String, String>) {
-                    super.onSuccess(dictionary)
-                    Log.d("EventView onSuccess", dictionary.toString())
-                }
-
-                override fun onError(msg: String?) {
-                    Log.d("EventView onError", "" + msg);
-                }
-            })
+        // Sending AddToCart events
+        croboxInstance.removeFromCartEvent(
+            queryParams,
+            removeFromCartQueryParams = CartQueryParams(
+                productId = "001ABC",
+                price = 1.0,
+                quantity = 1
+            ),
+            eventCallback = eventCallback
+        )
 
 
         // Implement the PromotionView interface

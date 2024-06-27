@@ -68,7 +68,7 @@ class Crobox private constructor(config: CroboxConfig) {
      */
     fun addToCartEvent(
         queryParams: RequestQueryParams,
-        addCartQueryParams: AddCartQueryParams? = null,
+        addCartQueryParams: CartQueryParams? = null,
         eventCallback: EventCallback
     ) {
         presenter.event(
@@ -81,7 +81,7 @@ class Crobox private constructor(config: CroboxConfig) {
 
     fun removeFromCartEvent(
         queryParams: RequestQueryParams,
-        removeFromCartQueryParams: RemoveFromCartQueryParams? = null,
+        removeFromCartQueryParams: CartQueryParams? = null,
         eventCallback: EventCallback
     ) {
         presenter.event(
