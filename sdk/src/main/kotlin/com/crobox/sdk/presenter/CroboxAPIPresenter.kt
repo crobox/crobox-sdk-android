@@ -26,10 +26,9 @@ class CroboxAPIPresenter(private val config: CroboxConfig) {
         promotionCallback: PromotionCallback
     ) {
 
-        val parameters = createRequestBodyForPromotions(placeholderId, queryParams)
+        val parameters = promotionsQuery(placeholderId, queryParams)
         val stringParameters = parameters.mapValues { it.value.toString() }
         val body = promotionRequestBody(impressions)
-        CroboxDebug.printText(body)
 
         apiInterface.promotions(stringParameters, body)
             ?.enqueue(object : Callback<PromotionsResponse?> {
@@ -64,7 +63,7 @@ class CroboxAPIPresenter(private val config: CroboxConfig) {
         eventCallback: EventCallback
     ) {
 
-        val parameters = createEventRequestBody(queryParams, additionalParams, eventType)
+        val parameters = eventQuery(queryParams, additionalParams, eventType)
         val stringParameters = parameters.mapValues { it.value.toString() }
 
         apiInterface.event(stringParameters)
@@ -95,7 +94,7 @@ class CroboxAPIPresenter(private val config: CroboxConfig) {
             })
     }
 
-    private fun createEventRequestBody(
+    private fun eventQuery(
         queryParams: RequestQueryParams,
         additionalParams: Any?,
         eventType: EventType
@@ -175,7 +174,7 @@ class CroboxAPIPresenter(private val config: CroboxConfig) {
             .joinToString("&") { t -> "${t.first}=${t.second}" }
     }
 
-    private fun createRequestBodyForPromotions(
+    private fun promotionsQuery(
         placeholderId: Int,
         queryParams: RequestQueryParams
     ): Map<String, Any> {

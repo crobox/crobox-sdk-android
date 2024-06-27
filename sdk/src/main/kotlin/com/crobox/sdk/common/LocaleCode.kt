@@ -1,5 +1,10 @@
 package com.crobox.sdk.common
 
+/**
+ * LocaleCodes are in the from of {language}-{COUNTRY} format where
+ *  - the language is lowercase, two-letter form of ISO 639-1 language codes
+ *  - the country is uppercase, two-letter form of ISO 3166-1 Country codes
+ */
 enum class LocaleCode(val code: String) {
     EN_US("en_US"),
     EN_GB("en_GB"),

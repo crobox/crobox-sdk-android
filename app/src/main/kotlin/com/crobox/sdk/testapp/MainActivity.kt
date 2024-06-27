@@ -18,6 +18,7 @@ import java.util.UUID
 
 class MainActivity : AppCompatActivity() {
 
+    // CroboxInstance is the single point of all interactions, keeping the configuration and providing all functionality
     val croboxInstance = Crobox.getInstance(
         CroboxConfig(
             containerId = "xlrc9t",
@@ -34,7 +35,7 @@ class MainActivity : AppCompatActivity() {
         // Enable debugging
         croboxInstance.enableDebug()
 
-        // stub implementation for callbacks
+        // stub implementation for event callbacks
         val eventCallback = object : EventCallback {
 
             override fun onSuccess(dictionary: Map<String, String>) {
@@ -52,6 +53,25 @@ class MainActivity : AppCompatActivity() {
             viewId = UUID.randomUUID(),
             pageType = PageType.PageOverview
         )
+
+        // The moment user visits a page/view, eg. CartPage, new request params must be created
+        val indexPageParams = RequestQueryParams(
+            viewId = UUID.randomUUID(),
+            pageType = PageType.PageIndex
+        )
+
+        val cartPageParams = RequestQueryParams(
+            viewId = UUID.randomUUID(),
+            pageType = PageType.PageCart
+        )
+
+        val detailPageParams = RequestQueryParams(
+            viewId = UUID.randomUUID(),
+            pageType = PageType.PageDetail
+        )
+
+
+        // Sending Events
 
         // Sending Click events
         croboxInstance.clickEvent(
@@ -75,12 +95,6 @@ class MainActivity : AppCompatActivity() {
             eventCallback = eventCallback
         )
 
-        // When user visits another page, eg. CartPage, new request params must be created
-        val cartPageParams = RequestQueryParams(
-            viewId = UUID.randomUUID(),
-            pageType = PageType.PageCart
-        )
-
         // Sending Remove From Cart events
         croboxInstance.removeFromCartEvent(
             cartPageParams,
@@ -92,11 +106,7 @@ class MainActivity : AppCompatActivity() {
             eventCallback = eventCallback
         )
 
-        // Sending Error events from another page
-        val indexPageParams = RequestQueryParams(
-            viewId = UUID.randomUUID(),
-            pageType = PageType.PageIndex
-        )
+        // Sending Error events
         croboxInstance.errorEvent(
             indexPageParams,
             errorQueryParams = ErrorQueryParams(
@@ -109,16 +119,14 @@ class MainActivity : AppCompatActivity() {
             eventCallback = eventCallback
         )
 
-        // Sending View events from another page
-        val detailPageParams = RequestQueryParams(
-            viewId = UUID.randomUUID(),
-            pageType = PageType.PageDetail
-        )
+        // Sending View events -- TODO to be extended
         croboxInstance.pageViewEvent(
             detailPageParams,
             eventCallback = eventCallback
         )
 
+
+        // Retrieving Promotions
 
         val stubPromotionCallback = object : PromotionCallback {
             override fun onPromotions(response: PromotionsResponse?) {
@@ -137,6 +145,8 @@ class MainActivity : AppCompatActivity() {
         }
 
         // Requesting for a promotion from an overview Page
+        // with placeholderId configured for Overview Pages in Crobox Container
+        // for a collection of products/impressions
         val impressions: List<String> = listOf("001ABC", "002DEF")
         croboxInstance.promotions(
             placeholderId = 1,
@@ -145,14 +155,13 @@ class MainActivity : AppCompatActivity() {
             promotionCallback = stubPromotionCallback
         )
 
-        // Requesting for a promotion from a product detail page
+        // Requesting for a promotion from a product detail page with another placeholderId for a singe product
         croboxInstance.promotions(
             placeholderId = 2,
             queryParams = detailPageParams,
             impressions = listOf("001ABC"),
             promotionCallback = stubPromotionCallback
         )
-
 
         // Disable debugging
         croboxInstance.disableDebug()
