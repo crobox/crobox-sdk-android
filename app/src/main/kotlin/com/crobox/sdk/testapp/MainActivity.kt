@@ -22,7 +22,7 @@ class MainActivity : AppCompatActivity() {
     val croboxInstance = Crobox.getInstance(
         CroboxConfig(
             containerId = "xlrc9t",
-            visitorId = "H9O1I0kYSaekKFrzS_JWCg",
+            visitorId = UUID.randomUUID(),
             currencyCode = "USD",
             localeCode = LocaleCode.EN_US
         )

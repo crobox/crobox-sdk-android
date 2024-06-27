@@ -1,6 +1,7 @@
 package com.crobox.sdk.config
 
 import com.crobox.sdk.common.LocaleCode
+import java.util.UUID
 
 /**
  * Configuration parameters for all requests
@@ -15,7 +16,7 @@ import com.crobox.sdk.common.LocaleCode
  */
 data class CroboxConfig(
     val containerId: String,
-    val visitorId: String,
+    val visitorId: UUID,
     val currencyCode: String? = null,
     val localeCode: LocaleCode? = null,
     val userId: String? = null,

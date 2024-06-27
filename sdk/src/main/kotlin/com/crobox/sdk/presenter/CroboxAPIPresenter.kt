@@ -105,7 +105,7 @@ class CroboxAPIPresenter(private val config: CroboxConfig) {
             "cid" to config.containerId,
             "e" to queryParams.viewCounter(),
             "vid" to queryParams.viewId,
-            "pid" to config.visitorId,
+            "pid" to config.visitorId.toString(),
             "t" to eventType.type
         )
 
@@ -186,7 +186,7 @@ class CroboxAPIPresenter(private val config: CroboxConfig) {
             "vpid" to placeholderId.toString(),
             "e" to queryParams.viewCounter(),
             "vid" to queryParams.viewId,
-            "pid" to config.visitorId
+            "pid" to config.visitorId.toString()
         )
 
         // Optional parameters
