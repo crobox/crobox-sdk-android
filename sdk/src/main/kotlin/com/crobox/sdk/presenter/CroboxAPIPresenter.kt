@@ -49,17 +49,17 @@ class CroboxAPIPresenter(private val config: CroboxConfig) {
             })
     }
 
-    fun socket(
+    fun event(
         eventView: EventView,
         eventType: EventType,
         queryParams: RequestQueryParams,
         additionalParams: Any?
     ) {
 
-        /*val parameters = createRequestBodyForSocket(queryParams, additionalParams, eventType)
+        /*val parameters = createRequestBodyForEvent(queryParams, additionalParams, eventType)
         val stringParameters = parameters.mapValues { it.value.toString() }
 
-        apiInterface.socket(stringParameters)
+        apiInterface.event(stringParameters)
             ?.enqueue(object : Callback<BaseResponse?> {
                 override fun onResponse(
                     call: Call<BaseResponse?>,
@@ -68,27 +68,27 @@ class CroboxAPIPresenter(private val config: CroboxConfig) {
                     try {
                         if (response.isSuccessful) {
                             response.body()?.let {
-                                socketView.onSocketSuccess(it.data)
+                                eventView.onEventSuccess(it.data)
                             }
                         } else {
-                            socketView.onError(response.body().toString())
+                            eventView.onError(response.body().toString())
                         }
                         CroboxDebug.printText(response.body().toString())
                     } catch (ex: Exception) {
-                        socketView.onError(ex.message ?: "")
+                        eventView.onError(ex.message ?: "")
                         CroboxDebug.printText(ex.message.toString())
                     }
                 }
 
                 override fun onFailure(call: Call<BaseResponse?>, t: Throwable) {
-                    socketView.onError(t.message ?: "")
+                    eventView.onError(t.message ?: "")
                     CroboxDebug.printText(t.message.toString())
                 }
             })*/
     }
 
 
-    private fun createRequestBodyForSocket(
+    private fun createEventRequestBody(
         queryParams: RequestQueryParams,
         additionalParams: Any?,
         eventType: EventType

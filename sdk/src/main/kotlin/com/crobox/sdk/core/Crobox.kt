@@ -47,7 +47,7 @@ class Crobox private constructor(config: CroboxConfig) {
         clickQueryParams: ClickQueryParams? = null,
         eventView: EventView
     ) {
-        presenter.socket(
+        presenter.event(
             eventView = eventView,
             eventType = EventType.Click,
             queryParams = queryParams,
@@ -60,7 +60,7 @@ class Crobox private constructor(config: CroboxConfig) {
         addCartQueryParams: AddCartQueryParams? = null,
         eventView: EventView
     ) {
-        presenter.socket(
+        presenter.event(
             eventView = eventView,
             eventType = EventType.AddCart,
             queryParams = queryParams,
@@ -73,7 +73,7 @@ class Crobox private constructor(config: CroboxConfig) {
         removeFromCartQueryParams: RemoveFromCartQueryParams? = null,
         eventView: EventView
     ) {
-        presenter.socket(
+        presenter.event(
             eventView = eventView,
             eventType = EventType.RemoveCart,
             queryParams = queryParams,
@@ -86,7 +86,7 @@ class Crobox private constructor(config: CroboxConfig) {
         errorQueryParams: ErrorQueryParams? = null,
         eventView: EventView
     ) {
-        presenter.socket(
+        presenter.event(
             eventView = eventView,
             eventType = EventType.Error,
             queryParams = queryParams,
@@ -99,7 +99,7 @@ class Crobox private constructor(config: CroboxConfig) {
         customQueryParams: CustomQueryParams? = null,
         eventView: EventView
     ) {
-        presenter.socket(
+        presenter.event(
             eventView = eventView,
             eventType = EventType.CustomEvent,
             queryParams = queryParams,

@@ -3,7 +3,7 @@ import com.crobox.sdk.common.LocaleCode
 import java.util.*
 /*
 
- The list of query parameters that are applicable for mobile clients are below. These are applicable for both socket and promotions endpoints. Further details of each parameter are at the bottom. :
+ The list of query parameters that are applicable for mobile clients are below. These are applicable for both event and promotions endpoints. Further details of each parameter are at the bottom. :
 
  User-Agent header for web
  Container ID
@@ -19,7 +19,7 @@ import java.util.*
 
  ViewId
  Type: UUID
- Description: This is a randomly generated id that identifies a unique page view. It is reused between various event and promotion requests while the user stays on the same page. Then, it is refreshed when a user goes to another page or reloads the same page. In other words, every socket or promotion request from the same view, should share the same ViewId. It must be in either plain UUID or Base64 string format. For simplicity, just pick Base64 for saving bandwidth space.
+ Description: This is a randomly generated id that identifies a unique page view. It is reused between various event and promotion requests while the user stays on the same page. Then, it is refreshed when a user goes to another page or reloads the same page. In other words, every event or promotion request from the same view, should share the same ViewId. It must be in either plain UUID or Base64 string format. For simplicity, just pick Base64 for saving bandwidth space.
  UUID Example: vid=d4055206-fa5b-4eef-96c4-17e1c3a857fd
  Base64 Example: vid=1AVSBvpbTu-WxBfhw6hX_Q
 

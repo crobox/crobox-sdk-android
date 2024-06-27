@@ -12,7 +12,7 @@ import com.crobox.sdk.data.model.PageType
 import com.crobox.sdk.data.model.RequestQueryParams
 import com.crobox.sdk.domain.PromotionsResponse
 import com.crobox.sdk.presenter.PromotionView
-import com.crobox.sdk.presenter.SocketView
+import com.crobox.sdk.presenter.EventView
 
 class MainActivity : AppCompatActivity() {
 
@@ -39,7 +39,6 @@ class MainActivity : AppCompatActivity() {
         val queryParams = RequestQueryParams(
             viewCounter = 28,
             viewId = "An0N-dq0ThWeiUJX12cpVA",
-
             pageType = PageType.PageDetail
         )
 
@@ -55,23 +54,25 @@ class MainActivity : AppCompatActivity() {
         }
         croboxInstance.promotions(promotionView = promotionView, placeholderId = "14", queryParams = queryParams)
 
-        croboxInstance.disableDebug()
 
-        //socket event test
-        val socketView = object : SocketView {
+        //addToCart event test
+        val eventView = object : EventView {
 
-            override fun onSocketSuccess(dictionary: Map<String, String>) {
-                super.onSocketSuccess(dictionary)
-                println("SocketView onSuccess: $dictionary")
+            override fun onSuccess(dictionary: Map<String, String>) {
+                super.onSuccess(dictionary)
+                println("EventView onSuccess: $dictionary")
             }
 
             override fun onError(msg: String?) {
-                Log.d("SocketView onError", "" + msg);
+                Log.d("EventView onError", "" + msg);
             }
         }
 
         // AddCart event with addCartQueryParams
         val addCartQueryParams = AddCartQueryParams(productId = "", category = "", price = 1.0, quantity = 2)
-        croboxInstance.addToCartEvent(queryParams, addCartQueryParams = addCartQueryParams, socketView = socketView)
+        croboxInstance.addToCartEvent(queryParams, addCartQueryParams = addCartQueryParams, eventView = eventView)
+
+        croboxInstance.disableDebug()
+
     }
 }

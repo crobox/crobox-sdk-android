@@ -10,5 +10,5 @@ interface CroboxAPI {
     fun promotions(@QueryMap options: Map<String, String>): Call<PromotionsResponse?>?
 
     @GET("/socket.gif")
-    fun socket(@QueryMap options: Map<String, String>): Call<BaseResponse?>
+    fun event(@QueryMap options: Map<String, String>): Call<BaseResponse?>
 }
