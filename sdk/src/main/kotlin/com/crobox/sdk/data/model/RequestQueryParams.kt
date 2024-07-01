@@ -101,3 +101,20 @@ data class CustomQueryParams(
     val price: Double? = null,
     val quantity: Int? = null
 )
+
+/**
+ * Type specific parameters for general-purpose Custom events
+ *
+ *  @param name : Event name
+ *  @param promotionId : Promotion Id, if available
+ *  @param productId : Unique identifier for a product
+ *  @param price : Product price, if available
+ *  @param quantity : Quantity, if available
+ */
+data class PageViewParams(
+    val name: String? = null,
+    val promotionId: UUID? = null,
+    val productId: String? = null,
+    val price: Double? = null,
+    val quantity: Int? = null
+)

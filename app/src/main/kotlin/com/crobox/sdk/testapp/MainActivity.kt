@@ -54,25 +54,6 @@ class MainActivity : AppCompatActivity() {
             pageType = PageType.PageOverview
         )
 
-        // The moment user visits a page/view, eg. CartPage, new request params must be created
-        val indexPageParams = RequestQueryParams(
-            viewId = UUID.randomUUID(),
-            pageType = PageType.PageIndex
-        )
-
-        val cartPageParams = RequestQueryParams(
-            viewId = UUID.randomUUID(),
-            pageType = PageType.PageCart
-        )
-
-        val detailPageParams = RequestQueryParams(
-            viewId = UUID.randomUUID(),
-            pageType = PageType.PageDetail
-        )
-
-
-        // Sending Events
-
         // Sending Click events
         croboxInstance.clickEvent(
             overviewPageParams,
@@ -84,10 +65,27 @@ class MainActivity : AppCompatActivity() {
             eventCallback = eventCallback
         )
 
+        // The moment user visits a page/view, eg. CartPage, new request params must be created
+        val indexPageParams = RequestQueryParams(
+            viewId = UUID.randomUUID(),
+            pageType = PageType.PageIndex
+        )
+
+        // Sending Page View events
+        croboxInstance.pageViewEvent(
+            indexPageParams,
+            eventCallback = eventCallback
+        )
+
+        val detailPageParams = RequestQueryParams(
+            viewId = UUID.randomUUID(),
+            pageType = PageType.PageDetail
+        )
+
         // Sending AddToCart events
         croboxInstance.addToCartEvent(
             overviewPageParams,
-            addCartQueryParams = CartQueryParams(
+            cartQueryParams = CartQueryParams(
                 productId = "001ABC",
                 price = 1.0,
                 quantity = 1
@@ -95,10 +93,15 @@ class MainActivity : AppCompatActivity() {
             eventCallback = eventCallback
         )
 
+        val cartPageParams = RequestQueryParams(
+            viewId = UUID.randomUUID(),
+            pageType = PageType.PageCart
+        )
+
         // Sending Remove From Cart events
         croboxInstance.removeFromCartEvent(
             cartPageParams,
-            removeFromCartQueryParams = CartQueryParams(
+            cartQueryParams = CartQueryParams(
                 productId = "001ABC",
                 price = 1.0,
                 quantity = 1
@@ -108,7 +111,7 @@ class MainActivity : AppCompatActivity() {
 
         // Sending Error events
         croboxInstance.errorEvent(
-            indexPageParams,
+            cartPageParams,
             errorQueryParams = ErrorQueryParams(
                 tag = "ParsingError",
                 name = "IllegalArgumentException",
@@ -118,13 +121,6 @@ class MainActivity : AppCompatActivity() {
             ),
             eventCallback = eventCallback
         )
-
-        // Sending View events -- TODO to be extended
-        croboxInstance.pageViewEvent(
-            detailPageParams,
-            eventCallback = eventCallback
-        )
-
 
         // Retrieving Promotions
 
