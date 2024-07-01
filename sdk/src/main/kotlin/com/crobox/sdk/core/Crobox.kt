@@ -38,10 +38,10 @@ class Crobox private constructor(config: CroboxConfig) {
      * Placeholders are linked with Campaigns which has all promotion attributes, UI components, messages, time frame etc.
      * These are all managed via the Crobox Admin application.
      *
-     *  @param placeholderId : Identifier of the placeholder
-     *  @param queryParams : Common query parameters, shared by the requests sent from the same page view
-     *  @param impressions : List of product ID's which promotions are requested for, if available
-     *  @param promotionCallback : The callback to be notified for the response or if an error occurs before, during or after the request is sent
+     *  @param placeholderId Identifier of the placeholder
+     *  @param queryParams Common query parameters, shared by the requests sent from the same page view
+     *  @param impressions List of product ID's which promotions are requested for. It may be empty for the pages where products are not involved. (e.g. Checkout page)
+     *  @param promotionCallback The callback to be notified for the response or if an error occurs before, during or after the request is sent
      *
      */
     fun promotions(
@@ -63,9 +63,9 @@ class Crobox private constructor(config: CroboxConfig) {
      *
      * Click events forms the measurement data for Click-through rate (CTR) for campaigns.
      *
-     *  @param queryParams : Common query parameters, shared by the requests sent from the same page view
-     *  @param clickQueryParams : Event specific query parameters for Click Events
-     *  @param eventCallback : The callback to be notified for the response or if an error occurs before, during or after the request is sent
+     *  @param queryParams Common query parameters, shared by the requests sent from the same page view
+     *  @param clickQueryParams Event specific query parameters for Click Events
+     *  @param eventCallback The callback to be notified for the response or if an error occurs before, during or after the request is sent
      *
      */
     fun clickEvent(
@@ -85,9 +85,9 @@ class Crobox private constructor(config: CroboxConfig) {
     /**
      * For sending an Add To Cart Event, to track the metrics of customer's intention of making a purchase.
      *
-     *  @param queryParams : Common query parameters, shared by the requests sent from the same page view
-     *  @param cartQueryParams : Event specific query parameters for AddToCart and RemoveFromCart Events
-     *  @param eventCallback : The callback to be notified for the response or if an error occurs before, during or after the request is sent
+     *  @param queryParams Common query parameters, shared by the requests sent from the same page view
+     *  @param cartQueryParams Event specific query parameters for AddToCart and RemoveFromCart Events
+     *  @param eventCallback The callback to be notified for the response or if an error occurs before, during or after the request is sent
      *
      */
     fun addToCartEvent(
@@ -106,9 +106,9 @@ class Crobox private constructor(config: CroboxConfig) {
     /**
      * For sending an Remove From Cart Event, to track the metrics of product's removal from a purchase.
      *
-     *  @param queryParams : Common query parameters, shared by the requests sent from the same page view
-     *  @param cartQueryParams : Event specific query parameters for AddToCart and RemoveFromCart Events
-     *  @param eventCallback : The callback to be notified for the response or if an error occurs before, during or after the request is sent
+     *  @param queryParams Common query parameters, shared by the requests sent from the same page view
+     *  @param cartQueryParams Event specific query parameters for AddToCart and RemoveFromCart Events
+     *  @param eventCallback The callback to be notified for the response or if an error occurs before, during or after the request is sent
      *
      */
     fun removeFromCartEvent(
@@ -127,9 +127,9 @@ class Crobox private constructor(config: CroboxConfig) {
     /**
      * For reporting a general-purpose error event
      *
-     *  @param queryParams : Common query parameters, shared by the requests sent from the same page view
-     *  @param errorQueryParams : Event specific query parameters for Error Events
-     *  @param eventCallback : The callback to be notified for the response or if an error occurs before, during or after the request is sent
+     *  @param queryParams Common query parameters, shared by the requests sent from the same page view
+     *  @param errorQueryParams Event specific query parameters for Error Events
+     *  @param eventCallback The callback to be notified for the response or if an error occurs before, during or after the request is sent
      *
      */
     fun errorEvent(
@@ -149,9 +149,9 @@ class Crobox private constructor(config: CroboxConfig) {
     /**
      * For reporting page view events
      *
-     *  @param queryParams : Common query parameters, shared by the requests sent from the same page view
-     *  @param customQueryParams : Event specific query parameters for Error Events
-     *  @param eventCallback : The callback to be notified for the response or if an error occurs before, during or after the request is sent
+     *  @param queryParams Common query parameters, shared by the requests sent from the same page view
+     *  @param pageViewParams Event specific query parameters for Page View Events
+     *  @param eventCallback The callback to be notified for the response or if an error occurs before, during or after the request is sent
      *
      */
     fun pageViewEvent(
@@ -170,9 +170,9 @@ class Crobox private constructor(config: CroboxConfig) {
    /**
      * For reporting custom events
      *
-     *  @param queryParams : Common query parameters, shared by the requests sent from the same page view
-     *  @param customQueryParams : Event specific query parameters for Custom Events
-     *  @param eventCallback : The callback to be notified for the response or if an error occurs before, during or after the request is sent
+     *  @param queryParams Common query parameters, shared by the requests sent from the same page view
+     *  @param customQueryParams Event specific query parameters for Custom Events
+     *  @param eventCallback The callback to be notified for the response or if an error occurs before, during or after the request is sent
      *
      */
     fun customEvent(

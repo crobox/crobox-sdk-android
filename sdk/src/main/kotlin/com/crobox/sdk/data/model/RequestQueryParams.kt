@@ -6,10 +6,10 @@ import java.util.concurrent.atomic.AtomicInteger
 /**
  * Common parameters for all requests sent from the same page view.
  *
- *  @param viewId : Unique identifier for a unique page viewing, reused between various event and promotion requests from the same page. It must be refreshed when a user goes to another page or reloads the same page.
- *  @param pageType : One of the values in predefined list of types of pages of the whole e-commerce funnel
- *  @param customProperties : Free format custom properties to be forwarded to Crobox endpoints, for example to help identifying certain traits of a visitor. Example: Map("mobileUser", "yes")
- *  @param pageName : Free format Page Name if exists
+ *  @param viewId Unique identifier for a unique page viewing, reused between various event and promotion requests from the same page. It must be refreshed when a user goes to another page or reloads the same page.
+ *  @param pageType One of the values in predefined list of types of pages of the whole e-commerce funnel
+ *  @param customProperties Free format custom properties to be forwarded to Crobox endpoints, for example to help identifying certain traits of a visitor. Example: Map("mobileUser", "yes")
+ *  @param pageName Free format Page Name if exists
  */
 data class RequestQueryParams(
     val viewId: UUID,                 // ViewId (mandatory)
@@ -44,11 +44,11 @@ enum class EventType(val type: String) {
 /**
  * Type specific parameters for Error events
  *
- *  @param tag : Free tagging for error categorisation
- *  @param name : Error name, if available
- *  @param message : Error message, if available
- *  @param file : File name, if available
- *  @param line : Line number, if available
+ *  @param tag Free tagging for error categorisation
+ *  @param name Error name, if available
+ *  @param message Error message, if available
+ *  @param file File name, if available
+ *  @param line Line number, if available
  */
 
 data class ErrorQueryParams(
@@ -62,9 +62,9 @@ data class ErrorQueryParams(
 /**
  * Type specific parameters for click events
  *
- *  @param productId : Unique identifier for a product
- *  @param price : Product price, if available
- *  @param quantity : Quantity, if available
+ *  @param productId Unique identifier for a product
+ *  @param price Product price, if available
+ *  @param quantity Quantity, if available
  */
 data class ClickQueryParams(
     val productId: String? = null,
@@ -75,9 +75,9 @@ data class ClickQueryParams(
 /**
  * Type specific parameters for Add/Remove Cart events
  *
- *  @param productId : Unique identifier for a product
- *  @param price : Product price, if available
- *  @param quantity : Quantity, if available
+ *  @param productId Unique identifier for a product
+ *  @param price Product price, if available
+ *  @param quantity Quantity, if available
  */
 data class CartQueryParams(
     val productId: String? = null,
@@ -88,11 +88,11 @@ data class CartQueryParams(
 /**
  * Type specific parameters for general-purpose Custom events
  *
- *  @param name : Event name
- *  @param promotionId : Promotion Id, if available
- *  @param productId : Unique identifier for a product
- *  @param price : Product price, if available
- *  @param quantity : Quantity, if available
+ *  @param name Event name
+ *  @param promotionId Promotion Id, if available
+ *  @param productId Unique identifier for a product
+ *  @param price Product price, if available
+ *  @param quantity Quantity, if available
  */
 data class CustomQueryParams(
     val name: String? = null,
@@ -105,16 +105,9 @@ data class CustomQueryParams(
 /**
  * Type specific parameters for general-purpose Custom events
  *
- *  @param name : Event name
- *  @param promotionId : Promotion Id, if available
- *  @param productId : Unique identifier for a product
- *  @param price : Product price, if available
- *  @param quantity : Quantity, if available
+ *  @param name Event name
+ *
  */
 data class PageViewParams(
-    val name: String? = null,
-    val promotionId: UUID? = null,
-    val productId: String? = null,
-    val price: Double? = null,
-    val quantity: Int? = null
+    val name: String? = null
 )
