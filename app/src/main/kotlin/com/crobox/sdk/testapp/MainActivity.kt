@@ -151,11 +151,18 @@ class MainActivity : AppCompatActivity() {
             promotionCallback = stubPromotionCallback
         )
 
-        // Requesting for a promotion from a product detail page with another placeholderId for a singe product
+        // Requesting for a promotion from a product detail page with another placeholderId for a single product
         croboxInstance.promotions(
             placeholderId = 2,
             queryParams = detailPageParams,
             impressions = listOf("001ABC"),
+            promotionCallback = stubPromotionCallback
+        )
+
+        // Requesting for a promotion from another page with another placeholderId without any product
+        croboxInstance.promotions(
+            placeholderId = 1,
+            queryParams = detailPageParams,
             promotionCallback = stubPromotionCallback
         )
 

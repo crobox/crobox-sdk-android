@@ -40,14 +40,14 @@ class Crobox private constructor(config: CroboxConfig) {
      *
      *  @param placeholderId : Identifier of the placeholder
      *  @param queryParams : Common query parameters, shared by the requests sent from the same page view
-     *  @param impressions : List of product ID's which promotions are requested for
+     *  @param impressions : List of product ID's which promotions are requested for, if available
      *  @param promotionCallback : The callback to be notified for the response or if an error occurs before, during or after the request is sent
      *
      */
     fun promotions(
         placeholderId: Int,
         queryParams: RequestQueryParams,
-        impressions: List<String>,
+        impressions: List<String> = emptyList(),
         promotionCallback: PromotionCallback
     ) {
         presenter.promotions(
