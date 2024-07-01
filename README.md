@@ -21,7 +21,10 @@ dependencies {
 
 ## Start using Crobox SDK
 
-First configure and create a `Crobox` singleton as:
+First configure and create a `Crobox` singleton as below, where
+- `containerId` should be assigned by Crobox
+- `visitorId` should be unique for visitors. It must stay the same across the user's session (or longer if preferred)
+- `userId` should optionally be used to link the current visitor with client's user management system, if exists 
 
 ```kotlin
 import com.crobox.sdk.common.LocaleCode
@@ -36,7 +39,6 @@ val croboxInstance = Crobox.getInstance(
     CroboxConfig(
         containerId = "xlrc9t",
         visitorId = UUID.randomUUID(),
-        localeCode = LocaleCode.EN_US,
         userId = "JohnDoe"
     )
 )
@@ -44,7 +46,7 @@ val croboxInstance = Crobox.getInstance(
 ```
 
 RequestQueryParams contains page specific parameters, shared by all requests fired from the same page/view.
-It must be recreated when the page/view is displayed, and reused between all requests fired from the same page.
+It must be recreated when the page/view is displayed.
 ```kotlin
 val overviewPageParams = RequestQueryParams(
     viewId = UUID.randomUUID(),
@@ -75,7 +77,7 @@ croboxInstance.clickEvent(
 )
 ```
 
-For retrieving promotions for a single or more products, use the specific PlaceholderId that is configured with specific page types and linked to campaigns via Crobox Admin App.
+For retrieving promotions for zero, one or more products, use the specific PlaceholderId that is configured with specific page types and linked to campaigns via Crobox Admin App.
 
 ```kotlin
 
@@ -99,6 +101,13 @@ croboxInstance.promotions(
     placeholderId = 2,
     queryParams = detailPageParams,
     impressions = listOf("001ABC"),
+    promotionCallback = promotionsCallback
+)
+
+// Requesting for a promotion without a product, eg. from a checkout page
+croboxInstance.promotions(
+    placeholderId = 3,
+    queryParams = checkoutPageParams,
     promotionCallback = promotionsCallback
 )
 ```
