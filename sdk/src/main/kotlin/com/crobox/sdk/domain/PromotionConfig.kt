@@ -8,7 +8,7 @@ package com.crobox.sdk.domain
  *  "Text1_text" : "Best Seller",
  *   "Text1_color" : "#0e1111"
  *  )
- * @property jsonData Map of all visual configuration items, managed via Crobox Admin app
+ * @property data Map of all visual configuration items, managed via Crobox Admin app
  *
  */
 class PromotionConfig(jsonData: Map<String, String>) {
