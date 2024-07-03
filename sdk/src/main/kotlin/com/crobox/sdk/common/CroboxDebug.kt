@@ -17,4 +17,18 @@ object CroboxDebug {
             Log.d("croboxSDK LOG", "croboxSDK LOG: $params")
         }
     }
+
+    fun promotionError(msg: String) {
+        printError("[Promotion]: $msg")
+    }
+
+    fun eventError(msg: String) {
+        printError("[Event]: $msg")
+    }
+
+    private fun printError(msg: String) {
+        if (isDebug) {
+            Log.d("croboxSDK Error", "[Error]: $msg")
+        }
+    }
 }
