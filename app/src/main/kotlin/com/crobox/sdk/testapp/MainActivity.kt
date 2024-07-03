@@ -35,19 +35,6 @@ class MainActivity : AppCompatActivity() {
         // Enable debugging
         croboxInstance.enableDebug()
 
-        // stub implementation for event callbacks
-        val eventCallback = object : EventCallback {
-
-            override fun onSuccess(dictionary: Map<String, String>) {
-                super.onSuccess(dictionary)
-                Log.d("EventView onSuccess", dictionary.toString())
-            }
-
-            override fun onError(msg: String?) {
-                Log.d("EventView onError", "" + msg);
-            }
-        }
-
         // RequestQueryParams contains page specific parameters, shared by all requests fired from the same page/view.
         val overviewPageParams = RequestQueryParams(
             viewId = UUID.randomUUID(),
@@ -61,8 +48,7 @@ class MainActivity : AppCompatActivity() {
                 productId = "0001ABC",
                 price = 1.0,
                 quantity = 1
-            ),
-            eventCallback = eventCallback
+            )
         )
 
         // The moment user visits a page/view, eg. CartPage, new request params must be created
@@ -72,10 +58,7 @@ class MainActivity : AppCompatActivity() {
         )
 
         // Sending Page View events
-        croboxInstance.pageViewEvent(
-            indexPageParams,
-            eventCallback = eventCallback
-        )
+        croboxInstance.pageViewEvent(indexPageParams)
 
         val detailPageParams = RequestQueryParams(
             viewId = UUID.randomUUID(),
@@ -89,8 +72,7 @@ class MainActivity : AppCompatActivity() {
                 productId = "001ABC",
                 price = 1.0,
                 quantity = 1
-            ),
-            eventCallback = eventCallback
+            )
         )
 
         val cartPageParams = RequestQueryParams(
@@ -105,8 +87,7 @@ class MainActivity : AppCompatActivity() {
                 productId = "001ABC",
                 price = 1.0,
                 quantity = 1
-            ),
-            eventCallback = eventCallback
+            )
         )
 
         // Sending Error events
@@ -118,8 +99,7 @@ class MainActivity : AppCompatActivity() {
                 message = "bad input",
                 file = "MainActivity",
                 line = 100
-            ),
-            eventCallback = eventCallback
+            )
         )
 
         // Retrieving Promotions
