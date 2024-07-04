@@ -3,6 +3,7 @@ package com.crobox.sdk.testapp
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
+import com.crobox.sdk.common.CurrencyCode
 import com.crobox.sdk.common.LocaleCode
 import com.crobox.sdk.core.Crobox
 import com.crobox.sdk.config.CroboxConfig
@@ -23,7 +24,7 @@ class MainActivity : AppCompatActivity() {
         CroboxConfig(
             containerId = "xlrc9t",
             visitorId = UUID.randomUUID(),
-            currencyCode = "USD",
+            currencyCode = CurrencyCode.USD,
             localeCode = LocaleCode.EN_US
         )
     )

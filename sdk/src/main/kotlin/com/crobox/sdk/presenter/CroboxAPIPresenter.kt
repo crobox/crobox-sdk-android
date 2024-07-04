@@ -104,7 +104,7 @@ class CroboxAPIPresenter(private val config: CroboxConfig) {
         )
 
         // Optional parameters
-        config.currencyCode?.let { parameters["cc"] = it }
+        config.currencyCode?.let { parameters["cc"] = it.toString() }
         config.localeCode?.let { parameters["lc"] = it.toString() }
         config.userId?.let { parameters["uid"] = it }
         parameters["ts"] = CroboxEncoder.toBase36(System.currentTimeMillis())
@@ -189,7 +189,7 @@ class CroboxAPIPresenter(private val config: CroboxConfig) {
         )
 
         // Optional parameters
-        config.currencyCode?.let { parameters["cc"] = it }
+        config.currencyCode?.let { parameters["cc"] = it.toString() }
         config.localeCode?.let { parameters["lc"] = it.toString() }
         config.userId?.let { parameters["uid"] = it }
         parameters["ts"] = CroboxEncoder.toBase36(System.currentTimeMillis())

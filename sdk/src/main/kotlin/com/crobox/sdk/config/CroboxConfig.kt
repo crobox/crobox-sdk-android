@@ -1,5 +1,6 @@
 package com.crobox.sdk.config
 
+import com.crobox.sdk.common.CurrencyCode
 import com.crobox.sdk.common.LocaleCode
 import java.util.UUID
 
@@ -17,7 +18,7 @@ import java.util.UUID
 data class CroboxConfig(
     val containerId: String,
     val visitorId: UUID,
-    val currencyCode: String? = null,
+    val currencyCode: CurrencyCode? = null,
     val localeCode: LocaleCode? = null,
     val userId: String? = null,
     val timezone: Int? = null,
