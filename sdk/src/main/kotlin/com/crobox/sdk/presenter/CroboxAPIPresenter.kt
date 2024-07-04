@@ -116,8 +116,13 @@ class CroboxAPIPresenter(private val config: CroboxConfig) {
         parameters["ts"] = CroboxEncoder.toBase36(System.currentTimeMillis())
         config.timezone?.let { parameters["tz"] = it }
         queryParams.pageType?.let { parameters["pt"] = it.value }
-        queryParams.pageName?.let { parameters["cp"] = it }
-        queryParams.customProperties?.let { parameters["lh"] = it }
+        queryParams.pageName?.let { parameters["lh"] = it }
+
+        queryParams.customProperties?.let {
+            for ((key, value) in it) {
+                parameters["cp.$key"] = value
+            }
+        }
 
         // Additional parameters based on event type
         when (eventType) {
@@ -196,8 +201,12 @@ class CroboxAPIPresenter(private val config: CroboxConfig) {
         parameters["ts"] = CroboxEncoder.toBase36(System.currentTimeMillis())
         config.timezone?.let { parameters["tz"] = it }
         queryParams.pageType?.let { parameters["pt"] = it.value }
-        queryParams.pageName?.let { parameters["cp"] = it }
-        queryParams.customProperties?.let { parameters["lh"] = it }
+        queryParams.pageName?.let { parameters["lh"] = it }
+        queryParams.customProperties?.let {
+            for ((key, value) in it) {
+                parameters["cp.$key"] = value
+            }
+        }
 
         CroboxDebug.printParams(parameters)
 
