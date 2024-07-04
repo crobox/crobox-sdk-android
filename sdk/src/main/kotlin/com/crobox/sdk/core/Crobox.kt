@@ -65,19 +65,15 @@ class Crobox private constructor(config: CroboxConfig) {
      *
      *  @param queryParams Common query parameters, shared by the requests sent from the same page view
      *  @param clickQueryParams Event specific query parameters for Click Events
-     *  @param eventCallback The callback to be notified for the response or if an error occurs before, during or after the request is sent
-     *
      */
     fun clickEvent(
         queryParams: RequestQueryParams,
-        clickQueryParams: ClickQueryParams? = null,
-        eventCallback: EventCallback
+        clickQueryParams: ClickQueryParams? = null
     ) {
         presenter.event(
             eventType = EventType.Click,
             queryParams = queryParams,
-            additionalParams = clickQueryParams,
-            eventCallback = eventCallback,
+            additionalParams = clickQueryParams
         )
     }
 
@@ -87,16 +83,12 @@ class Crobox private constructor(config: CroboxConfig) {
      *
      *  @param queryParams Common query parameters, shared by the requests sent from the same page view
      *  @param cartQueryParams Event specific query parameters for AddToCart and RemoveFromCart Events
-     *  @param eventCallback The callback to be notified for the response or if an error occurs before, during or after the request is sent
-     *
      */
     fun addToCartEvent(
         queryParams: RequestQueryParams,
-        cartQueryParams: CartQueryParams? = null,
-        eventCallback: EventCallback
+        cartQueryParams: CartQueryParams? = null
     ) {
         presenter.event(
-            eventCallback = eventCallback,
             eventType = EventType.AddCart,
             queryParams = queryParams,
             additionalParams = cartQueryParams
@@ -108,16 +100,12 @@ class Crobox private constructor(config: CroboxConfig) {
      *
      *  @param queryParams Common query parameters, shared by the requests sent from the same page view
      *  @param cartQueryParams Event specific query parameters for AddToCart and RemoveFromCart Events
-     *  @param eventCallback The callback to be notified for the response or if an error occurs before, during or after the request is sent
-     *
      */
     fun removeFromCartEvent(
         queryParams: RequestQueryParams,
-        cartQueryParams: CartQueryParams? = null,
-        eventCallback: EventCallback
+        cartQueryParams: CartQueryParams? = null
     ) {
         presenter.event(
-            eventCallback = eventCallback,
             eventType = EventType.RemoveCart,
             queryParams = queryParams,
             additionalParams = cartQueryParams
@@ -129,16 +117,12 @@ class Crobox private constructor(config: CroboxConfig) {
      *
      *  @param queryParams Common query parameters, shared by the requests sent from the same page view
      *  @param errorQueryParams Event specific query parameters for Error Events
-     *  @param eventCallback The callback to be notified for the response or if an error occurs before, during or after the request is sent
-     *
      */
     fun errorEvent(
         queryParams: RequestQueryParams,
-        errorQueryParams: ErrorQueryParams? = null,
-        eventCallback: EventCallback
+        errorQueryParams: ErrorQueryParams? = null
     ) {
         presenter.event(
-            eventCallback = eventCallback,
             eventType = EventType.Error,
             queryParams = queryParams,
             additionalParams = errorQueryParams
@@ -151,16 +135,12 @@ class Crobox private constructor(config: CroboxConfig) {
      *
      *  @param queryParams Common query parameters, shared by the requests sent from the same page view
      *  @param pageViewParams Event specific query parameters for Page View Events
-     *  @param eventCallback The callback to be notified for the response or if an error occurs before, during or after the request is sent
-     *
      */
     fun pageViewEvent(
         queryParams: RequestQueryParams,
-        pageViewParams: PageViewParams? = null,
-        eventCallback: EventCallback
+        pageViewParams: PageViewParams? = null
     ) {
         presenter.event(
-            eventCallback = eventCallback,
             eventType = EventType.PageView,
             queryParams = queryParams,
             additionalParams = pageViewParams
@@ -172,22 +152,17 @@ class Crobox private constructor(config: CroboxConfig) {
      *
      *  @param queryParams Common query parameters, shared by the requests sent from the same page view
      *  @param customQueryParams Event specific query parameters for Custom Events
-     *  @param eventCallback The callback to be notified for the response or if an error occurs before, during or after the request is sent
-     *
      */
     fun customEvent(
         queryParams: RequestQueryParams,
         customQueryParams: CustomQueryParams? = null,
-        eventCallback: EventCallback
     ) {
         presenter.event(
-            eventCallback = eventCallback,
             eventType = EventType.CustomEvent,
             queryParams = queryParams,
             additionalParams = customQueryParams
         )
     }
-
 
 }
 
