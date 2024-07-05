@@ -21,7 +21,7 @@ jobs:
         uses: gradle/gradle-build-action@v3.4.2
 
       - name: Publish release
-        run: ./gradlew --info publishAllPublicationsToMavenCentralRepository
+        run: ./gradlew --info --stacktrace publishAllPublicationsToMavenCentralRepository
         env:
           ORG_GRADLE_PROJECT_mavenCentralUsername: ${{ secrets.SONATYPE_NEXUS_USERNAME }}
           ORG_GRADLE_PROJECT_mavenCentralPassword: ${{ secrets.SONATYPE_NEXUS_PASSWORD }}
