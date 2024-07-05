@@ -1,19 +1,19 @@
 name: Publish Release
 
 on:
-  release:
-    types: [created]
+  push:
+    tags:
+      - '*'
 
 jobs:
   publish:
     runs-on: ubuntu-latest
-    if: github.repository == 'crobox/crobox-sdk-android'
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          repository: 'crobox/crobox-sdk-android'
+          repository: crobox/crobox-sdk-android
 
       - name: Install JDK 17
         uses: actions/setup-java@v4
