@@ -2,4 +2,19 @@ plugins {
     id 'com.android.application' version '8.2.0-rc03' apply false
     id 'com.android.library' version '8.2.0-rc03' apply false
     id 'org.jetbrains.kotlin.android' version '1.7.10' apply false
+    id 'maven-publish'
+}
+
+publishing {
+
+    repositories {
+        maven  {
+            name = ""
+            url = ""
+            credentials {
+                username = System.getenv("MAVEN_USERNAME")
+                password = System.getenv("MAVEN_PASSWORD")
+            }
+        }
+    }
 }
