@@ -20,9 +20,7 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: 17
-
-      - name: Setup gradle
-        uses: gradle/gradle-build-action@v3.4.2
+          cache: gradle
 
       - name: Publish release
         run: ./gradlew --info --stacktrace publishAllPublicationsToMavenCentralRepository
