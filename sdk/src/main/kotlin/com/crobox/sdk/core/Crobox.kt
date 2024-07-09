@@ -4,7 +4,6 @@ import com.crobox.sdk.common.CroboxDebug
 import com.crobox.sdk.config.CroboxConfig
 import com.crobox.sdk.data.model.*
 import com.crobox.sdk.presenter.CroboxAPIPresenter
-import com.crobox.sdk.presenter.EventCallback
 import com.crobox.sdk.presenter.PromotionCallback
 
 class Crobox private constructor(config: CroboxConfig) {

@@ -13,7 +13,6 @@ import com.crobox.sdk.data.model.ErrorQueryParams
 import com.crobox.sdk.data.model.PageType
 import com.crobox.sdk.data.model.RequestQueryParams
 import com.crobox.sdk.domain.PromotionsResponse
-import com.crobox.sdk.presenter.EventCallback
 import com.crobox.sdk.presenter.PromotionCallback
 import java.util.UUID
 
