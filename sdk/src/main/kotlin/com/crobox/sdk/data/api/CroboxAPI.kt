@@ -7,11 +7,12 @@ import retrofit2.http.*
 
 interface CroboxAPI {
 
-    @Headers(
-        "Content-Type: application/x-www-form-urlencoded"
-    )
+    @Headers("Content-Type: application/x-www-form-urlencoded")
     @POST("/promotions")
-    fun promotions(@QueryMap options: Map<String, String>, @Body impressions: String): Call<PromotionsResponse?>?
+    fun promotions(
+        @QueryMap options: Map<String, String>,
+        @Body impressions: String
+    ): Call<PromotionsResponse?>?
 
     @GET("/socket.gif")
     fun event(@QueryMap options: Map<String, String>): Call<BaseResponse?>

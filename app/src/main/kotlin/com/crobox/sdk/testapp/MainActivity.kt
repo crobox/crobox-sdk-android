@@ -18,10 +18,14 @@ import java.util.UUID
 
 class MainActivity : AppCompatActivity() {
 
+    // Use the Container ID assigned by Crobox
+    private val containerId = "xlrc9t"
+
+
     // CroboxInstance is the single point of all interactions, keeping the configuration and providing all functionality
-    val croboxInstance = Crobox.getInstance(
+    private val croboxInstance = Crobox.getInstance(
         CroboxConfig(
-            containerId = "xlrc9t",
+            containerId = containerId,
             visitorId = UUID.randomUUID(),
             currencyCode = CurrencyCode.USD,
             localeCode = LocaleCode.EN_US
@@ -32,8 +36,8 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main2)
 
-        // Enable debugging
-        croboxInstance.enableDebug()
+        // If enabled, prints messages via android.util.Log API
+        croboxInstance.enableLogging()
 
         // RequestQueryParams contains page specific parameters, shared by all requests fired from the same page/view.
         val overviewPageParams = RequestQueryParams(
@@ -147,7 +151,7 @@ class MainActivity : AppCompatActivity() {
         )
 
         // Disable debugging
-        croboxInstance.disableDebug()
+        croboxInstance.disableLogging()
 
     }
 }

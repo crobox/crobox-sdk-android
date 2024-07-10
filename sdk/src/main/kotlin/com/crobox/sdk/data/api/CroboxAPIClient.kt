@@ -30,10 +30,7 @@ internal object CroboxAPIClient {
 
     private fun client(): OkHttpClient {
 
-        val headerLogging = HttpLoggingInterceptor()
         val bodyLogging = HttpLoggingInterceptor()
-
-        headerLogging.setLevel(HttpLoggingInterceptor.Level.HEADERS)
         bodyLogging.setLevel(HttpLoggingInterceptor.Level.BODY)
 
         val client: OkHttpClient = OkHttpClient.Builder()

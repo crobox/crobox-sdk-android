@@ -21,12 +21,12 @@ class Crobox private constructor(config: CroboxConfig) {
             }
     }
 
-    fun enableDebug() {
-        CroboxDebug.isDebug = true
+    fun enableLogging() {
+        CroboxDebug.loggingEnabled = true
     }
 
-    fun disableDebug() {
-        CroboxDebug.isDebug = false
+    fun disableLogging() {
+        CroboxDebug.loggingEnabled = false
     }
 
 
