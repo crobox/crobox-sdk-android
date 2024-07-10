@@ -2,6 +2,7 @@ package com.crobox.sdk.data.api
 
 import com.crobox.sdk.domain.Constant
 import com.google.gson.GsonBuilder
+import com.google.gson.Strictness
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -14,25 +15,10 @@ import java.util.concurrent.TimeUnit
 internal object CroboxAPIClient {
     val clientWithOutToken: Retrofit
         get() {
-            val headerLogging = HttpLoggingInterceptor()
-            val bodyLogging = HttpLoggingInterceptor()
-
-            headerLogging.setLevel(HttpLoggingInterceptor.Level.HEADERS)
-            bodyLogging.setLevel(HttpLoggingInterceptor.Level.BODY)
-
-            val client: OkHttpClient = OkHttpClient.Builder()
-                .addInterceptor(bodyLogging)
-                .readTimeout(60 * 5, TimeUnit.SECONDS)
-                .connectTimeout(60 * 5, TimeUnit.SECONDS)
-                .addInterceptor(
-                    Interceptor { chain: Interceptor.Chain ->
-                        var request: Request.Builder = chain.request().newBuilder()
-                        request = request.method(chain.request().method, chain.request().body)
-                        chain.proceed(request.build())
-                    }).build()
+            val client: OkHttpClient = client()
 
             val gson = GsonBuilder()
-                .setLenient()
+                .setStrictness(Strictness.LENIENT)
                 .create()
 
             return Retrofit.Builder()
@@ -41,4 +27,27 @@ internal object CroboxAPIClient {
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .build()
         }
+
+    private fun client(): OkHttpClient {
+
+        val headerLogging = HttpLoggingInterceptor()
+        val bodyLogging = HttpLoggingInterceptor()
+
+        headerLogging.setLevel(HttpLoggingInterceptor.Level.HEADERS)
+        bodyLogging.setLevel(HttpLoggingInterceptor.Level.BODY)
+
+        val client: OkHttpClient = OkHttpClient.Builder()
+            .addInterceptor(bodyLogging)
+            .readTimeout(60 * 5, TimeUnit.SECONDS)
+            .connectTimeout(60 * 5, TimeUnit.SECONDS)
+            .addInterceptor(
+                Interceptor { chain: Interceptor.Chain ->
+                    var request: Request.Builder = chain.request().newBuilder()
+                    request = request.method(chain.request().method, chain.request().body)
+                    chain.proceed(request.build())
+                }).build()
+
+        return client
+
+    }
 }
