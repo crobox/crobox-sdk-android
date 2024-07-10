@@ -7,7 +7,7 @@ import retrofit2.http.*
 
 interface CroboxAPI {
 
-    @Headers("Content-Type: application/x-www-form-urlencoded")
+    @Headers("Content-Type: application/x-www-form-urlencoded; charset=utf-8")
     @POST("/promotions")
     fun promotions(
         @QueryMap options: Map<String, String>,

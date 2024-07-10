@@ -175,7 +175,7 @@ class MainActivity : AppCompatActivity() {
             promotionCallback = stubPromotionCallback
         )
 
-        // Disable debugging
+        // Disable error logging
         croboxInstance.disableLogging()
 
         Thread.sleep(2000)
