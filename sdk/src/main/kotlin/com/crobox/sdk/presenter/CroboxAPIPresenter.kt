@@ -14,7 +14,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class CroboxAPIPresenter(private val config: CroboxConfig) {
+internal class CroboxAPIPresenter(private val config: CroboxConfig) {
 
     private val apiInterface: CroboxAPI = CroboxAPIClient.clientWithOutToken.create(
         CroboxAPI::class.java

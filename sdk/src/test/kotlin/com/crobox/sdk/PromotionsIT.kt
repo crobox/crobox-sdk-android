@@ -108,5 +108,5 @@ class PromotionsIT {
             promotionCallback = stubPromotionCallback
         )
     }
-    
+
 }

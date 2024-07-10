@@ -2,7 +2,7 @@ package com.crobox.sdk.common
 
 import android.util.Log
 
-object CroboxDebug {
+internal object CroboxDebug {
 
     val TAG = "croboxSDK"
     var loggingEnabled = false
