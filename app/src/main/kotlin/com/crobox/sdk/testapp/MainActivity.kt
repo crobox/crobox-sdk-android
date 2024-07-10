@@ -19,8 +19,7 @@ import java.util.UUID
 class MainActivity : AppCompatActivity() {
 
     // Use the Container ID assigned by Crobox
-    private val containerId = "xlrc9t"
-
+    private val containerId = "4ekjfx"
 
     // CroboxInstance is the single point of all interactions, keeping the configuration and providing all functionality
     private val croboxInstance = Crobox.getInstance(
@@ -120,14 +119,66 @@ class MainActivity : AppCompatActivity() {
             }
 
             override fun onError(msg: String?) {
+                Log.i("TestApp", "Received error")
                 Log.d("PromotionView onError", "" + msg);
             }
         }
-
+        Log.i("TestApp", "Sending Requests:")
         // Requesting for a promotion from an overview Page
         // with placeholderId configured for Overview Pages in Crobox Container
         // for a collection of products/impressions
-        val impressions: List<String> = listOf("001ABC", "002DEF")
+//        val impressions: List<String> = listOf("001ABC", "002DEF")
+        val impressions: List<String> = listOf(
+            "37694112",
+            "37922101",
+            "37933001",
+            "T8013162",
+            "D6012102",
+            "V5957100",
+            "Q1759104",
+            "V5104004",
+            "D5855001",
+            "T8532031",
+            "F9479100",
+            "D0587308",
+            "N7405100",
+            "Q1759100",
+            "Q1759006",
+            "F0721900",
+            "Z0790003",
+            "J4464001",
+            "Q8992101",
+            "Q1759106",
+            "Z4178010",
+            "F4146101",
+            "N4180162",
+            "R8785800",
+            "R8784500",
+            "F4830203",
+            "D5485160",
+            "N4180041",
+            "C4933001",
+            "HJ983100",
+            "W0784108",
+            "J6015006",
+            "Z5485010",
+            "D5423003",
+            "Z4627800",
+            "ID8896",
+            "V1290100",
+            "J9431002",
+            "N4180116",
+            "D5485130",
+            "V2917803",
+            "C0790002",
+            "D0383161",
+            "Z7885500",
+            "Z5485042",
+            "M3711144",
+            "BB480LEA",
+            "M1123005"
+        )
+
         croboxInstance.promotions(
             placeholderId = 1,
             queryParams = overviewPageParams,
@@ -139,7 +190,7 @@ class MainActivity : AppCompatActivity() {
         croboxInstance.promotions(
             placeholderId = 2,
             queryParams = detailPageParams,
-            impressions = listOf("001ABC"),
+            impressions = listOf("D0587308"),
             promotionCallback = stubPromotionCallback
         )
 
@@ -153,5 +204,6 @@ class MainActivity : AppCompatActivity() {
         // Disable debugging
         croboxInstance.disableLogging()
 
+        Thread.sleep(2000)
     }
 }

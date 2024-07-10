@@ -19,6 +19,8 @@ internal object CroboxAPIClient {
 
             val gson = GsonBuilder()
                 .setStrictness(Strictness.LENIENT)
+                .disableHtmlEscaping()
+                .enableComplexMapKeySerialization()
                 .create()
 
             return Retrofit.Builder()
