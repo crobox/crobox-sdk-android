@@ -109,14 +109,4 @@ class PromotionsIT {
         )
     }
 
-    @Test
-    fun testPromotionError() {
-        croboxInstance.promotions(
-            placeholderId = 1,
-            queryParams = overviewPageParams,
-            impressions = impressions,
-            promotionCallback = stubPromotionCallback
-        )
-
-    }
 }

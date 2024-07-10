@@ -2,7 +2,7 @@ package com.crobox.sdk.common
 
 import java.math.BigInteger
 
-object CroboxEncoder {
+internal object CroboxEncoder {
 
     /**
      *  Example: lu9znf91 for 1711554991093

@@ -3,6 +3,7 @@ package com.crobox.sdk.testapp
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
+
 import com.crobox.sdk.common.CurrencyCode
 import com.crobox.sdk.common.LocaleCode
 import com.crobox.sdk.core.Crobox
@@ -175,7 +176,7 @@ class MainActivity : AppCompatActivity() {
             promotionCallback = stubPromotionCallback
         )
 
-        // Disable debugging
+        // Disable error logging
         croboxInstance.disableLogging()
 
         Thread.sleep(2000)

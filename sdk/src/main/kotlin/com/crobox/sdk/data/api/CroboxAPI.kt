@@ -5,9 +5,9 @@ import com.crobox.sdk.domain.PromotionsResponse
 import retrofit2.Call
 import retrofit2.http.*
 
-interface CroboxAPI {
+internal interface CroboxAPI {
 
-    @Headers("Content-Type: application/x-www-form-urlencoded")
+    @Headers("Content-Type: application/x-www-form-urlencoded; charset=utf-8")
     @POST("/promotions")
     fun promotions(
         @QueryMap options: Map<String, String>,
