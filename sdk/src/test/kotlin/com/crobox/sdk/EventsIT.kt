@@ -15,7 +15,7 @@ import java.util.UUID
 
 class EventsIT {
 
-    private val containerId = "4ekjfx"
+    private val containerId = "xlrc9t"
 
     private val croboxInstance = Crobox.getInstance(
         CroboxConfig(
@@ -41,8 +41,10 @@ class EventsIT {
         pageType = PageType.PageCart
     )
 
+    private val productId = "product1"
+
     @After
-    fun after () {
+    fun after() {
         Thread.sleep(200)
     }
 
@@ -54,7 +56,7 @@ class EventsIT {
         croboxInstance.clickEvent(
             overviewPageParams,
             clickQueryParams = ClickQueryParams(
-                productId = "0001ABC",
+                productId = productId,
                 price = 1.0,
                 quantity = 1
             )
@@ -77,7 +79,7 @@ class EventsIT {
         croboxInstance.addToCartEvent(
             overviewPageParams,
             cartQueryParams = CartQueryParams(
-                productId = "001ABC",
+                productId = productId,
                 price = 1.0,
                 quantity = 1
             )
@@ -92,7 +94,7 @@ class EventsIT {
         croboxInstance.removeFromCartEvent(
             cartPageParams,
             cartQueryParams = CartQueryParams(
-                productId = "001ABC",
+                productId = productId,
                 price = 1.0,
                 quantity = 1
             )

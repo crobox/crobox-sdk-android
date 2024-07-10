@@ -19,7 +19,11 @@ import java.util.UUID
 class MainActivity : AppCompatActivity() {
 
     // Use the Container ID assigned by Crobox
-    private val containerId = "4ekjfx"
+    private val containerId = "xlrc9t"
+
+    // Collection of products/impressions
+    private val impressions: List<String> = listOf("product1", "product2", "product3", "product4", "product5")
+    private val productId = impressions.get(0)
 
     // CroboxInstance is the single point of all interactions, keeping the configuration and providing all functionality
     private val croboxInstance = Crobox.getInstance(
@@ -48,7 +52,7 @@ class MainActivity : AppCompatActivity() {
         croboxInstance.clickEvent(
             overviewPageParams,
             clickQueryParams = ClickQueryParams(
-                productId = "0001ABC",
+                productId = productId,
                 price = 1.0,
                 quantity = 1
             )
@@ -72,7 +76,7 @@ class MainActivity : AppCompatActivity() {
         croboxInstance.addToCartEvent(
             overviewPageParams,
             cartQueryParams = CartQueryParams(
-                productId = "001ABC",
+                productId = productId,
                 price = 1.0,
                 quantity = 1
             )
@@ -87,7 +91,7 @@ class MainActivity : AppCompatActivity() {
         croboxInstance.removeFromCartEvent(
             cartPageParams,
             cartQueryParams = CartQueryParams(
-                productId = "001ABC",
+                productId = productId,
                 price = 1.0,
                 quantity = 1
             )
@@ -105,80 +109,50 @@ class MainActivity : AppCompatActivity() {
             )
         )
 
-        // Retrieving Promotions
-
+        // A stub implementation for promotion response handling
         val stubPromotionCallback = object : PromotionCallback {
-            override fun onPromotions(response: PromotionsResponse?) {
-                response?.context?.experiments?.forEach { experiment ->
-                    Log.d("PromotionView", "experiment : " + experiment.id);
-                }
-                response?.promotions?.forEach { promotion ->
-                    Log.d("PromotionView", "promotion : " + promotion.productId);
-                }
+            val TAG = "PromotionCallback"
 
+            override fun onPromotions(response: PromotionsResponse?) {
+                val experiments: List<String>? =
+                    response?.context?.experiments?.map { experiment ->
+                        "Experiment[Id: ${experiment.id}, Name: ${experiment.name}]"
+                    }
+
+                Log.d(
+                    TAG,
+                    """
+                Context [
+                    VisitorId: ${response?.context?.visitorId}
+                    SessionId: ${response?.context?.sessionId}
+                    Experiments: ${experiments?.joinToString()}                
+                ]
+                """.trimIndent()
+                )
+
+                response?.promotions?.forEach { promotion ->
+                    Log.d(
+                        TAG,
+                        """
+                    Promotion[
+                        Id:${promotion.id}
+                        Product:${promotion.productId}
+                        Campaign:${promotion.campaignId}
+                        Variant:${promotion.variantId}
+                        Msg Id:${promotion.content?.id}
+                        Msg Config:${promotion.content?.config}
+                    ]
+                """.trimIndent()
+                    )
+                }
             }
 
             override fun onError(msg: String?) {
-                Log.i("TestApp", "Received error")
-                Log.d("PromotionView onError", "" + msg);
+                Log.d(TAG, "Promotion failed with $msg")
             }
         }
-        Log.i("TestApp", "Sending Requests:")
-        // Requesting for a promotion from an overview Page
-        // with placeholderId configured for Overview Pages in Crobox Container
-        // for a collection of products/impressions
-//        val impressions: List<String> = listOf("001ABC", "002DEF")
-        val impressions: List<String> = listOf(
-            "37694112",
-            "37922101",
-            "37933001",
-            "T8013162",
-            "D6012102",
-            "V5957100",
-            "Q1759104",
-            "V5104004",
-            "D5855001",
-            "T8532031",
-            "F9479100",
-            "D0587308",
-            "N7405100",
-            "Q1759100",
-            "Q1759006",
-            "F0721900",
-            "Z0790003",
-            "J4464001",
-            "Q8992101",
-            "Q1759106",
-            "Z4178010",
-            "F4146101",
-            "N4180162",
-            "R8785800",
-            "R8784500",
-            "F4830203",
-            "D5485160",
-            "N4180041",
-            "C4933001",
-            "HJ983100",
-            "W0784108",
-            "J6015006",
-            "Z5485010",
-            "D5423003",
-            "Z4627800",
-            "ID8896",
-            "V1290100",
-            "J9431002",
-            "N4180116",
-            "D5485130",
-            "V2917803",
-            "C0790002",
-            "D0383161",
-            "Z7885500",
-            "Z5485042",
-            "M3711144",
-            "BB480LEA",
-            "M1123005"
-        )
 
+        // Requesting for a promotion from an overview Page with placeholderId configured for Overview Pages in Crobox Container
         croboxInstance.promotions(
             placeholderId = 1,
             queryParams = overviewPageParams,
@@ -190,7 +164,7 @@ class MainActivity : AppCompatActivity() {
         croboxInstance.promotions(
             placeholderId = 2,
             queryParams = detailPageParams,
-            impressions = listOf("D0587308"),
+            impressions = impressions.subList(0, 1),
             promotionCallback = stubPromotionCallback
         )
 

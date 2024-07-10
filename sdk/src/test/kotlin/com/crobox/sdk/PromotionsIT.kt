@@ -14,7 +14,7 @@ import java.util.UUID
 
 class PromotionsIT {
 
-    private val containerId = "4ekjfx"
+    private val containerId = "xlrc9t"
 
     private val croboxInstance = Crobox.getInstance(
         CroboxConfig(
@@ -35,56 +35,7 @@ class PromotionsIT {
         pageType = PageType.PageDetail
     )
 
-    private val impressions: List<String> = listOf(
-        "37694112",
-        "37922101",
-        "37933001",
-        "T8013162",
-        "D6012102",
-        "V5957100",
-        "Q1759104",
-        "V5104004",
-        "D5855001",
-        "T8532031",
-        "F9479100",
-        "D0587308",
-        "N7405100",
-        "Q1759100",
-        "Q1759006",
-        "F0721900",
-        "Z0790003",
-        "J4464001",
-        "Q8992101",
-        "Q1759106",
-        "Z4178010",
-        "F4146101",
-        "N4180162",
-        "R8785800",
-        "R8784500",
-        "F4830203",
-        "D5485160",
-        "N4180041",
-        "C4933001",
-        "HJ983100",
-        "W0784108",
-        "J6015006",
-        "Z5485010",
-        "D5423003",
-        "Z4627800",
-        "ID8896",
-        "V1290100",
-        "J9431002",
-        "N4180116",
-        "D5485130",
-        "V2917803",
-        "C0790002",
-        "D0383161",
-        "Z7885500",
-        "Z5485042",
-        "M3711144",
-        "BB480LEA",
-        "M1123005"
-    )
+    private val impressions: List<String> = listOf("product1", "product2", "product3", "product4", "product5")
 
     private val stubPromotionCallback = object : PromotionCallback {
         override fun onPromotions(response: PromotionsResponse?) {
@@ -144,7 +95,7 @@ class PromotionsIT {
         croboxInstance.promotions(
             placeholderId = 2,
             queryParams = detailPageParams,
-            impressions = listOf("D0587308"),
+            impressions = impressions.subList(0, 1),
             promotionCallback = stubPromotionCallback
         )
     }
