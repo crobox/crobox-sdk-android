@@ -3,13 +3,11 @@ package com.crobox.sdk.presenter
 import com.crobox.sdk.common.CroboxEncoder
 import com.crobox.sdk.common.CroboxDebug
 import com.crobox.sdk.config.CroboxConfig
-import com.crobox.sdk.core.Crobox
 import com.crobox.sdk.data.api.CroboxAPI
 import com.crobox.sdk.data.api.CroboxAPIClient
 import com.crobox.sdk.data.model.*
 import com.crobox.sdk.domain.BaseResponse
 import com.crobox.sdk.domain.PromotionsResponse
-import com.google.gson.Gson
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -100,7 +98,8 @@ internal class CroboxAPIPresenter(private val config: CroboxConfig) {
             "e" to queryParams.viewCounter(),
             "vid" to queryParams.viewId,
             "pid" to config.visitorId.toString(),
-            "t" to eventType.type
+            "t" to eventType.type,
+            "sdk" to "2"
         )
 
         // Optional parameters
@@ -177,15 +176,14 @@ internal class CroboxAPIPresenter(private val config: CroboxConfig) {
         placeholderId: Int,
         queryParams: RequestQueryParams
     ): Map<String, Any> {
-        val gson = Gson()
-
         // Mandatory parameters
         val parameters = mutableMapOf<String, Any>(
             "cid" to config.containerId,
             "vpid" to placeholderId.toString(),
             "e" to queryParams.viewCounter(),
             "vid" to queryParams.viewId,
-            "pid" to config.visitorId.toString()
+            "pid" to config.visitorId.toString(),
+            "sdk" to "2"
         )
 
         // Optional parameters
