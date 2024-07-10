@@ -13,16 +13,22 @@ import com.crobox.sdk.data.model.ErrorQueryParams
 import com.crobox.sdk.data.model.PageType
 import com.crobox.sdk.data.model.RequestQueryParams
 import com.crobox.sdk.domain.PromotionsResponse
-import com.crobox.sdk.presenter.EventCallback
 import com.crobox.sdk.presenter.PromotionCallback
 import java.util.UUID
 
 class MainActivity : AppCompatActivity() {
 
+    // Use the Container ID assigned by Crobox
+    private val containerId = "xlrc9t"
+
+    // Collection of products/impressions
+    private val impressions: List<String> = listOf("product1", "product2", "product3", "product4", "product5")
+    private val productId = impressions.get(0)
+
     // CroboxInstance is the single point of all interactions, keeping the configuration and providing all functionality
-    val croboxInstance = Crobox.getInstance(
+    private val croboxInstance = Crobox.getInstance(
         CroboxConfig(
-            containerId = "xlrc9t",
+            containerId = containerId,
             visitorId = UUID.randomUUID(),
             currencyCode = CurrencyCode.USD,
             localeCode = LocaleCode.EN_US
@@ -33,8 +39,8 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main2)
 
-        // Enable debugging
-        croboxInstance.enableDebug()
+        // If enabled, prints messages via android.util.Log API
+        croboxInstance.enableLogging()
 
         // RequestQueryParams contains page specific parameters, shared by all requests fired from the same page/view.
         val overviewPageParams = RequestQueryParams(
@@ -46,7 +52,7 @@ class MainActivity : AppCompatActivity() {
         croboxInstance.clickEvent(
             overviewPageParams,
             clickQueryParams = ClickQueryParams(
-                productId = "0001ABC",
+                productId = productId,
                 price = 1.0,
                 quantity = 1
             )
@@ -70,7 +76,7 @@ class MainActivity : AppCompatActivity() {
         croboxInstance.addToCartEvent(
             overviewPageParams,
             cartQueryParams = CartQueryParams(
-                productId = "001ABC",
+                productId = productId,
                 price = 1.0,
                 quantity = 1
             )
@@ -85,7 +91,7 @@ class MainActivity : AppCompatActivity() {
         croboxInstance.removeFromCartEvent(
             cartPageParams,
             cartQueryParams = CartQueryParams(
-                productId = "001ABC",
+                productId = productId,
                 price = 1.0,
                 quantity = 1
             )
@@ -103,28 +109,50 @@ class MainActivity : AppCompatActivity() {
             )
         )
 
-        // Retrieving Promotions
-
+        // A stub implementation for promotion response handling
         val stubPromotionCallback = object : PromotionCallback {
-            override fun onPromotions(response: PromotionsResponse?) {
-                response?.context?.experiments?.forEach { experiment ->
-                    Log.d("PromotionView", "experiment : " + experiment.id);
-                }
-                response?.promotions?.forEach { promotion ->
-                    Log.d("PromotionView", "promotion : " + promotion.productId);
-                }
+            val TAG = "PromotionCallback"
 
+            override fun onPromotions(response: PromotionsResponse?) {
+                val experiments: List<String>? =
+                    response?.context?.experiments?.map { experiment ->
+                        "Experiment[Id: ${experiment.id}, Name: ${experiment.name}]"
+                    }
+
+                Log.d(
+                    TAG,
+                    """
+                Context [
+                    VisitorId: ${response?.context?.visitorId}
+                    SessionId: ${response?.context?.sessionId}
+                    Experiments: ${experiments?.joinToString()}                
+                ]
+                """.trimIndent()
+                )
+
+                response?.promotions?.forEach { promotion ->
+                    Log.d(
+                        TAG,
+                        """
+                    Promotion[
+                        Id:${promotion.id}
+                        Product:${promotion.productId}
+                        Campaign:${promotion.campaignId}
+                        Variant:${promotion.variantId}
+                        Msg Id:${promotion.content?.id}
+                        Msg Config:${promotion.content?.config}
+                    ]
+                """.trimIndent()
+                    )
+                }
             }
 
             override fun onError(msg: String?) {
-                Log.d("PromotionView onError", "" + msg);
+                Log.d(TAG, "Promotion failed with $msg")
             }
         }
 
-        // Requesting for a promotion from an overview Page
-        // with placeholderId configured for Overview Pages in Crobox Container
-        // for a collection of products/impressions
-        val impressions: List<String> = listOf("001ABC", "002DEF")
+        // Requesting for a promotion from an overview Page with placeholderId configured for Overview Pages in Crobox Container
         croboxInstance.promotions(
             placeholderId = 1,
             queryParams = overviewPageParams,
@@ -136,7 +164,7 @@ class MainActivity : AppCompatActivity() {
         croboxInstance.promotions(
             placeholderId = 2,
             queryParams = detailPageParams,
-            impressions = listOf("001ABC"),
+            impressions = impressions.subList(0, 1),
             promotionCallback = stubPromotionCallback
         )
 
@@ -148,7 +176,8 @@ class MainActivity : AppCompatActivity() {
         )
 
         // Disable debugging
-        croboxInstance.disableDebug()
+        croboxInstance.disableLogging()
 
+        Thread.sleep(2000)
     }
 }

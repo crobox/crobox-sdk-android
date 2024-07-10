@@ -4,7 +4,6 @@ import com.crobox.sdk.common.CroboxDebug
 import com.crobox.sdk.config.CroboxConfig
 import com.crobox.sdk.data.model.*
 import com.crobox.sdk.presenter.CroboxAPIPresenter
-import com.crobox.sdk.presenter.EventCallback
 import com.crobox.sdk.presenter.PromotionCallback
 
 class Crobox private constructor(config: CroboxConfig) {
@@ -22,12 +21,12 @@ class Crobox private constructor(config: CroboxConfig) {
             }
     }
 
-    fun enableDebug() {
-        CroboxDebug.isDebug = true
+    fun enableLogging() {
+        CroboxDebug.loggingEnabled = true
     }
 
-    fun disableDebug() {
-        CroboxDebug.isDebug = false
+    fun disableLogging() {
+        CroboxDebug.loggingEnabled = false
     }
 
 

@@ -3,7 +3,6 @@ package com.crobox.sdk.common
 import org.junit.Assert.*
 
 import org.junit.Test
-import java.util.UUID
 
 class CroboxEncoderTest {
 
