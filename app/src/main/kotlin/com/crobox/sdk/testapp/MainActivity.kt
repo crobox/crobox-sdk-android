@@ -115,9 +115,9 @@ class MainActivity : AppCompatActivity() {
             val TAG = "PromotionCallback"
 
             override fun onPromotions(response: PromotionsResponse?) {
-                val experiments: List<String>? =
-                    response?.context?.experiments?.map { experiment ->
-                        "Experiment[Id: ${experiment.id}, Name: ${experiment.name}]"
+                val campaigns: List<String>? =
+                    response?.context?.campaigns?.map { campaign ->
+                        "Campaign[Id: ${campaign.id}, Name: ${campaign.name}]"
                     }
 
                 Log.d(
@@ -126,7 +126,7 @@ class MainActivity : AppCompatActivity() {
                 Context [
                     VisitorId: ${response?.context?.visitorId}
                     SessionId: ${response?.context?.sessionId}
-                    Experiments: ${experiments?.joinToString()}                
+                    Campaigns: ${campaigns?.joinToString()}                
                 ]
                 """.trimIndent()
                 )

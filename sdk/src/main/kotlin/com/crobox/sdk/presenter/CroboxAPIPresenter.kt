@@ -14,6 +14,7 @@ import com.crobox.sdk.data.model.RequestQueryParams
 import com.crobox.sdk.domain.BaseResponse
 import com.crobox.sdk.domain.PromotionsResponse
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import retrofit2.Call
 import retrofit2.Callback
@@ -34,15 +35,12 @@ internal class CroboxAPIPresenter(private val config: CroboxConfig) {
 
         val parameters = promotionsQuery(placeholderId, queryParams)
         val stringParameters = parameters.mapValues { it.value.toString() }
-        val body = promotionRequestBody(impressions)
-
-        val requestBody = body.toRequestBody("text/plain".toMediaTypeOrNull())
+        val requestBody = promotionRequestBody(impressions)
 
         apiInterface.promotions(stringParameters, requestBody)
             ?.enqueue(object : Callback<PromotionsResponse?> {
                 override fun onResponse(
-                    call: Call<PromotionsResponse?>,
-                    response: Response<PromotionsResponse?>
+                    call: Call<PromotionsResponse?>, response: Response<PromotionsResponse?>
                 ) {
                     try {
                         if (response.isSuccessful) {
@@ -65,19 +63,15 @@ internal class CroboxAPIPresenter(private val config: CroboxConfig) {
     }
 
     fun event(
-        eventType: EventType,
-        queryParams: RequestQueryParams,
-        additionalParams: Any?
+        eventType: EventType, queryParams: RequestQueryParams, additionalParams: Any?
     ) {
 
         val parameters = eventQuery(queryParams, additionalParams, eventType)
         val stringParameters = parameters.mapValues { it.value.toString() }
 
-        apiInterface.event(stringParameters)
-            ?.enqueue(object : Callback<BaseResponse?> {
+        apiInterface.event(stringParameters)?.enqueue(object : Callback<BaseResponse?> {
                 override fun onResponse(
-                    call: Call<BaseResponse?>,
-                    response: Response<BaseResponse?>
+                    call: Call<BaseResponse?>, response: Response<BaseResponse?>
                 ) {
                     try {
                         if (!response.isSuccessful) {
@@ -95,9 +89,7 @@ internal class CroboxAPIPresenter(private val config: CroboxConfig) {
     }
 
     private fun eventQuery(
-        queryParams: RequestQueryParams,
-        additionalParams: Any?,
-        eventType: EventType
+        queryParams: RequestQueryParams, additionalParams: Any?, eventType: EventType
     ): Map<String, Any> {
 
         // Mandatory parameters
@@ -108,36 +100,31 @@ internal class CroboxAPIPresenter(private val config: CroboxConfig) {
         when (eventType) {
             EventType.Error -> (additionalParams as? ErrorQueryParams)?.let {
                 errorEvent(
-                    it,
-                    parameters
+                    it, parameters
                 )
             }
 
             EventType.Click -> (additionalParams as? ClickQueryParams)?.let {
                 clickEvent(
-                    it,
-                    parameters
+                    it, parameters
                 )
             }
 
             EventType.AddCart -> (additionalParams as? CartQueryParams)?.let {
                 addToCartEvent(
-                    it,
-                    parameters
+                    it, parameters
                 )
             }
 
             EventType.RemoveCart -> (additionalParams as? CartQueryParams)?.let {
                 removeFromCartEvent(
-                    it,
-                    parameters
+                    it, parameters
                 )
             }
 
             EventType.CustomEvent -> (additionalParams as? CustomQueryParams)?.let {
                 customEvent(
-                    it,
-                    parameters
+                    it, parameters
                 )
             }
 
@@ -152,14 +139,15 @@ internal class CroboxAPIPresenter(private val config: CroboxConfig) {
 
     private fun promotionRequestBody(
         impressions: List<String>
-    ): String {
-        return impressions.indices.zip(impressions)
-            .joinToString("&") { t -> "${t.first}=${t.second}" }
+    ): RequestBody {
+        val bodyStr =
+            impressions.indices.zip(impressions).joinToString("&") { t -> "${t.first}=${t.second}" }
+
+        return bodyStr.toRequestBody("text/plain".toMediaTypeOrNull())
     }
 
     private fun promotionsQuery(
-        placeholderId: Int,
-        queryParams: RequestQueryParams
+        placeholderId: Int, queryParams: RequestQueryParams
     ): Map<String, Any> {
         val parameters = commonQueryParams(queryParams)
         parameters["vpid"] = placeholderId.toString()
@@ -199,8 +187,7 @@ internal class CroboxAPIPresenter(private val config: CroboxConfig) {
     The following arguments are applicable for error events( where t=error ). They are all optional.
      */
     private fun errorEvent(
-        errorQueryParams: ErrorQueryParams,
-        parameters: MutableMap<String, Any>
+        errorQueryParams: ErrorQueryParams, parameters: MutableMap<String, Any>
     ) {
         errorQueryParams.tag?.let { parameters["tg"] = it }
         errorQueryParams.name?.let { parameters["nm"] = it }
@@ -226,8 +213,7 @@ internal class CroboxAPIPresenter(private val config: CroboxConfig) {
 
      */
     private fun addToCartEvent(
-        addCartQueryParams: CartQueryParams,
-        parameters: MutableMap<String, Any>
+        addCartQueryParams: CartQueryParams, parameters: MutableMap<String, Any>
     ) {
         addCartQueryParams.productId?.let { parameters["pi"] = it }
         addCartQueryParams.price?.let { parameters["price"] = it }
@@ -240,8 +226,7 @@ internal class CroboxAPIPresenter(private val config: CroboxConfig) {
 
      */
     private fun removeFromCartEvent(
-        removeFromCartQueryParams: CartQueryParams,
-        parameters: MutableMap<String, Any>
+        removeFromCartQueryParams: CartQueryParams, parameters: MutableMap<String, Any>
     ) {
         removeFromCartQueryParams.productId?.let { parameters["pi"] = it }
         removeFromCartQueryParams.price?.let { parameters["price"] = it }
@@ -254,8 +239,7 @@ internal class CroboxAPIPresenter(private val config: CroboxConfig) {
 
      */
     private fun customEvent(
-        customQueryParams: CustomQueryParams,
-        parameters: MutableMap<String, Any>
+        customQueryParams: CustomQueryParams, parameters: MutableMap<String, Any>
     ) {
         customQueryParams.name?.let { parameters["nm"] = it }
         customQueryParams.promotionId?.let { parameters["promoId"] = it }
