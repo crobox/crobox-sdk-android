@@ -2,8 +2,8 @@ package com.crobox.sdk
 
 import com.crobox.sdk.common.CurrencyCode
 import com.crobox.sdk.common.LocaleCode
-import com.crobox.sdk.core.Crobox
 import com.crobox.sdk.config.CroboxConfig
+import com.crobox.sdk.core.Crobox
 import com.crobox.sdk.data.model.PageType
 import com.crobox.sdk.data.model.RequestQueryParams
 import com.crobox.sdk.domain.PromotionsResponse
@@ -14,19 +14,25 @@ import java.util.UUID
 
 class PromotionsIT {
 
+    private val vid = UUID.randomUUID()
+    private val pid = UUID.randomUUID()
+
+    // FL TEST
     private val containerId = "xlrc9t"
+    private val placeholderId = 1
+    private val placeholderId2 = 2
 
     private val croboxInstance = Crobox.getInstance(
         CroboxConfig(
             containerId = containerId,
-            visitorId = UUID.randomUUID(),
+            visitorId = pid,
             currencyCode = CurrencyCode.USD,
             localeCode = LocaleCode.EN_US
         )
     )
 
     private val overviewPageParams = RequestQueryParams(
-        viewId = UUID.randomUUID(),
+        viewId = vid,
         pageType = PageType.PageOverview
     )
 
@@ -35,39 +41,37 @@ class PromotionsIT {
         pageType = PageType.PageDetail
     )
 
-    private val impressions: List<String> = listOf("product1", "product2", "product3", "product4", "product5")
+    private val impressions: List<String> =
+        listOf("product1", "product2", "product3", "product4", "product5")
 
     private val stubPromotionCallback = object : PromotionCallback {
         override fun onPromotions(response: PromotionsResponse?) {
-            val experiments: List<String>? =
-                response?.context?.experiments?.map { experiment ->
-                    "Experiment[Id: ${experiment.id}, Name: ${experiment.name}]"
-                }
-
-            println(
+            val contextStr =
                 """
-                Context [
-                    VisitorId: ${response?.context?.visitorId}
-                    SessionId: ${response?.context?.sessionId}
-                    Experiments: ${experiments?.joinToString()}                
-                ]
+                Context.VisitorId: ${response?.context?.visitorId}
+                Context.SessionId: ${response?.context?.sessionId}
+                Context.Campaigns: ${
+                    response?.context?.campaigns?.map { campaign ->
+                        "[Id: ${campaign.id}, Name: ${campaign.name}]"
+                    }?.joinToString(",")
+                }                
                 """.trimIndent()
-            )
 
-            response?.promotions?.forEach { promotion ->
-                println(
-                    """
+            val promotionsStr = response?.promotions?.map { promotion ->
+                """
                     Promotion[
                         Id:${promotion.id}
                         Product:${promotion.productId}
                         Campaign:${promotion.campaignId}
                         Variant:${promotion.variantId}
                         Msg Id:${promotion.content?.id}
+                        Msg Component:${promotion.content?.component}
                         Msg Config:${promotion.content?.config}
                     ]
                 """.trimIndent()
-                )
-            }
+            }?.joinToString(",")
+
+            println("$contextStr\n$promotionsStr")
         }
 
         override fun onError(msg: String?) {
@@ -83,7 +87,7 @@ class PromotionsIT {
     @Test
     fun testMultipleProducts() {
         croboxInstance.promotions(
-            placeholderId = 1,
+            placeholderId = placeholderId,
             queryParams = overviewPageParams,
             impressions = impressions,
             promotionCallback = stubPromotionCallback
@@ -93,7 +97,7 @@ class PromotionsIT {
     @Test
     fun testOneProduct() {
         croboxInstance.promotions(
-            placeholderId = 2,
+            placeholderId = placeholderId2,
             queryParams = detailPageParams,
             impressions = impressions.subList(0, 1),
             promotionCallback = stubPromotionCallback

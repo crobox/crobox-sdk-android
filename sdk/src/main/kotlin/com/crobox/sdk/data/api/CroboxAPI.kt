@@ -2,6 +2,7 @@ package com.crobox.sdk.data.api
 
 import com.crobox.sdk.domain.BaseResponse
 import com.crobox.sdk.domain.PromotionsResponse
+import okhttp3.RequestBody
 import retrofit2.Call
 import retrofit2.http.*
 
@@ -11,7 +12,7 @@ internal interface CroboxAPI {
     @POST("/promotions")
     fun promotions(
         @QueryMap options: Map<String, String>,
-        @Body impressions: String
+        @Body impressions: RequestBody
     ): Call<PromotionsResponse?>?
 
     @GET("/socket.gif")

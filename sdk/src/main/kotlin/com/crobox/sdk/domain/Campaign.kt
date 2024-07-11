@@ -3,7 +3,7 @@ package com.crobox.sdk.domain
 import com.google.gson.annotations.SerializedName
 
 /**
- * Represents an ongoing campaign
+ * Represents an ongoing Campaign
  *
  * @property id Campaign ID
  * @property name Campaign Name
@@ -11,7 +11,7 @@ import com.google.gson.annotations.SerializedName
  * @property variantName Name of the Campaign Variant
  * @property control Indicates if variant is allocated to the control group
  */
-class Experiment {
+class Campaign {
     @SerializedName("id") val id: String? = null
     @SerializedName("name") val name: String? = null
     @SerializedName("variantId")val variantId: String? = null
