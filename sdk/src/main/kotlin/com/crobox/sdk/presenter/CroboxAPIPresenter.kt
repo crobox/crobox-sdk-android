@@ -47,7 +47,6 @@ internal class CroboxAPIPresenter(private val config: CroboxConfig) {
                     try {
                         if (response.isSuccessful) {
                             promotionCallback.onPromotions(response.body())
-                            CroboxDebug.printText(response.body().toString())
                         } else {
                             promotionCallback.onError(response.body().toString())
                             CroboxDebug.promotionError(response.body().toString())
@@ -102,29 +101,8 @@ internal class CroboxAPIPresenter(private val config: CroboxConfig) {
     ): Map<String, Any> {
 
         // Mandatory parameters
-        val parameters = mutableMapOf<String, Any>(
-            "cid" to config.containerId,
-            "e" to queryParams.viewCounter(),
-            "vid" to queryParams.viewId,
-            "pid" to config.visitorId.toString(),
-            "t" to eventType.type,
-            "sdk" to "2"
-        )
-
-        // Optional parameters
-        config.currencyCode?.let { parameters["cc"] = it.toString() }
-        config.localeCode?.let { parameters["lc"] = it.toString() }
-        config.userId?.let { parameters["uid"] = it }
-        parameters["ts"] = CroboxEncoder.toBase36(System.currentTimeMillis())
-        config.timezone?.let { parameters["tz"] = it }
-        queryParams.pageType?.let { parameters["pt"] = it.value }
-        queryParams.pageName?.let { parameters["lh"] = it }
-
-        queryParams.customProperties?.let {
-            for ((key, value) in it) {
-                parameters["cp.$key"] = value
-            }
-        }
+        val parameters = commonQueryParams(queryParams)
+        parameters["t"] = eventType.type
 
         // Additional parameters based on event type
         when (eventType) {
@@ -168,8 +146,6 @@ internal class CroboxAPIPresenter(private val config: CroboxConfig) {
             }
         }
 
-        CroboxDebug.printParams(parameters)
-
         return parameters
     }
 
@@ -185,10 +161,17 @@ internal class CroboxAPIPresenter(private val config: CroboxConfig) {
         placeholderId: Int,
         queryParams: RequestQueryParams
     ): Map<String, Any> {
+        val parameters = commonQueryParams(queryParams)
+        parameters["vpid"] = placeholderId.toString()
+        return parameters
+    }
+
+    private fun commonQueryParams(
+        queryParams: RequestQueryParams
+    ): MutableMap<String, Any> {
         // Mandatory parameters
         val parameters = mutableMapOf<String, Any>(
             "cid" to config.containerId,
-            "vpid" to placeholderId.toString(),
             "e" to queryParams.viewCounter(),
             "vid" to queryParams.viewId,
             "pid" to config.visitorId.toString(),
@@ -208,8 +191,6 @@ internal class CroboxAPIPresenter(private val config: CroboxConfig) {
                 parameters["cp.$key"] = value
             }
         }
-
-        CroboxDebug.printParams(parameters)
 
         return parameters
     }
