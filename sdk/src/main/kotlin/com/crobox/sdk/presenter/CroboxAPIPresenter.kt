@@ -1,13 +1,20 @@
 package com.crobox.sdk.presenter
 
-import com.crobox.sdk.common.CroboxEncoder
 import com.crobox.sdk.common.CroboxDebug
+import com.crobox.sdk.common.CroboxEncoder
 import com.crobox.sdk.config.CroboxConfig
 import com.crobox.sdk.data.api.CroboxAPI
 import com.crobox.sdk.data.api.CroboxAPIClient
-import com.crobox.sdk.data.model.*
+import com.crobox.sdk.data.model.CartQueryParams
+import com.crobox.sdk.data.model.ClickQueryParams
+import com.crobox.sdk.data.model.CustomQueryParams
+import com.crobox.sdk.data.model.ErrorQueryParams
+import com.crobox.sdk.data.model.EventType
+import com.crobox.sdk.data.model.RequestQueryParams
 import com.crobox.sdk.domain.BaseResponse
 import com.crobox.sdk.domain.PromotionsResponse
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.RequestBody.Companion.toRequestBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -29,7 +36,9 @@ internal class CroboxAPIPresenter(private val config: CroboxConfig) {
         val stringParameters = parameters.mapValues { it.value.toString() }
         val body = promotionRequestBody(impressions)
 
-        apiInterface.promotions(stringParameters, body)
+        val requestBody = body.toRequestBody("text/plain".toMediaTypeOrNull())
+
+        apiInterface.promotions(stringParameters, requestBody)
             ?.enqueue(object : Callback<PromotionsResponse?> {
                 override fun onResponse(
                     call: Call<PromotionsResponse?>,
