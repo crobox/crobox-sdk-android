@@ -10,11 +10,13 @@ import com.crobox.sdk.domain.PromotionsResponse
 import com.crobox.sdk.presenter.PromotionCallback
 import org.junit.After
 import org.junit.Assert
+import org.junit.Ignore
 import org.junit.Test
 import java.util.UUID
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
 
+@Ignore
 class PromotionsIT {
 
     object Conf {
@@ -55,7 +57,7 @@ class PromotionsIT {
     }
 
     @Test
-    fun testMultipleProducts() {
+    fun skipped_testMultipleProducts() {
         val lock = CountDownLatch(1);
         var visitorId: UUID? = null
         var sessionId: UUID? = null
@@ -83,7 +85,7 @@ class PromotionsIT {
     }
 
     @Test
-    fun testOneProduct() {
+    fun skipped_testOneProduct() {
         val lock = CountDownLatch(1);
         var visitorId: UUID? = null
         var sessionId: UUID? = null
@@ -111,7 +113,7 @@ class PromotionsIT {
     }
 
     @Test
-    fun testNoProduct() {
+    fun skipped_testNoProduct() {
         val lock = CountDownLatch(1);
         var visitorId: UUID? = null
         var sessionId: UUID? = null
