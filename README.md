@@ -199,11 +199,11 @@ object : PromotionCallback {
 
 ### PromotionContent
 
-| Name      | Type                | Description                                                                                                                                                 |
-|-----------|---------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| id        | String              | Message Id of this promotion                                                                                                                                |
-| component | String              | Component Name                                                                                                                                              |
-| config    | Map<String, String> | Map of all visual configuration items, managed via Crobox Admin app. Example:<br/> ```kotlin Map("Text1_text" : "Best Seller","Text1_color" : "#0e1111")``` |
+| Name      | Type                | Description                                                                                                                                                |
+|-----------|---------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| id        | String              | Message Id of this promotion                                                                                                                               |
+| component | String              | Component Name                                                                                                                                             |
+| config    | Map<String, String> | Map of all visual configuration items, managed via Crobox Admin app. <br/>Example:<br/> ```Map("Text1_text" : "Best Seller", "Text1_color" : "#0e1111")``` |
 
 ## Samples
 
