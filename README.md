@@ -176,29 +176,29 @@ object : PromotionCallback {
 
 ### Campaign
 
-| Name        | Type    | Description                                                |
-|-------------|---------|------------------------------------------------------------|
-| id          | String  | Campaign ID                                                |
-| name        | String  | Campaign Name                                              |
-| variantId   | String  | Id of the Campaign Variant                                 |
-| variantName | String  | Name of the Campaign Variant                               |  
-| control     | Boolean | Indicates if the variant is allocated to the control group |
+| Name        | Type    | Description                                                                                                                                                                                                                                         |
+|-------------|---------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| id          | String  | Campaign ID                                                                                                                                                                                                                                         |
+| name        | String  | Campaign Name                                                                                                                                                                                                                                       |
+| variantId   | String  | There is a ratio that determines the amount of traffic exposed to this campaign (or is allocated to the control group) between Crobox and Control group. Variant id refers to the variant which this promotion belongs to and is used for debugging |
+| variantName | String  | Name of the Campaign Variant                                                                                                                                                                                                                        |  
+| control     | Boolean | Indicates if the variant is allocated to the control group                                                                                                                                                                                          |
 
 ### Promotion
 
-| Name       | Type              | Description                                  |
-|------------|-------------------|----------------------------------------------|
-| id         | String            | Unique id for this promotion                 |
-| productId  | String?           | Product ID if requested                      |
-| campaignId | Int               | The campaign which this promotion belongs to |
-| variantId  | Int               | The variant which this promotion belongs to  |
-| content    | PromotionContent? | Promotion Content                            |
+| Name       | Type              | Description                                          |
+|------------|-------------------|------------------------------------------------------|
+| id         | String            | Unique id for this promotion                         |
+| productId  | String?           | Product ID if requested                              |
+| campaignId | Int               | The campaign which this promotion belongs to         |
+| variantId  | Int               | ID of the variant that this promotion is assigned to |
+| content    | PromotionContent? | Promotion Content                                    |
 
 ### PromotionContent
 
 | Name      | Type                | Description                                                                                                                                                |
 |-----------|---------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| messageId | String              | Message Id of this promotion                                                                                                                               |
+| messageId | String              | As Campaigns might have alternative messages, Message Id identifies the message assigned to this promotion                                                 |
 | component | String              | Component Name                                                                                                                                             |
 | config    | Map<String, String> | Map of all visual configuration items, managed via Crobox Admin app. <br/>Example:<br/> ```Map("Text1_text" : "Best Seller", "Text1_color" : "#0e1111")``` |
 
