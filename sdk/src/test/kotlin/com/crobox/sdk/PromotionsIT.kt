@@ -6,6 +6,9 @@ import com.crobox.sdk.config.CroboxConfig
 import com.crobox.sdk.core.Crobox
 import com.crobox.sdk.data.model.PageType
 import com.crobox.sdk.data.model.RequestQueryParams
+import com.crobox.sdk.domain.Campaign
+import com.crobox.sdk.domain.Promotion
+import com.crobox.sdk.domain.PromotionContent
 import com.crobox.sdk.domain.PromotionsResponse
 import com.crobox.sdk.presenter.PromotionCallback
 import org.junit.After
@@ -46,36 +49,38 @@ class PromotionsIT {
 
     private val stubPromotionCallback = object : PromotionCallback {
         override fun onPromotions(response: PromotionsResponse?) {
-            val contextStr =
-                """
-                Context.VisitorId: ${response?.context?.visitorId}
-                Context.SessionId: ${response?.context?.sessionId}
-                Context.Campaigns: ${
-                    response?.context?.campaigns?.map { campaign ->
-                        "[Id: ${campaign.id}, Name: ${campaign.name}]"
-                    }?.joinToString(",")
-                }                
-                """.trimIndent()
+            val context = response?.context
+            val visitorId = response?.context?.visitorId
+            val sessionId = response?.context?.sessionId
+            val groupName = response?.context?.groupName
+            response?.context?.campaigns?.let { campaigns: List<Campaign> ->
+                for (campaign in campaigns) {
+                    val campaignId = campaign.id
+                    val campaignName = campaign.name
+                    val variantId = campaign.variantId
+                    val variantName = campaign.variantName
+                    val control = campaign.control
+                }
+            }
 
-            val promotionsStr = response?.promotions?.map { promotion ->
-                """
-                    Promotion[
-                        Id:${promotion.id}
-                        Product:${promotion.productId}
-                        Campaign:${promotion.campaignId}
-                        Variant:${promotion.variantId}
-                        Msg Id:${promotion.content?.id}
-                        Msg Component:${promotion.content?.component}
-                        Msg Config:${promotion.content?.config}
-                    ]
-                """.trimIndent()
-            }?.joinToString(",")
+            response?.promotions?.let { promotions: List<Promotion> ->
+                for (promotion in promotions) {
+                    val promotionId = promotion.id
+                    val campaignId = promotion.campaignId
+                    val variantId = promotion.variantId
+                    promotion.content?.let { content: PromotionContent ->
+                        val messageId = content.id
+                        val componentName = content.component
+                        val config = content.config
 
-            println("$contextStr\n$promotionsStr")
+                    }
+
+                }
+            }
         }
 
         override fun onError(msg: String?) {
-            println("Promotion failed with $msg")
+
         }
     }
 
