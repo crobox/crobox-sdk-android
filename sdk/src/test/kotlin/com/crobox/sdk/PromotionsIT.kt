@@ -6,19 +6,21 @@ import com.crobox.sdk.config.CroboxConfig
 import com.crobox.sdk.core.Crobox
 import com.crobox.sdk.data.model.PageType
 import com.crobox.sdk.data.model.RequestQueryParams
-import com.crobox.sdk.domain.Campaign
-import com.crobox.sdk.domain.Promotion
-import com.crobox.sdk.domain.PromotionContent
 import com.crobox.sdk.domain.PromotionsResponse
 import com.crobox.sdk.presenter.PromotionCallback
 import org.junit.After
+import org.junit.Assert
 import org.junit.Test
 import java.util.UUID
+import java.util.concurrent.CountDownLatch
+import java.util.concurrent.TimeUnit
 
 class PromotionsIT {
 
-    private val vid = UUID.randomUUID()
-    private val pid = UUID.randomUUID()
+    object Conf {
+        val vid: UUID = UUID.randomUUID()
+        val pid: UUID = UUID.randomUUID()
+    }
 
     // FL TEST
     private val containerId = "xlrc9t"
@@ -28,14 +30,14 @@ class PromotionsIT {
     private val croboxInstance = Crobox.getInstance(
         CroboxConfig(
             containerId = containerId,
-            visitorId = pid,
+            visitorId = Conf.pid,
             currencyCode = CurrencyCode.USD,
             localeCode = LocaleCode.EN_US
         )
     )
 
     private val overviewPageParams = RequestQueryParams(
-        viewId = vid,
+        viewId = Conf.vid,
         pageType = PageType.PageOverview
     )
 
@@ -47,43 +49,6 @@ class PromotionsIT {
     private val impressions: List<String> =
         listOf("product1", "product2", "product3", "product4", "product5")
 
-    private val stubPromotionCallback = object : PromotionCallback {
-        override fun onPromotions(response: PromotionsResponse?) {
-            val context = response?.context
-            val visitorId = response?.context?.visitorId
-            val sessionId = response?.context?.sessionId
-            val groupName = response?.context?.groupName
-            response?.context?.campaigns?.let { campaigns: List<Campaign> ->
-                for (campaign in campaigns) {
-                    val campaignId = campaign.id
-                    val campaignName = campaign.name
-                    val variantId = campaign.variantId
-                    val variantName = campaign.variantName
-                    val control = campaign.control
-                }
-            }
-
-            response?.promotions?.let { promotions: List<Promotion> ->
-                for (promotion in promotions) {
-                    val promotionId = promotion.id
-                    val campaignId = promotion.campaignId
-                    val variantId = promotion.variantId
-                    promotion.content?.let { content: PromotionContent ->
-                        val messageId = content.id
-                        val componentName = content.component
-                        val config = content.config
-
-                    }
-
-                }
-            }
-        }
-
-        override fun onError(msg: String?) {
-
-        }
-    }
-
     @After
     fun after() {
         Thread.sleep(2000)
@@ -91,31 +56,85 @@ class PromotionsIT {
 
     @Test
     fun testMultipleProducts() {
+        val lock = CountDownLatch(1);
+        var visitorId: UUID? = null
+        var sessionId: UUID? = null
         croboxInstance.promotions(
             placeholderId = placeholderId,
             queryParams = overviewPageParams,
             impressions = impressions,
-            promotionCallback = stubPromotionCallback
+            promotionCallback = object : PromotionCallback {
+                override fun onPromotions(response: PromotionsResponse) {
+                    println(response)
+                    visitorId = response.context.visitorId
+                    sessionId = response.context.sessionId
+                    lock.countDown()
+                }
+
+                override fun onError(msg: String) {
+                    println("Error:$msg")
+                    lock.countDown()
+                }
+            }
         )
+        lock.await(2, TimeUnit.SECONDS)
+        Assert.assertEquals(Conf.pid, visitorId)
+        Assert.assertNotNull(sessionId)
     }
 
     @Test
     fun testOneProduct() {
+        val lock = CountDownLatch(1);
+        var visitorId: UUID? = null
+        var sessionId: UUID? = null
         croboxInstance.promotions(
             placeholderId = placeholderId2,
             queryParams = detailPageParams,
             impressions = impressions.subList(0, 1),
-            promotionCallback = stubPromotionCallback
+            promotionCallback = object : PromotionCallback {
+                override fun onPromotions(response: PromotionsResponse) {
+                    println(response)
+                    visitorId = response.context.visitorId
+                    sessionId = response.context.sessionId
+                    lock.countDown()
+                }
+
+                override fun onError(msg: String) {
+                    println("Error:$msg")
+                    lock.countDown()
+                }
+            }
         )
+        lock.await(2, TimeUnit.SECONDS)
+        Assert.assertEquals(Conf.pid, visitorId)
+        Assert.assertNotNull(sessionId)
     }
 
     @Test
     fun testNoProduct() {
+        val lock = CountDownLatch(1);
+        var visitorId: UUID? = null
+        var sessionId: UUID? = null
         croboxInstance.promotions(
-            placeholderId = 1,
-            queryParams = detailPageParams,
-            promotionCallback = stubPromotionCallback
+            placeholderId = placeholderId,
+            queryParams = overviewPageParams,
+            promotionCallback = object : PromotionCallback {
+                override fun onPromotions(response: PromotionsResponse) {
+                    println(response)
+                    visitorId = response.context.visitorId
+                    sessionId = response.context.sessionId
+                    lock.countDown()
+                }
+
+                override fun onError(msg: String) {
+                    println("Error:$msg")
+                    lock.countDown()
+                }
+            }
         )
+        lock.await(2, TimeUnit.SECONDS)
+        Assert.assertEquals(Conf.pid, visitorId)
+        Assert.assertNotNull(sessionId)
     }
 
 }

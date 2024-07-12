@@ -2,7 +2,7 @@ package com.crobox.sdk.domain
 
 import com.google.gson.annotations.SerializedName
 
-class PromotionContent {
+data class PromotionContent (
     /**
      * Map of all visual configuration items, managed via Crobox Admin app
      *
@@ -13,17 +13,17 @@ class PromotionContent {
      *  )
      */
     @SerializedName("config")
-    val config: Map<String, String>? = null
+    val config: Map<String, String>,
 
     /**
      * Message Id of this promotion
      */
     @SerializedName("id")
-    val id: String? = null
+    val messageId: String,
 
     /**
      * Component Name
      */
     @SerializedName("component")
-    val component: String? = null
-}
+    val component: String
+)

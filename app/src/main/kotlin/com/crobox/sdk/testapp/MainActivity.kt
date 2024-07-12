@@ -3,11 +3,10 @@ package com.crobox.sdk.testapp
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
-
 import com.crobox.sdk.common.CurrencyCode
 import com.crobox.sdk.common.LocaleCode
-import com.crobox.sdk.core.Crobox
 import com.crobox.sdk.config.CroboxConfig
+import com.crobox.sdk.core.Crobox
 import com.crobox.sdk.data.model.CartQueryParams
 import com.crobox.sdk.data.model.ClickQueryParams
 import com.crobox.sdk.data.model.ErrorQueryParams
@@ -23,7 +22,8 @@ class MainActivity : AppCompatActivity() {
     private val containerId = "xlrc9t"
 
     // Collection of products/impressions
-    private val impressions: List<String> = listOf("product1", "product2", "product3", "product4", "product5")
+    private val impressions: List<String> =
+        listOf("product1", "product2", "product3", "product4", "product5")
     private val productId = impressions.get(0)
 
     // CroboxInstance is the single point of all interactions, keeping the configuration and providing all functionality
@@ -114,41 +114,52 @@ class MainActivity : AppCompatActivity() {
         val stubPromotionCallback = object : PromotionCallback {
             val TAG = "PromotionCallback"
 
-            override fun onPromotions(response: PromotionsResponse?) {
-                val campaigns: List<String>? =
-                    response?.context?.campaigns?.map { campaign ->
-                        "Campaign[Id: ${campaign.id}, Name: ${campaign.name}]"
-                    }
+            override fun onPromotions(response: PromotionsResponse) {
+                val context = response.context
+                val promotions = response.promotions
+
+                val visitorId = context.visitorId
+                val sessionId = context.sessionId
+                val campaigns = context.campaigns.map { campaign ->
+                    "Campaign[Id: ${campaign.id}, Name: ${campaign.name}]"
+                }
+                val contextStr =
+                    """
+                        Context [
+                            VisitorId: $visitorId, 
+                            SessionId: $sessionId
+                            Campaigns: ${campaigns.joinToString()}                
+                        ]        
+                    """.trimIndent()
+
+                val promotionsStr = promotions.map { promotion ->
+                    val promotionId = promotion.id
+                    val campaignId = promotion.campaignId
+                    val variantId = promotion.variantId
+                    val productId = promotion.productId ?: ""
+
+                    """
+                        Promotion[
+                            Id:$promotionId
+                            Product:$productId
+                            Campaign:$campaignId
+                            Variant:$variantId
+                            Msg Id:${promotion.content?.messageId}
+                            Component:${promotion.content?.component}
+                            Msg Config:${promotion.content?.config}
+                        ]
+                    """.trimIndent()
+                }
 
                 Log.d(
-                    TAG,
-                    """
-                Context [
-                    VisitorId: ${response?.context?.visitorId}
-                    SessionId: ${response?.context?.sessionId}
-                    Campaigns: ${campaigns?.joinToString()}                
-                ]
+                    TAG, """
+                    context: $contextStr,
+                    promotions: ${promotionsStr.joinToString()}
                 """.trimIndent()
                 )
-
-                response?.promotions?.forEach { promotion ->
-                    Log.d(
-                        TAG,
-                        """
-                    Promotion[
-                        Id:${promotion.id}
-                        Product:${promotion.productId}
-                        Campaign:${promotion.campaignId}
-                        Variant:${promotion.variantId}
-                        Msg Id:${promotion.content?.id}
-                        Msg Config:${promotion.content?.config}
-                    ]
-                """.trimIndent()
-                    )
-                }
             }
 
-            override fun onError(msg: String?) {
+            override fun onError(msg: String) {
                 Log.d(TAG, "Promotion failed with $msg")
             }
         }

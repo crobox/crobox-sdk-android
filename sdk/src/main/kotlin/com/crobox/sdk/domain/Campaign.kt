@@ -5,34 +5,34 @@ import com.google.gson.annotations.SerializedName
 /**
  * Represents an ongoing Campaign
  */
-class Campaign {
+data class Campaign (
     /**
      * Campaign ID
      */
     @SerializedName("id")
-    val id: String? = null
+    val id: String,
 
     /**
      * Campaign Name
      */
     @SerializedName("name")
-    val name: String? = null
+    val name: String,
 
     /**
      * Id of the Campaign Variant
      */
     @SerializedName("variantId")
-    val variantId: String? = null
+    val variantId: String,
 
     /**
      * Name of the Campaign Variant
      */
     @SerializedName("variantName")
-    val variantName: String? = null
+    val variantName: String,
 
     /**
      * Indicates if variant is allocated to the control group
      */
     @SerializedName("control")
-    val control: Boolean? = null
-}
+    val control: Boolean
+)

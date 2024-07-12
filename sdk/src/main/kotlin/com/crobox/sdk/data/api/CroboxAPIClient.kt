@@ -1,9 +1,9 @@
 package com.crobox.sdk.data.api
 
-import com.crobox.sdk.domain.Constant
 import com.google.gson.GsonBuilder
 import com.google.gson.Strictness
 import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.UUID
@@ -27,7 +27,9 @@ internal object CroboxAPIClient {
         }
 
     private fun client(): OkHttpClient {
-        val client: OkHttpClient = OkHttpClient.Builder().readTimeout(60 * 5, TimeUnit.SECONDS)
+        val client: OkHttpClient = OkHttpClient.Builder()
+            .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
+            .readTimeout(60 * 5, TimeUnit.SECONDS)
             .connectTimeout(60 * 5, TimeUnit.SECONDS).build()
 
         return client

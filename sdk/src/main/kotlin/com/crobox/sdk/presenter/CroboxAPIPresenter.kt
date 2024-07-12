@@ -43,21 +43,24 @@ internal class CroboxAPIPresenter(private val config: CroboxConfig) {
                     call: Call<PromotionsResponse?>, response: Response<PromotionsResponse?>
                 ) {
                     try {
+                        // http [200...300)
                         if (response.isSuccessful) {
-                            promotionCallback.onPromotions(response.body())
+                            response.body()?.let { promotionCallback.onPromotions(it) }
+                                ?: promotionCallback.onError("Successful http but null body")
                         } else {
+                            // http errors [300...600)
                             promotionCallback.onError(response.body().toString())
                             CroboxDebug.promotionError(response.body().toString())
                         }
                     } catch (ex: Exception) {
                         promotionCallback.onError(ex.message ?: "")
-                        CroboxDebug.promotionError(ex.message.toString())
+                        CroboxDebug.promotionError(ex.message ?: "")
                     }
                 }
 
                 override fun onFailure(call: Call<PromotionsResponse?>, t: Throwable) {
                     promotionCallback.onError(t.message ?: "")
-                    CroboxDebug.promotionError(t.message.toString())
+                    CroboxDebug.promotionError(t.message ?: "")
                 }
             })
     }
@@ -70,22 +73,22 @@ internal class CroboxAPIPresenter(private val config: CroboxConfig) {
         val stringParameters = parameters.mapValues { it.value.toString() }
 
         apiInterface.event(stringParameters)?.enqueue(object : Callback<BaseResponse?> {
-                override fun onResponse(
-                    call: Call<BaseResponse?>, response: Response<BaseResponse?>
-                ) {
-                    try {
-                        if (!response.isSuccessful) {
-                            CroboxDebug.eventError(response.body().toString())
-                        }
-                    } catch (ex: Exception) {
+            override fun onResponse(
+                call: Call<BaseResponse?>, response: Response<BaseResponse?>
+            ) {
+                try {
+                    if (!response.isSuccessful) {
                         CroboxDebug.eventError(response.body().toString())
                     }
+                } catch (ex: Exception) {
+                    CroboxDebug.eventError(response.body().toString())
                 }
+            }
 
-                override fun onFailure(call: Call<BaseResponse?>, t: Throwable) {
-                    CroboxDebug.eventError(t.message.toString())
-                }
-            })
+            override fun onFailure(call: Call<BaseResponse?>, t: Throwable) {
+                CroboxDebug.eventError(t.message.toString())
+            }
+        })
     }
 
     private fun eventQuery(

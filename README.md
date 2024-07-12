@@ -124,40 +124,37 @@ croboxInstance.promotions(
 
 ```kotlin
 object : PromotionCallback {
-  override fun onPromotions(response: PromotionsResponse?) {
-    // Promotion Context
-    val context = response?.context
-    val visitorId = response?.context?.visitorId
-    val sessionId = response?.context?.sessionId
-    val groupName = response?.context?.groupName
-    response?.context?.campaigns?.let { campaigns: List<Campaign> ->
-      for (campaign in campaigns) {
-        val campaignId = campaign.id
-        val campaignName = campaign.name
-        val variantId = campaign.variantId
-        val variantName = campaign.variantName
-        val control = campaign.control
-      }
-    }
-    // Promotions Calculated
-    response?.promotions?.let { promotions: List<Promotion> ->
-      for (promotion in promotions) {
-        val promotionId = promotion.id
-        val campaignId = promotion.campaignId
-        val variantId = promotion.variantId
-        promotion.content?.let { content: PromotionContent ->
-          val messageId = content.id
-          val componentName = content.component
-          val config = content.config
+    override fun onPromotions(response: PromotionsResponse) {
+        val context = response.context
+        val promotions = response.promotions
+
+        val visitorId = context.visitorId
+        val sessionId = context.sessionId
+        val groupName = context.groupName ?: ""
+        for (campaign in context.campaigns) {
+            val campaignId = campaign.id
+            val campaignName = campaign.name
+            val variantId = campaign.variantId
+            val variantName = campaign.variantName
+            val control = campaign.control
         }
-      }
+
+        for (promotion in promotions) {
+            val promotionId = promotion.id
+            val campaignId = promotion.campaignId
+            val variantId = promotion.variantId
+            val productId = promotion.productId ?: ""
+            promotion.content?.let { content: PromotionContent ->
+                val messageId = content.messageId
+                val componentName = content.component
+                val configMap = content.config
+                for (c in configMap) {
+                    val configKey = c.key
+                    val configValue = c.value
+                }
+            }
+        }
     }
-
-  }
-
-  override fun onError(msg: String?) {
-
-  }
 }
 ```
 
@@ -174,7 +171,7 @@ object : PromotionCallback {
 |-----------|----------------|--------------------------------------------------|
 | sessionId | UUID           | Session ID                                       |
 | visitorId | UUID           | Visitor ID                                       |
-| groupName | String         | The list of campaign and variant names, combined |
+| groupName | String?        | The list of campaign and variant names, combined |
 | campaigns | List<Campaign> | The list of ongoing campaigns                    |
 
 ### Campaign
@@ -189,19 +186,19 @@ object : PromotionCallback {
 
 ### Promotion
 
-| Name       | Type             | Description                                      |
-|------------|------------------|--------------------------------------------------|
-| id         | String           | Unique id for this promotion                     |
-| productId  | String           | Product ID that this promotion was requested for |
-| campaignId | Int              | The campaign which this promotion belongs to     |
-| variantId  | Int              | The variant which this promotion belongs to      |
-| content    | PromotionContent | Promotion Content                                |
+| Name       | Type              | Description                                  |
+|------------|-------------------|----------------------------------------------|
+| id         | String            | Unique id for this promotion                 |
+| productId  | String?           | Product ID if requested                      |
+| campaignId | Int               | The campaign which this promotion belongs to |
+| variantId  | Int               | The variant which this promotion belongs to  |
+| content    | PromotionContent? | Promotion Content                            |
 
 ### PromotionContent
 
 | Name      | Type                | Description                                                                                                                                                |
 |-----------|---------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| id        | String              | Message Id of this promotion                                                                                                                               |
+| messageId | String              | Message Id of this promotion                                                                                                                               |
 | component | String              | Component Name                                                                                                                                             |
 | config    | Map<String, String> | Map of all visual configuration items, managed via Crobox Admin app. <br/>Example:<br/> ```Map("Text1_text" : "Best Seller", "Text1_color" : "#0e1111")``` |
 

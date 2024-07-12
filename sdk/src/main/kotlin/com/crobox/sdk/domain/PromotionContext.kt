@@ -6,28 +6,28 @@ import java.util.UUID
 /**
  * The context about campaigns
  */
-class PromotionContext {
+data class PromotionContext(
     /**
      * The list of ongoing campaigns
      */
     @SerializedName("experiments")
-    val campaigns: List<Campaign>? = null
+    val campaigns: List<Campaign>,
 
     /**
      * Session ID
      */
     @SerializedName("sid")
-    val sessionId: UUID? = null
+    val sessionId: UUID,
 
     /**
      * Visitor ID
      */
     @SerializedName("pid")
-    val visitorId: UUID? = null
+    val visitorId: UUID,
 
     /**
      * The list of campaign and variant names, combined
      */
     @SerializedName("groupName")
-    val groupName: String? = null
-}
+    val groupName: String?
+)
