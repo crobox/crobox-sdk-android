@@ -219,7 +219,7 @@ object : PromotionCallback {
 | text            | String  | Text message              |
 | fontColor       | String  | Font color                |
 | backgroundColor | String? | Optional background color |
-| borderColor     | String+ | Optional border color     |
+| borderColor     | String? | Optional border color     |
 
 
 
