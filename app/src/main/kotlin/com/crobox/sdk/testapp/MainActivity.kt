@@ -24,7 +24,7 @@ class MainActivity : AppCompatActivity() {
     // Collection of products/impressions
     private val impressions: List<String> =
         listOf("product1", "product2", "product3", "product4", "product5")
-    private val productId = impressions.get(0)
+    private val productId = impressions[0]
 
     // CroboxInstance is the single point of all interactions, keeping the configuration and providing all functionality
     private val croboxInstance = Crobox.getInstance(
@@ -147,14 +147,16 @@ class MainActivity : AppCompatActivity() {
                             Msg Id:${promotion.content?.messageId}
                             Component:${promotion.content?.component}
                             Msg Config:${promotion.content?.config}
+                            Image Badge:${promotion.content?.getImageBadge()}
+                            Text Badge:${promotion.content?.getTextBadge()}
                         ]
                     """.trimIndent()
                 }
 
                 Log.d(
                     TAG, """
-                    context: $contextStr,
-                    promotions: ${promotionsStr.joinToString()}
+                context: $contextStr,
+                promotions: ${promotionsStr.joinToString()}
                 """.trimIndent()
                 )
             }

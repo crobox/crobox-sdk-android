@@ -2,7 +2,7 @@ package com.crobox.sdk.domain
 
 import com.google.gson.annotations.SerializedName
 
-data class PromotionContent (
+data class PromotionContent(
     /**
      * Map of all visual configuration items, managed via Crobox Admin app
      *
@@ -26,4 +26,24 @@ data class PromotionContent (
      */
     @SerializedName("component")
     val component: String
-)
+) {
+
+    /**
+     * Returns an Image Badge if an image component exists with the following pre-defined keys: "image" and "altText"
+     */
+    fun getImageBadge(): ImageBadge? {
+        return config["image"]?.let { ImageBadge(it, config["altText"]) }
+    }
+
+    /**
+     * Returns a Text Badge if a text component exists with the following pre-defined keys: "text", "fontColor", "backgroundColor" and "borderColor"
+     */
+    fun getTextBadge(): TextBadge? {
+        return config["text"]?.let { text ->
+            config["fontColor"]?.let { fontColor ->
+                TextBadge(text, fontColor, config["backgroundColor"], config["borderColor"])
+            }
+        }
+    }
+}
+

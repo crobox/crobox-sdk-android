@@ -152,6 +152,8 @@ object : PromotionCallback {
                     val configKey = c.key
                     val configValue = c.value
                 }
+                val imageBadge = content.getImageBadge()
+                val textBadge = content.getTextBadge()
             }
         }
     }
@@ -201,6 +203,25 @@ object : PromotionCallback {
 | messageId | String              | As Campaigns might have alternative messages, Message Id identifies the message assigned to this promotion                                                 |
 | component | String              | Component Name                                                                                                                                             |
 | config    | Map<String, String> | Map of all visual configuration items, managed via Crobox Admin app. <br/>Example:<br/> ```Map("Text1_text" : "Best Seller", "Text1_color" : "#0e1111")``` |
+
+
+### ImageBadge
+
+| Name    | Type    | Description    |
+|---------|---------|----------------|
+| image   | String  | Image URL      |
+| altText | String? | Alternate text |
+
+### TextBadge
+
+| Name            | Type    | Description               |
+|-----------------|---------|---------------------------|
+| text            | String  | Text message              |
+| fontColor       | String  | Font color                |
+| backgroundColor | String? | Optional background color |
+| borderColor     | String? | Optional border color     |
+
+
 
 ## Samples
 
