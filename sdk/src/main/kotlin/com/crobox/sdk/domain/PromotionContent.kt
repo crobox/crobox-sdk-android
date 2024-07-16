@@ -26,4 +26,10 @@ data class PromotionContent (
      */
     @SerializedName("component")
     val component: String
-)
+) {
+
+    fun getImageBadge() : ImageBadge? {
+        config.get("image")
+        return ImageBadge()
+    }
+}
