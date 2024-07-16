@@ -19,11 +19,12 @@ import java.util.UUID
 class MainActivity : AppCompatActivity() {
 
     // Use the Container ID assigned by Crobox
-    private val containerId = "xlrc9t"
+    private val containerId = "4ekjfx"//""xlrc9t"
 
     // Collection of products/impressions
     private val impressions: List<String> =
-        listOf("product1", "product2", "product3", "product4", "product5")
+        listOf("14163102", "1011B310", "04133050", "04133139", "10458100")
+//        listOf("product1", "product2", "product3", "product4", "product5")
     private val productId = impressions.get(0)
 
     // CroboxInstance is the single point of all interactions, keeping the configuration and providing all functionality
@@ -147,14 +148,16 @@ class MainActivity : AppCompatActivity() {
                             Msg Id:${promotion.content?.messageId}
                             Component:${promotion.content?.component}
                             Msg Config:${promotion.content?.config}
+                            Image Badge:${promotion.content?.getImageBadge()}
+                            Text Badge:${promotion.content?.getTextBadge()}
                         ]
                     """.trimIndent()
                 }
 
                 Log.d(
                     TAG, """
-                    context: $contextStr,
-                    promotions: ${promotionsStr.joinToString()}
+                context: $contextStr,
+                promotions: ${promotionsStr.joinToString()}
                 """.trimIndent()
                 )
             }
