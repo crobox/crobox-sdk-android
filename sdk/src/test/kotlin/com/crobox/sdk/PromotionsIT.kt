@@ -16,7 +16,7 @@ import java.util.UUID
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
 
-@Ignore
+@Ignore("TODO set up integration container")
 class PromotionsIT {
 
     object Conf {
@@ -57,7 +57,7 @@ class PromotionsIT {
     }
 
     @Test
-    fun skipped_testMultipleProducts() {
+    fun testMultipleProducts() {
         val lock = CountDownLatch(1);
         var visitorId: UUID? = null
         var sessionId: UUID? = null
@@ -85,7 +85,7 @@ class PromotionsIT {
     }
 
     @Test
-    fun skipped_testOneProduct() {
+    fun testOneProduct() {
         val lock = CountDownLatch(1);
         var visitorId: UUID? = null
         var sessionId: UUID? = null
@@ -113,7 +113,7 @@ class PromotionsIT {
     }
 
     @Test
-    fun skipped_testNoProduct() {
+    fun testNoProduct() {
         val lock = CountDownLatch(1);
         var visitorId: UUID? = null
         var sessionId: UUID? = null
