@@ -6,13 +6,18 @@ plugins {
     id("com.vanniktech.maven.publish")
 }
 
+kotlin {
+    jvmToolchain {
+        languageVersion.set(JavaLanguageVersion.of(11))
+    }
+}
+
 android {
     namespace 'com.crobox.sdk'
     compileSdk 34
 
     defaultConfig {
-        minSdk 26
-        targetSdk 34
+        minSdkVersion 34
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"
     }
@@ -24,10 +29,6 @@ android {
         }
     }
 
-    testFixtures {
-        enable = true
-    }
-
     publishing {
         multipleVariants {
             allVariants()
@@ -36,8 +37,8 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
     }
     kotlinOptions {
         jvmTarget = '1.8'
@@ -51,7 +52,6 @@ dependencies {
     implementation 'io.github.oshai:kotlin-logging-jvm:7.0.0'
     testImplementation 'junit:junit:4.13.2'
     testImplementation 'org.slf4j:slf4j-simple:2.0.3'
-
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
     implementation 'com.google.code.gson:gson:2.11.0'
