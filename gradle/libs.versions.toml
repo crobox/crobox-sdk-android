@@ -1,5 +1,5 @@
 [versions]
-androidgradleplugin = "8.5.0"
+androidgradleplugin = "8.5.1"
 kotlin = "2.0.0"
 
 [libraries]
