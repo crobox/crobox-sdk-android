@@ -2,7 +2,16 @@ package com.crobox.sdk.core
 
 import com.crobox.sdk.common.CroboxDebug
 import com.crobox.sdk.config.CroboxConfig
-import com.crobox.sdk.data.model.*
+import com.crobox.sdk.data.model.CartQueryParams
+import com.crobox.sdk.data.model.CheckoutParams
+import com.crobox.sdk.data.model.ClickQueryParams
+import com.crobox.sdk.data.model.CustomQueryParams
+import com.crobox.sdk.data.model.ErrorQueryParams
+import com.crobox.sdk.data.model.EventType
+import com.crobox.sdk.data.model.PageType
+import com.crobox.sdk.data.model.PageViewParams
+import com.crobox.sdk.data.model.PurchaseParams
+import com.crobox.sdk.data.model.RequestQueryParams
 import com.crobox.sdk.presenter.CroboxAPIPresenter
 import com.crobox.sdk.presenter.PromotionCallback
 
@@ -135,10 +144,7 @@ class Crobox private constructor(config: CroboxConfig) {
      *  @param queryParams Common query parameters, shared by the requests sent from the same page view
      *  @param pageViewParams Event specific query parameters for Page View Events
      */
-    fun pageViewEvent(
-        queryParams: RequestQueryParams,
-        pageViewParams: PageViewParams? = null
-    ) {
+    fun pageViewEvent(queryParams: RequestQueryParams, pageViewParams: PageViewParams? = null) {
         presenter.event(
             eventType = EventType.PageView,
             queryParams = queryParams,
@@ -146,7 +152,35 @@ class Crobox private constructor(config: CroboxConfig) {
         )
     }
 
-   /**
+    /**
+     * For reporting checkout events
+     *
+     *  @param queryParams Common query parameters, shared by the requests sent from the same page view
+     *  @param checkoutParams Event specific query parameters for Checkout Events
+     */
+    fun checkoutEvent(queryParams: RequestQueryParams, checkoutParams: CheckoutParams) {
+        presenter.event(
+            eventType = EventType.Checkout,
+            queryParams = queryParams,
+            additionalParams = checkoutParams
+        )
+    }
+
+    /**
+     * For reporting purchase events
+     *
+     *  @param queryParams Common query parameters, shared by the requests sent from the same page view
+     *  @param purchaseParams Event specific query parameters for Purchase Events
+     */
+    fun purchaseEvent(queryParams: RequestQueryParams, purchaseParams: PurchaseParams) {
+        presenter.event(
+            eventType = EventType.Purchase,
+            queryParams = queryParams.copy(pageType = PageType.PageComplete),
+            additionalParams = purchaseParams
+        )
+    }
+
+    /**
      * For reporting custom events
      *
      *  @param queryParams Common query parameters, shared by the requests sent from the same page view

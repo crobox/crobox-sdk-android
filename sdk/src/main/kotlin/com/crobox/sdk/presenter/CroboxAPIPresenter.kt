@@ -6,10 +6,14 @@ import com.crobox.sdk.config.CroboxConfig
 import com.crobox.sdk.data.api.CroboxAPI
 import com.crobox.sdk.data.api.CroboxAPIClient
 import com.crobox.sdk.data.model.CartQueryParams
+import com.crobox.sdk.data.model.CheckoutParams
 import com.crobox.sdk.data.model.ClickQueryParams
 import com.crobox.sdk.data.model.CustomQueryParams
 import com.crobox.sdk.data.model.ErrorQueryParams
 import com.crobox.sdk.data.model.EventType
+import com.crobox.sdk.data.model.PageViewParams
+import com.crobox.sdk.data.model.ProductParams
+import com.crobox.sdk.data.model.PurchaseParams
 import com.crobox.sdk.data.model.RequestQueryParams
 import com.crobox.sdk.domain.BaseResponse
 import com.crobox.sdk.domain.PromotionsResponse
@@ -71,8 +75,8 @@ internal class CroboxAPIPresenter(private val config: CroboxConfig) {
 
         val parameters = eventQuery(queryParams, additionalParams, eventType)
         val stringParameters = parameters.mapValues { it.value.toString() }
-
-        apiInterface.event(stringParameters)?.enqueue(object : Callback<BaseResponse?> {
+        println(stringParameters)
+        apiInterface.event(stringParameters).enqueue(object : Callback<BaseResponse?> {
             override fun onResponse(
                 call: Call<BaseResponse?>, response: Response<BaseResponse?>
             ) {
@@ -102,37 +106,35 @@ internal class CroboxAPIPresenter(private val config: CroboxConfig) {
         // Additional parameters based on event type
         when (eventType) {
             EventType.Error -> (additionalParams as? ErrorQueryParams)?.let {
-                errorEvent(
-                    it, parameters
-                )
+                errorEvent(it, parameters)
             }
 
             EventType.Click -> (additionalParams as? ClickQueryParams)?.let {
-                clickEvent(
-                    it, parameters
-                )
+                clickEvent(it, parameters)
             }
 
             EventType.AddCart -> (additionalParams as? CartQueryParams)?.let {
-                addToCartEvent(
-                    it, parameters
-                )
+                addToCartEvent(it, parameters)
             }
 
             EventType.RemoveCart -> (additionalParams as? CartQueryParams)?.let {
-                removeFromCartEvent(
-                    it, parameters
-                )
+                removeFromCartEvent(it, parameters)
             }
 
             EventType.CustomEvent -> (additionalParams as? CustomQueryParams)?.let {
-                customEvent(
-                    it, parameters
-                )
+                customEvent(it, parameters)
             }
 
-            else -> {
-                // do nothing
+            EventType.PageView -> (additionalParams as? PageViewParams)?.let {
+                pageViewEvent(it, parameters)
+            }
+
+            EventType.Checkout -> (additionalParams as? CheckoutParams)?.let {
+                checkoutEvent(it, parameters)
+            }
+
+            EventType.Purchase -> (additionalParams as? PurchaseParams)?.let {
+                purchaseEvent(it, parameters)
             }
         }
 
@@ -140,9 +142,7 @@ internal class CroboxAPIPresenter(private val config: CroboxConfig) {
     }
 
 
-    private fun promotionRequestBody(
-        impressions: List<String>
-    ): RequestBody {
+    private fun promotionRequestBody(impressions: List<String>): RequestBody {
         val bodyStr =
             impressions.indices.zip(impressions).joinToString("&") { t -> "${t.first}=${t.second}" }
 
@@ -186,8 +186,8 @@ internal class CroboxAPIPresenter(private val config: CroboxConfig) {
         return parameters
     }
 
-    /***
-    The following arguments are applicable for error events( where t=error ). They are all optional.
+    /**
+     * The following arguments are applicable for error events( where t=error ). They are all optional.
      */
     private fun errorEvent(
         errorQueryParams: ErrorQueryParams, parameters: MutableMap<String, Any>
@@ -199,10 +199,9 @@ internal class CroboxAPIPresenter(private val config: CroboxConfig) {
         errorQueryParams.line?.let { parameters["l"] = it }
     }
 
-    /***
-
-    The following arguments are applicable for click events( where t=click ). They are all optional
-
+    /**
+     * The following arguments are applicable for click events( where t=click ). They are all optional
+     *
      */
     private fun clickEvent(clickParams: ClickQueryParams, parameters: MutableMap<String, Any>) {
         clickParams.productId?.let { parameters["pi"] = it }
@@ -210,10 +209,8 @@ internal class CroboxAPIPresenter(private val config: CroboxConfig) {
         clickParams.quantity?.let { parameters["qty"] = it }
     }
 
-    /***
-
-    The following arguments are applicable for AddToCart events( where t=cart ). They are all optional
-
+    /**
+     * The following arguments are applicable for AddToCart events( where t=cart ). They are all optional
      */
     private fun addToCartEvent(
         addCartQueryParams: CartQueryParams, parameters: MutableMap<String, Any>
@@ -223,10 +220,8 @@ internal class CroboxAPIPresenter(private val config: CroboxConfig) {
         addCartQueryParams.quantity?.let { parameters["qty"] = it }
     }
 
-    /***
-
-    The following arguments are applicable for RemoveFromCart events( where t=rmcart ). They are all optional
-
+    /**
+     * The following arguments are applicable for RemoveFromCart events( where t=rmcart ). They are all optional
      */
     private fun removeFromCartEvent(
         removeFromCartQueryParams: CartQueryParams, parameters: MutableMap<String, Any>
@@ -236,10 +231,8 @@ internal class CroboxAPIPresenter(private val config: CroboxConfig) {
         removeFromCartQueryParams.quantity?.let { parameters["qty"] = it }
     }
 
-    /***
-
-    The following arguments are applicable for click events( where t=event ). They are all optional
-
+    /**
+     * The following arguments are applicable for click events( where t=event ). They are all optional
      */
     private fun customEvent(
         customQueryParams: CustomQueryParams, parameters: MutableMap<String, Any>
@@ -250,4 +243,66 @@ internal class CroboxAPIPresenter(private val config: CroboxConfig) {
         customQueryParams.price?.let { parameters["price"] = it }
         customQueryParams.quantity?.let { parameters["qty"] = it }
     }
+
+    /**
+     * The following arguments are applicable for pageView events
+     */
+    private fun pageViewEvent(pageViewParams: PageViewParams, parameters: MutableMap<String, Any>) {
+        pageViewParams.pageTitle?.let { parameters["dt"] = it }
+        pageViewParams.product?.let { productParams(it, parameters) }
+        pageViewParams.searchTerms?.let { parameters["st"] = it }
+        pageViewParams.impressions?.let { impressions(it, parameters) }
+        pageViewParams.customProperties?.let { customProperties(it, parameters) }
+    }
+
+    /**
+     * The following arguments are applicable for checkout events
+     */
+    private fun checkoutEvent(checkoutParams: CheckoutParams, parameters: MutableMap<String, Any>) {
+        checkoutParams.products?.let { impressions(it, parameters) }
+        checkoutParams.step?.let { parameters["stp"] = it }
+        checkoutParams.customProperties?.let { customProperties(it, parameters) }
+    }
+
+    /**
+     * The following arguments are applicable for purchase events
+     */
+    private fun purchaseEvent(purchaseParams: PurchaseParams, parameters: MutableMap<String, Any>) {
+        purchaseParams.products?.let { impressions(it, parameters) }
+        purchaseParams.transactionId?.let { parameters["tid"] = it }
+        purchaseParams.affiliation?.let { parameters["aff"] = it }
+        purchaseParams.coupon?.let { parameters["cpn"] = it }
+        purchaseParams.revenue?.let { parameters["rev"] = it }
+        purchaseParams.customProperties?.let { customProperties(it, parameters) }
+    }
+
+    private fun productParams(
+        productParams: ProductParams,
+        parameters: MutableMap<String, Any>
+    ) {
+        parameters["pi"] = productParams.productId
+        productParams.price?.let { parameters["price"] = it }
+        productParams.quantity?.let { parameters["qty"] = it }
+        productParams.otherProductIds?.let { parameters["lst"] = it.joinToString() }
+    }
+
+    private fun impressions(
+        impressions:Set<ProductParams>,
+        parameters: MutableMap<String, Any>
+    ) {
+        val impressionsList = impressions.map{ it.productId }.toList()
+        for (m in impressionsList.indices.zip(impressionsList)) {
+            parameters["imp[${m.first}]"] = m.second
+        }
+    }
+
+    private fun customProperties(
+        customProperties: Map<String, String>,
+        parameters: MutableMap<String, Any>
+    ) {
+        for ((key, value) in customProperties) {
+            parameters["cp.$key"] = value
+        }
+    }
+
 }
