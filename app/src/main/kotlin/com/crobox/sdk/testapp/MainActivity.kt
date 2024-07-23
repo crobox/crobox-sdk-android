@@ -8,10 +8,13 @@ import com.crobox.sdk.common.LocaleCode
 import com.crobox.sdk.config.CroboxConfig
 import com.crobox.sdk.core.Crobox
 import com.crobox.sdk.data.model.CartQueryParams
+import com.crobox.sdk.data.model.CheckoutParams
 import com.crobox.sdk.data.model.ClickQueryParams
 import com.crobox.sdk.data.model.ErrorQueryParams
 import com.crobox.sdk.data.model.PageType
 import com.crobox.sdk.data.model.PageViewParams
+import com.crobox.sdk.data.model.ProductParams
+import com.crobox.sdk.data.model.PurchaseParams
 import com.crobox.sdk.data.model.RequestQueryParams
 import com.crobox.sdk.domain.PromotionsResponse
 import com.crobox.sdk.presenter.PromotionCallback
