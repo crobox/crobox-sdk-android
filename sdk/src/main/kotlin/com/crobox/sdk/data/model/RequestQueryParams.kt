@@ -1,6 +1,6 @@
 package com.crobox.sdk.data.model
 
-import java.util.*
+import java.util.UUID
 import java.util.concurrent.atomic.AtomicInteger
 
 /**
@@ -32,11 +32,13 @@ enum class PageType(val value: Int) {
     PageSearch(7);
 }
 
-enum class EventType(val type: String) {
+enum class EventType(internal val type: String) {
     Click("click"),           // Click
     AddCart("cart"),          // Add to Shopping Cart
     RemoveCart("rmcart"),     // Remove from Shopping Cart
     PageView("pageview"),     // PageView
+    Checkout("pageview"),     // PageView
+    Purchase("pageview"),     // PageView
     Error("error"),           // Error
     CustomEvent("event")      // CustomEvent
 }
@@ -103,11 +105,65 @@ data class CustomQueryParams(
 )
 
 /**
- * Type specific parameters for general-purpose Custom events
+ * Type specific parameters for Page View events
  *
- *  @param name Event name
- *
+ *  @param pageTitle Optional Page title
+ *  @param product Optional product specific parameters
+ *  @param searchTerms Optional search terms that led the viewer to this product
+ *  @param impressions Optional list of products that are viewed in the same page
+ *  @param customProperties Optional set of general purpose custom properties, for example to help identifying certain traits of the page
  */
 data class PageViewParams(
-    val name: String? = null
+    val pageTitle: String? = null,
+    val product: ProductParams? = null,
+    val searchTerms: String? = null,
+    val impressions: Set<ProductParams>? = null,
+    val customProperties: Map<String, String>? = emptyMap()
+)
+
+/**
+ * Type specific parameters for Purchase events
+ *
+ *  @param products Optional set of products purchased
+ *  @param transactionId Optional transaction identifier
+ *  @param affiliation Optional store or affiliation from which this transaction occurred (e.g. Google Store)
+ *  @param coupon Optional coupon
+ *  @param revenue Optional the total associated with the transaction
+ *  @param customProperties Optional set of general purpose custom properties, for example to help identifying certain traits of the page
+ */
+data class PurchaseParams(
+    val products: Set<ProductParams>? = null,
+    val transactionId: String? = null,
+    val affiliation: String? = null,
+    val coupon: String? = null,
+    val revenue: Double? = null,
+    val customProperties: Map<String, String>? = emptyMap()
+)
+
+/**
+ * Type specific parameters for Checkout events
+ *
+ *  @param products Optional set of products to be purchased
+ *  @param step  Optional number representing a step in the checkout process
+ *  @param customProperties Optional set of general purpose custom properties, for example to help identifying certain traits of the page
+ */
+data class CheckoutParams(
+    val products: Set<ProductParams>? = null,
+    val step: String? = null,
+    val customProperties: Map<String, String>? = emptyMap()
+)
+
+/**
+ * Product specific parameters for various events
+ *
+ *  @param productId Product identifier
+ *  @param price Optional Product price
+ *  @param quantity  Optional quantity
+ *  @param otherProductIds Optional set of accompanying productIds which this particular product belongs to
+ */
+data class ProductParams(
+    val productId: String,
+    val price: Double? = null,
+    val quantity: Int? = null,
+    val otherProductIds: Set<String>? = emptySet()
 )
