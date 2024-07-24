@@ -15,7 +15,6 @@ import com.crobox.sdk.data.model.PageViewParams
 import com.crobox.sdk.data.model.ProductParams
 import com.crobox.sdk.data.model.PurchaseParams
 import com.crobox.sdk.data.model.RequestQueryParams
-import com.crobox.sdk.domain.BaseResponse
 import com.crobox.sdk.domain.PromotionsResponse
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody
@@ -76,9 +75,9 @@ internal class CroboxAPIPresenter(private val config: CroboxConfig) {
         val parameters = eventQuery(queryParams, additionalParams, eventType)
         val stringParameters = parameters.mapValues { it.value.toString() }
 
-        apiInterface.event(stringParameters).enqueue(object : Callback<BaseResponse?> {
+        apiInterface.event(stringParameters).enqueue(object : Callback<Void?> {
             override fun onResponse(
-                call: Call<BaseResponse?>, response: Response<BaseResponse?>
+                call: Call<Void?>, response: Response<Void?>
             ) {
                 try {
                     if (!response.isSuccessful) {
@@ -89,7 +88,7 @@ internal class CroboxAPIPresenter(private val config: CroboxConfig) {
                 }
             }
 
-            override fun onFailure(call: Call<BaseResponse?>, t: Throwable) {
+            override fun onFailure(call: Call<Void?>, t: Throwable) {
                 CroboxDebug.eventError(t.message.toString())
             }
         })

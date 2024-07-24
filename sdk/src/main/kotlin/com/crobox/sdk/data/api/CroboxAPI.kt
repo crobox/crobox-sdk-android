@@ -1,6 +1,5 @@
 package com.crobox.sdk.data.api
 
-import com.crobox.sdk.domain.BaseResponse
 import com.crobox.sdk.domain.PromotionsResponse
 import okhttp3.RequestBody
 import retrofit2.Call
@@ -16,5 +15,5 @@ internal interface CroboxAPI {
     ): Call<PromotionsResponse?>?
 
     @GET("/socket.gif")
-    fun event(@QueryMap options: Map<String, String>): Call<BaseResponse?>
+    fun event(@QueryMap options: Map<String, String>): Call<Void?>
 }
