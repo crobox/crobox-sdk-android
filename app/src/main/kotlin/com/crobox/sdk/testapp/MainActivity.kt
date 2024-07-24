@@ -225,7 +225,7 @@ class MainActivity : AppCompatActivity() {
                             Campaign:$campaignId
                             Variant:$variantId
                             Msg Id:${promotion.content?.messageId}
-                            Component:${promotion.content?.component}
+                            Component:${promotion.content?.componentName}
                             Msg Config:${promotion.content?.config}
                             Image Badge:${promotion.content?.getImageBadge()}
                             Text Badge:${promotion.content?.getTextBadge()}

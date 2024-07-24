@@ -25,14 +25,29 @@ data class PromotionContent(
      * Component Name
      */
     @SerializedName("component")
-    val component: String
+    val componentName: String
 ) {
+
+    /**
+     * Returns component if an Image or Text Badge is available
+     */
+    val contentConfig: PromotionContentConfig? =
+        when {
+            config.containsKey("image") -> getImageBadge()
+            config.containsKey("text") -> getTextBadge()
+            else -> null
+        }
+
+    /**
+     * Returns Badge type
+     */
+    val promotionType: PromotionContentType? = contentConfig?.contentType
 
     /**
      * Returns an Image Badge if an image component exists with the following pre-defined keys: "image" and "altText"
      */
     fun getImageBadge(): ImageBadge? {
-        return config["image"]?.let { ImageBadge(it, config["altText"]) }
+        return config["image"]?.let { ImageBadge(it, config["altText"], componentName) }
     }
 
     /**
@@ -40,9 +55,14 @@ data class PromotionContent(
      */
     fun getTextBadge(): TextBadge? {
         return config["text"]?.let { text ->
-            config["fontColor"]?.let { fontColor ->
-                TextBadge(text, fontColor, config["backgroundColor"], config["borderColor"])
-            }
+            TextBadge(
+                text,
+                config["fontColor"],
+                config["backgroundColor"],
+                config["borderColor"],
+                componentName
+            )
+
         }
     }
 }
