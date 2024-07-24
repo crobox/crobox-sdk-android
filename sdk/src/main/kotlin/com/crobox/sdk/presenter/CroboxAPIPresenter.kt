@@ -75,7 +75,7 @@ internal class CroboxAPIPresenter(private val config: CroboxConfig) {
 
         val parameters = eventQuery(queryParams, additionalParams, eventType)
         val stringParameters = parameters.mapValues { it.value.toString() }
-        println(stringParameters)
+
         apiInterface.event(stringParameters).enqueue(object : Callback<BaseResponse?> {
             override fun onResponse(
                 call: Call<BaseResponse?>, response: Response<BaseResponse?>
