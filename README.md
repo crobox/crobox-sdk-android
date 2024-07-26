@@ -152,8 +152,30 @@ object : PromotionCallback {
                     val configKey = c.key
                     val configValue = c.value
                 }
-                val imageBadge = content.getImageBadge()
-                val textBadge = content.getTextBadge()
+                promotion.content?.contentConfig()?.let {
+                  when (it) {
+                    is SecondaryMessaging -> {
+                      val name = it.name
+                      val text = it.text
+                      val fontColor = it.fontColor
+                    }
+  
+                    is TextBadge -> {
+                      val name = it.name
+                      val text = it.text
+                      val fontColor = it.fontColor
+                      val borderColor = it.borderColor
+                      val backgroundColor = it.backgroundColor
+                    }
+  
+                    is ImageBadge -> {
+                      val name = it.name
+                      val image = it.image
+                      val altText = it.altText
+                    }
+  
+                  }
+                }
             }
         }
     }
