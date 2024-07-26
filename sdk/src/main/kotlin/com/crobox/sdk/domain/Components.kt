@@ -1,9 +1,6 @@
 package com.crobox.sdk.domain
 
-enum class PromotionContentType { ImageBadge, TextBadge }
-
 interface PromotionContentConfig {
-    val contentType: PromotionContentType
     val name: String
 }
 
@@ -15,11 +12,8 @@ data class ImageBadge(
     val altText: String?,
 
     /// Component name
-    override val name: String,
-
-    ) : PromotionContentConfig {
-    override val contentType: PromotionContentType = PromotionContentType.ImageBadge
-}
+    override val name: String
+) : PromotionContentConfig
 
 data class TextBadge(
     /// Text message
@@ -36,6 +30,15 @@ data class TextBadge(
 
     /// Component name
     override val name: String
-) : PromotionContentConfig {
-    override val contentType: PromotionContentType = PromotionContentType.TextBadge
-}
+) : PromotionContentConfig
+
+data class SecondaryMessaging(
+    /// Text message
+    val text: String,
+
+    /// Font color
+    val fontColor: String?,
+
+    /// Component name
+    override val name: String
+) : PromotionContentConfig

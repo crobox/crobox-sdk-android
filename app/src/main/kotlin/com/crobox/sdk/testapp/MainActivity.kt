@@ -16,7 +16,10 @@ import com.crobox.sdk.data.model.PageViewParams
 import com.crobox.sdk.data.model.ProductParams
 import com.crobox.sdk.data.model.PurchaseParams
 import com.crobox.sdk.data.model.RequestQueryParams
+import com.crobox.sdk.domain.ImageBadge
 import com.crobox.sdk.domain.PromotionsResponse
+import com.crobox.sdk.domain.SecondaryMessaging
+import com.crobox.sdk.domain.TextBadge
 import com.crobox.sdk.presenter.PromotionCallback
 import java.util.UUID
 
@@ -195,50 +198,7 @@ class MainActivity : AppCompatActivity() {
             val TAG = "PromotionCallback"
 
             override fun onPromotions(response: PromotionsResponse) {
-                val context = response.context
-                val promotions = response.promotions
-
-                val visitorId = context.visitorId
-                val sessionId = context.sessionId
-                val campaigns = context.campaigns.map { campaign ->
-                    "Campaign[Id: ${campaign.id}, Name: ${campaign.name}]"
-                }
-                val contextStr =
-                    """
-                        Context [
-                            VisitorId: $visitorId, 
-                            SessionId: $sessionId
-                            Campaigns: ${campaigns.joinToString()}                
-                        ]        
-                    """.trimIndent()
-
-                val promotionsStr = promotions.map { promotion ->
-                    val promotionId = promotion.id
-                    val campaignId = promotion.campaignId
-                    val variantId = promotion.variantId
-                    val productId = promotion.productId ?: ""
-
-                    """
-                        Promotion[
-                            Id:$promotionId
-                            Product:$productId
-                            Campaign:$campaignId
-                            Variant:$variantId
-                            Msg Id:${promotion.content?.messageId}
-                            Component:${promotion.content?.componentName}
-                            Msg Config:${promotion.content?.config}
-                            Image Badge:${promotion.content?.getImageBadge()}
-                            Text Badge:${promotion.content?.getTextBadge()}
-                        ]
-                    """.trimIndent()
-                }
-
-                Log.d(
-                    TAG, """
-                context: $contextStr,
-                promotions: ${promotionsStr.joinToString()}
-                """.trimIndent()
-                )
+                printPromotionResponse(response)
             }
 
             override fun onError(msg: String) {
@@ -274,4 +234,77 @@ class MainActivity : AppCompatActivity() {
 
         Thread.sleep(2000)
     }
+
+    private fun printPromotionResponse(response: PromotionsResponse) {
+        val context = response.context
+        val promotions = response.promotions
+
+        val visitorId = context.visitorId
+        val sessionId = context.sessionId
+        val campaigns = context.campaigns.map { campaign ->
+            "Campaign[Id: ${campaign.id}, Name: ${campaign.name}]"
+        }
+        val contextStr =
+            """
+                Context [
+                    VisitorId: $visitorId, 
+                    SessionId: $sessionId
+                    Campaigns: ${campaigns.joinToString()}                
+                ]        
+            """.trimIndent()
+
+        val promotionsStr = promotions.map { promotion ->
+            val promotionId = promotion.id
+            val campaignId = promotion.campaignId
+            val variantId = promotion.variantId
+            val productId = promotion.productId ?: ""
+            val configStr = promotion.content?.contentConfig()?.let {
+                when (it) {
+                    is SecondaryMessaging ->
+                        """
+                            Secondary Messaging Text: ${it.text}
+                            Secondary Messaging Font Color:${it.fontColor}"
+                        """.trimIndent()
+
+                    is TextBadge ->
+                        """
+                            Text: ${it.text}
+                            Font Color: ${it.fontColor}
+                            Border Color: ${it.borderColor}
+                            Background Color: ${it.backgroundColor}"
+                        """.trimIndent()
+
+                    is ImageBadge ->
+                        """
+                            Image: ${it.image}
+                            AltText: ${it.altText}
+                        """.trimIndent()
+
+                    else -> "unknown"
+                }
+            }
+
+            """
+                Promotion[
+                    Id:$promotionId
+                    Product:$productId
+                    Campaign:$campaignId
+                    Variant:$variantId
+                    Msg Id:${promotion.content?.messageId}
+                    Component:${promotion.content?.componentName}
+                    Msg Config:${promotion.content?.config}
+                    Content Config: $configStr
+                ]
+            """.trimIndent()
+        }
+
+        Log.d(
+            "PromotionCallback", """
+                context: $contextStr,
+                promotions: ${promotionsStr.joinToString()}
+                """.trimIndent()
+        )
+
+    }
+
 }
