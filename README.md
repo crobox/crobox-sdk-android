@@ -198,11 +198,12 @@ object : PromotionCallback {
 
 ### PromotionContent
 
-| Name      | Type                | Description                                                                                                                                                |
-|-----------|---------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| messageId | String              | As Campaigns might have alternative messages, Message Id identifies the message assigned to this promotion                                                 |
-| component | String              | Component Name                                                                                                                                             |
-| config    | Map<String, String> | Map of all visual configuration items, managed via Crobox Admin app. <br/>Example:<br/> ```Map("Text1_text" : "Best Seller", "Text1_color" : "#0e1111")``` |
+| Name            | Type                    | Description                                                                                                                                                         |
+|-----------------|-------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| messageId       | String                  | As Campaigns might have alternative messages, Message Id identifies the message assigned to this promotion                                                          |
+| componentName   | String                  | Component Name                                                                                                                                                      |
+| config          | Map<String, String>     | Map of all visual configuration items, managed via Crobox Admin app. <br/>Example:<br/> ```Map("Text1_text" : "Best Seller", "Text1_color" : "#0e1111")```          |
+| contentConfig() | PromotionContentConfig? | Returns component configuration if an Image, Text Badge or Secondary Messaging is available as compliant. **Requires** prior configuration setup in Crobox platform |
 
 
 ### ImageBadge
@@ -221,6 +222,13 @@ object : PromotionCallback {
 | backgroundColor | String? | Optional background color |
 | borderColor     | String? | Optional border color     |
 
+
+### SecondaryMessaging
+
+| Name            | Type    | Description               |
+|-----------------|---------|---------------------------|
+| text            | String  | Text message              |
+| fontColor       | String  | Font color                |
 
 
 ## Samples
