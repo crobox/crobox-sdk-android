@@ -1,5 +1,6 @@
 package com.crobox.sdk.testapp
 
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
@@ -264,6 +265,7 @@ class MainActivity : AppCompatActivity() {
                         """
                             Secondary Messaging Text: ${it.text}
                             Secondary Messaging Font Color:${it.fontColor}"
+                            Secondary Messaging Font Android Color:${it.fontColorAndroid()}"
                         """.trimIndent()
 
                     is TextBadge ->
@@ -272,6 +274,9 @@ class MainActivity : AppCompatActivity() {
                             Font Color: ${it.fontColor}
                             Border Color: ${it.borderColor}
                             Background Color: ${it.backgroundColor}"
+                            Font Android Color: ${it.fontColorAndroid() ?: defaultColor()}
+                            Border Android Color: ${it.borderColorAndroid() ?: defaultColor()}
+                            Background Android Color: ${it.backgroundColorAndroid() ?: defaultColor()}"
                         """.trimIndent()
 
                     is ImageBadge ->
@@ -307,4 +312,7 @@ class MainActivity : AppCompatActivity() {
 
     }
 
+    private fun defaultColor() {
+        Color.valueOf(Color.WHITE)
+    }
 }
