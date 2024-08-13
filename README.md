@@ -158,6 +158,7 @@ object : PromotionCallback {
                       val name = it.name
                       val text = it.text
                       val fontColor = it.fontColor
+                      val fontColorAndroid = it.fontColorAndroid() ?: Color.valueOf(Color.WHITE)
                     }
   
                     is TextBadge -> {
@@ -166,6 +167,9 @@ object : PromotionCallback {
                       val fontColor = it.fontColor
                       val borderColor = it.borderColor
                       val backgroundColor = it.backgroundColor
+                      val fontColorAndroid = it.fontColorAndroid() ?: Color.valueOf(Color.WHITE)
+                      val borderColorAndroid = it.borderColorAndroid() ?: Color.valueOf(Color.WHITE)
+                      val backgroundColorAndroid = it.backgroundColorAndroid() ?: Color.valueOf(Color.WHITE)
                     }
   
                     is ImageBadge -> {
