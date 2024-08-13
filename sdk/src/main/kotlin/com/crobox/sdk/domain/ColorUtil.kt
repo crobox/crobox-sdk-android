@@ -5,29 +5,28 @@ import android.graphics.Color
 
 internal object ColorUtil {
 
-    fun toAndroidColor(fontColor: String?): Color? {
+    fun toAndroidColor(colorStr: String?): Color? {
         try {
-            if (fontColor?.startsWith("#") == true) {
-                val fontColorInt: Int = Color.parseColor(fontColor)
-                return Color.valueOf(fontColorInt)
-            } else if (fontColor?.startsWith("rgba") == true) {
-                val c: List<Float> =
-                    fontColor
+            if (colorStr?.startsWith("#") == true) {
+                return Color.valueOf(Color.parseColor(colorStr))
+            } else if (colorStr?.startsWith("rgba") == true) {
+                val rgba =
+                    colorStr
                         .removePrefix("rgba(")
                         .removeSuffix(")")
                         .split(",")
                         .map { it.toFloat() }
-                if (c.size != 4) {
-                    return null
+
+                if (rgba.size != 4) {
+                    throw IllegalArgumentException("Malformed input $colorStr")
                 }
-                val red = c.get(0).toInt()
-                val green = c.get(1).toInt()
-                val blue = c.get(2).toInt()
-                val alpha = c.get(3) // 0.5
-                val alphaInt = (alpha * 255.0f + 0.5f).toInt()
-                return Color.valueOf(Color.argb(alphaInt, red, green, blue))
+                val red = rgba[0].toInt()
+                val green = rgba[1].toInt()
+                val blue = rgba[2].toInt()
+                val alpha = (rgba[3] * 255.0f + 0.5f).toInt()
+                return Color.valueOf(Color.argb(alpha, red, green, blue))
             } else {
-                return null
+                throw IllegalArgumentException("Malformed input $colorStr")
             }
         } catch (_: Throwable) {
             return null

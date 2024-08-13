@@ -274,9 +274,9 @@ class MainActivity : AppCompatActivity() {
                             Font Color: ${it.fontColor}
                             Border Color: ${it.borderColor}
                             Background Color: ${it.backgroundColor}"
-                            Font Android Color: ${it.fontColorAndroid() ?: defaultColor()}
-                            Border Android Color: ${it.borderColorAndroid() ?: defaultColor()}
-                            Background Android Color: ${it.backgroundColorAndroid() ?: defaultColor()}"
+                            Font Android Color: ${it.fontColorAndroid()}
+                            Border Android Color: ${it.borderColorAndroid()}
+                            Background Android Color: ${it.backgroundColorAndroid()}"
                         """.trimIndent()
 
                     is ImageBadge ->
@@ -312,7 +312,4 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    private fun defaultColor() {
-        Color.valueOf(Color.WHITE)
-    }
 }
