@@ -12,10 +12,10 @@ import java.util.concurrent.atomic.AtomicInteger
  *  @param pageName Free format Page Name if exists
  */
 data class RequestQueryParams(
-    val viewId: UUID,                 // ViewId (mandatory)
-    val pageType: PageType? = null,     // PageType (optional)
-    val customProperties: Map<String, String>? = null, // Custom Properties (optional)
-    val pageName: String? = null        // ViewController (optional)
+    val viewId: UUID,
+    val pageType: PageType,
+    val customProperties: Map<String, String>? = null,
+    val pageName: String? = null
 ) {
     private val counter = AtomicInteger(0)
     fun viewCounter(): Int = counter.getAndIncrement()
