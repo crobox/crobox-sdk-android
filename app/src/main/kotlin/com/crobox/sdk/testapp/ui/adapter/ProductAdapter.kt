@@ -11,6 +11,16 @@ import com.crobox.sdk.testapp.data.Product
 
 class ProductAdapter(private val dataSet: Array<Product>) :
     RecyclerView.Adapter<ProductAdapter.ViewHolder>() {
+    private var onClickListener: OnClickListener? = null
+
+    fun setOnClickListener(onClickListener: OnClickListener) {
+        this.onClickListener = onClickListener
+    }
+
+    // Interface for the click listener
+    interface OnClickListener {
+        fun onClick(position: Int, product: Product)
+    }
 
     /**
      * Provide a reference to the type of views that you are using
@@ -21,9 +31,11 @@ class ProductAdapter(private val dataSet: Array<Product>) :
         val descriptionView: TextView
         val priceView: TextView
         val imageRecyclerView: RecyclerView
+        val root: View
 
         init {
             // Define click listener for the ViewHolder's View
+            root = view
             nameView = view.findViewById(R.id.product_name)
             descriptionView = view.findViewById(R.id.product_description)
             priceView = view.findViewById(R.id.product_price)
@@ -56,6 +68,9 @@ class ProductAdapter(private val dataSet: Array<Product>) :
         viewHolder.imageRecyclerView.layoutManager =
             LinearLayoutManager(viewHolder.imageRecyclerView.context, LinearLayoutManager.HORIZONTAL, false)
         viewHolder.imageRecyclerView.adapter = customAdapter
+        viewHolder.root.setOnClickListener {
+            onClickListener?.onClick(position, product)
+        }
     }
 
     // Return the size of your dataset (invoked by the layout manager)
