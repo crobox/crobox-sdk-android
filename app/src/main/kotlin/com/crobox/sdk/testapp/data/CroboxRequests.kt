@@ -25,6 +25,7 @@ class CroboxRequests(val croboxInstance: Crobox) {
 
     fun executeTestRequests(productId: String, impressions: List<String>) {
         this.productId = productId
+        this.impressions.clear()
         this.impressions.addAll(impressions)
         // If enabled, prints messages via android.util.Log API
         croboxInstance.enableLogging()
