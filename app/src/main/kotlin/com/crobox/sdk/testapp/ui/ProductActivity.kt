@@ -1,6 +1,7 @@
 package com.crobox.sdk.testapp.ui
 
 import android.os.Bundle
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
@@ -10,10 +11,12 @@ import com.crobox.sdk.testapp.R
 import com.crobox.sdk.testapp.data.DataSource
 import com.crobox.sdk.testapp.ui.adapter.ImageAdapter
 import com.crobox.sdk.testapp.ui.adapter.SizeAdapter
+import com.crobox.sdk.testapp.util.loadImage
 
 class ProductActivity : AppCompatActivity() {
 
     lateinit var nameView: TextView
+    lateinit var productImage: ImageView
     lateinit var descriptionView: TextView
     lateinit var priceView: TextView
     lateinit var imageRecyclerView: RecyclerView
@@ -30,6 +33,7 @@ class ProductActivity : AppCompatActivity() {
 
     private fun initView() {
         nameView = findViewById(R.id.product_name)
+        productImage = findViewById(R.id.product_image)
         descriptionView = findViewById(R.id.product_description)
         priceView = findViewById(R.id.product_price)
         imageRecyclerView = findViewById(R.id.image_alternatives)
@@ -39,10 +43,11 @@ class ProductActivity : AppCompatActivity() {
     private fun initData() {
         val product = DataSource().products[0]
         nameView.text = product.name
-        descriptionView.text = product.description
-        priceView.text = product.price
+        productImage.loadImage(product.images[0])
+        descriptionView.text = product.productAdjective
+        priceView.text = "$ ${product.price}"
 
-        val dataset = product.subImages
+        val dataset = product.images
         val customAdapter = ImageAdapter(dataset)
 
         imageRecyclerView.layoutManager =

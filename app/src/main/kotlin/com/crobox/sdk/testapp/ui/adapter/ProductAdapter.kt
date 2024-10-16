@@ -3,11 +3,13 @@ package com.crobox.sdk.testapp.ui.adapter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.crobox.sdk.testapp.R
 import com.crobox.sdk.testapp.data.Product
+import com.crobox.sdk.testapp.util.loadImage
 
 class ProductAdapter(private val dataSet: Array<Product>) :
     RecyclerView.Adapter<ProductAdapter.ViewHolder>() {
@@ -27,6 +29,7 @@ class ProductAdapter(private val dataSet: Array<Product>) :
      * (custom ViewHolder)
      */
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        val productImage: ImageView
         val nameView: TextView
         val descriptionView: TextView
         val priceView: TextView
@@ -36,6 +39,7 @@ class ProductAdapter(private val dataSet: Array<Product>) :
         init {
             // Define click listener for the ViewHolder's View
             root = view
+            productImage = view.findViewById(R.id.product_image)
             nameView = view.findViewById(R.id.product_name)
             descriptionView = view.findViewById(R.id.product_description)
             priceView = view.findViewById(R.id.product_price)
@@ -58,11 +62,19 @@ class ProductAdapter(private val dataSet: Array<Product>) :
         // Get element from your dataset at this position and replace the
         // contents of the view with that element
         val product = dataSet[position]
-        viewHolder.nameView.text = product.name
-        viewHolder.descriptionView.text = product.description
-        viewHolder.priceView.text = product.price
+        viewHolder.productImage
 
-        val dataset = product.subImages
+        if (product.images[0].isNotEmpty()) {
+            viewHolder.productImage.loadImage(product.images[0])
+        } else {
+            viewHolder.productImage.setImageResource(R.mipmap.ic_launcher)
+        }
+
+        viewHolder.nameView.text = product.name
+        viewHolder.descriptionView.text = product.productAdjective
+        viewHolder.priceView.text = "$ ${product.price}"
+
+        val dataset = product.images
         val customAdapter = ImageAdapter(dataset)
 
         viewHolder.imageRecyclerView.layoutManager =

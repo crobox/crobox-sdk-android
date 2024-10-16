@@ -5,7 +5,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.crobox.sdk.testapp.R
+import com.crobox.sdk.testapp.util.loadImage
 
 class ImageAdapter(private val dataSet: List<String>) :
     RecyclerView.Adapter<ImageAdapter.ViewHolder>() {
@@ -15,10 +17,12 @@ class ImageAdapter(private val dataSet: List<String>) :
      * (custom ViewHolder)
      */
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        val root: View
         val imageView: ImageView
 
         init {
             // Define click listener for the ViewHolder's View
+            root = view
             imageView = view.findViewById(R.id.item_image)
         }
     }
@@ -38,7 +42,9 @@ class ImageAdapter(private val dataSet: List<String>) :
         // Get element from your dataset at this position and replace the
         // contents of the view with that element
         // = dataSet[position]
-        viewHolder.imageView.setImageResource(R.mipmap.ic_launcher)
+        val image = dataSet[position]
+
+        viewHolder.imageView.loadImage(image)
     }
 
     // Return the size of your dataset (invoked by the layout manager)
