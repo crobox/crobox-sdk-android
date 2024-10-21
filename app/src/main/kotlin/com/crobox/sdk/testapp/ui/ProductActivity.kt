@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.crobox.sdk.testapp.R
-import com.crobox.sdk.testapp.data.DataSource
+import com.crobox.sdk.testapp.data.source.ProductDataSource
 import com.crobox.sdk.testapp.ui.adapter.ImageAdapter
 import com.crobox.sdk.testapp.ui.adapter.SizeAdapter
 import com.crobox.sdk.testapp.util.loadImage
@@ -41,7 +41,7 @@ class ProductActivity : AppCompatActivity() {
     }
 
     private fun initData() {
-        val product = DataSource().products[0]
+        val product = ProductDataSource().products[0]
         nameView.text = product.name
         productImage.loadImage(product.images[0])
         descriptionView.text = product.productAdjective
@@ -54,8 +54,8 @@ class ProductActivity : AppCompatActivity() {
             LinearLayoutManager(imageRecyclerView.context, LinearLayoutManager.HORIZONTAL, false)
         imageRecyclerView.adapter = customAdapter
 
-
-        val sizeAdapter = SizeAdapter(listOf<String>("39", "40", "41", "42"))
+        val sizes = ProductDataSource().variants
+        val sizeAdapter = SizeAdapter(sizes)
         sizeRecyclerView.layoutManager = GridLayoutManager(this, 4)
         sizeRecyclerView.adapter = sizeAdapter
     }

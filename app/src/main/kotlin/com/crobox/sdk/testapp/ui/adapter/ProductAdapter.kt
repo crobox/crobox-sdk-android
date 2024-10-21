@@ -8,10 +8,10 @@ import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.crobox.sdk.testapp.R
-import com.crobox.sdk.testapp.data.Product
+import com.crobox.sdk.testapp.data.model.Product
 import com.crobox.sdk.testapp.util.loadImage
 
-class ProductAdapter(private val dataSet: Array<Product>) :
+class ProductAdapter(private val dataSet: List<Product>) :
     RecyclerView.Adapter<ProductAdapter.ViewHolder>() {
     private var onClickListener: OnClickListener? = null
 

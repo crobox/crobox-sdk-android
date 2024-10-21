@@ -44,7 +44,7 @@ class CroboxRequests(val croboxInstance: Crobox) {
 
         testPurchaseEvent()
 
-        testGetPromotionsEvent()
+        testGetPromotions()
 
         // Disable error logging
         croboxInstance.disableLogging()
@@ -214,7 +214,7 @@ class CroboxRequests(val croboxInstance: Crobox) {
         )
     }
 
-    private fun testGetPromotionsEvent() {
+    private fun testGetPromotions() {
         val detailPageParams = RequestQueryParams(
             viewId = UUID.randomUUID(),
             pageType = PageType.PageDetail

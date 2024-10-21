@@ -11,8 +11,8 @@ import com.crobox.sdk.config.CroboxConfig
 import com.crobox.sdk.core.Crobox
 import com.crobox.sdk.testapp.R
 import com.crobox.sdk.testapp.data.CroboxRequests
-import com.crobox.sdk.testapp.data.DataSource
-import com.crobox.sdk.testapp.data.Product
+import com.crobox.sdk.testapp.data.source.ProductDataSource
+import com.crobox.sdk.testapp.data.model.Product
 import com.crobox.sdk.testapp.ui.adapter.ProductAdapter
 import java.util.UUID
 
@@ -47,7 +47,7 @@ class ProductListActivity : AppCompatActivity() {
     }
 
     private fun initView() {
-        val customAdapter = ProductAdapter(DataSource().products)
+        val customAdapter = ProductAdapter(ProductDataSource().products)
 
         val recyclerView: RecyclerView = findViewById(R.id.product_list)
         recyclerView.layoutManager = GridLayoutManager(this, 2)

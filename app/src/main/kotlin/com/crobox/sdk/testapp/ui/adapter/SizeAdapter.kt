@@ -6,9 +6,12 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.crobox.sdk.testapp.R
+import com.crobox.sdk.testapp.data.model.Variant
 
-class SizeAdapter(private val dataSet: List<String>) :
+class SizeAdapter(private val dataSet: List<Variant>) :
     RecyclerView.Adapter<SizeAdapter.ViewHolder>() {
+
+        var selectedPosition = -1
 
     /**
      * Provide a reference to the type of views that you are using
@@ -37,7 +40,27 @@ class SizeAdapter(private val dataSet: List<String>) :
 
         // Get element from your dataset at this position and replace the
         // contents of the view with that element
-        viewHolder.textView.text = dataSet[position]
+        val variant = dataSet[position]
+        with(viewHolder.textView) {
+            text = variant.name
+            paint.isStrikeThruText = !variant.available
+            if (variant.available) {
+                if(selectedPosition == position) {
+                    setBackgroundResource(R.drawable.size_background_selected)
+                }else {
+                    setBackgroundResource(R.drawable.size_background)
+                }
+            } else {
+                setBackgroundResource(R.drawable.size_background_disabled)
+            }
+
+            setOnClickListener {
+                if(variant.available) {
+                    selectedPosition = position
+                    notifyDataSetChanged()
+                }
+            }
+        }
     }
 
     // Return the size of your dataset (invoked by the layout manager)
