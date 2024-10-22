@@ -1,9 +1,12 @@
 package com.crobox.sdk.testapp.ui
 
 import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -13,7 +16,7 @@ import com.crobox.sdk.testapp.ui.adapter.ImageAdapter
 import com.crobox.sdk.testapp.ui.adapter.SizeAdapter
 import com.crobox.sdk.testapp.util.loadImage
 
-class ProductActivity : AppCompatActivity() {
+class ProductFragment : Fragment() {
 
     lateinit var nameView: TextView
     lateinit var productImage: ImageView
@@ -22,22 +25,33 @@ class ProductActivity : AppCompatActivity() {
     lateinit var imageRecyclerView: RecyclerView
     lateinit var sizeRecyclerView: RecyclerView
 
+    private lateinit var root: View
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_product)
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        root = inflater.inflate(R.layout.activity_product, container, false)
+        initView()
+        return root
+    }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         initView()
         initData()
     }
 
     private fun initView() {
-        nameView = findViewById(R.id.product_name)
-        productImage = findViewById(R.id.product_image)
-        descriptionView = findViewById(R.id.product_description)
-        priceView = findViewById(R.id.product_price)
-        imageRecyclerView = findViewById(R.id.image_alternatives)
-        sizeRecyclerView = findViewById(R.id.size_alternatives)
+        with(root) {
+            nameView = findViewById(R.id.product_name)
+            productImage = findViewById(R.id.product_image)
+            descriptionView = findViewById(R.id.product_description)
+            priceView = findViewById(R.id.product_price)
+            imageRecyclerView = findViewById(R.id.image_alternatives)
+            sizeRecyclerView = findViewById(R.id.size_alternatives)
+        }
     }
 
     private fun initData() {
@@ -56,7 +70,7 @@ class ProductActivity : AppCompatActivity() {
 
         val sizes = ProductDataSource().variants
         val sizeAdapter = SizeAdapter(sizes)
-        sizeRecyclerView.layoutManager = GridLayoutManager(this, 4)
+        sizeRecyclerView.layoutManager = GridLayoutManager(requireContext(), 4)
         sizeRecyclerView.adapter = sizeAdapter
     }
 }

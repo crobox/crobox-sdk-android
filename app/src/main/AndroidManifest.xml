@@ -15,7 +15,7 @@
         android:theme="@style/Theme.CroboxTestApp">
 
         <activity
-            android:name=".ui.ProductListActivity"
+            android:name=".ui.DemoActivity"
             android:exported="true"
             android:windowSoftInputMode="adjustPan">
             <intent-filter>
@@ -23,10 +23,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".ui.ProductActivity"
-            android:exported="true"
-            android:windowSoftInputMode="adjustPan"/>
 
     </application>
 

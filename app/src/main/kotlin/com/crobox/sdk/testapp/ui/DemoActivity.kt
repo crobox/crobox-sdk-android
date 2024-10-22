@@ -1,22 +1,17 @@
 package com.crobox.sdk.testapp.ui
 
-import android.content.Intent
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
-import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.crobox.sdk.common.CurrencyCode
 import com.crobox.sdk.common.LocaleCode
 import com.crobox.sdk.config.CroboxConfig
 import com.crobox.sdk.core.Crobox
 import com.crobox.sdk.testapp.R
 import com.crobox.sdk.testapp.data.CroboxRequests
-import com.crobox.sdk.testapp.data.source.ProductDataSource
 import com.crobox.sdk.testapp.data.model.Product
-import com.crobox.sdk.testapp.ui.adapter.ProductAdapter
+import com.crobox.sdk.testapp.ui.base.BaseActivity
 import java.util.UUID
 
-class ProductListActivity : AppCompatActivity() {
+class DemoActivity : BaseActivity() {
 
     // Use the Container ID assigned by Crobox
     private val containerId = "xlrc9t"
@@ -40,28 +35,17 @@ class ProductListActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main2)
+        setContentView(R.layout.demo_activity)
         croboxRequests.executeTestRequests(productId, impressions)
 
-        initView()
+        showProductList()
     }
 
-    private fun initView() {
-        val customAdapter = ProductAdapter(ProductDataSource().products)
-
-        val recyclerView: RecyclerView = findViewById(R.id.product_list)
-        recyclerView.layoutManager = GridLayoutManager(this, 2)
-        recyclerView.adapter = customAdapter
-
-        customAdapter.setOnClickListener(object : ProductAdapter.OnClickListener {
-            override fun onClick(position: Int, product: Product) {
-                val intent: Intent = Intent(
-                    this@ProductListActivity,
-                    ProductActivity::class.java
-                )
-                startActivity(intent)
-            }
-        })
+    fun showProductList() {
+        replaceFragment(ProductListFragment())
     }
 
+    fun showProductDetails(product: Product) {
+        replaceFragment(ProductFragment())
+    }
 }

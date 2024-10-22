@@ -147,7 +147,7 @@ class CroboxRequests(val croboxInstance: Crobox) {
                 tag = "ParsingError",
                 name = "IllegalArgumentException",
                 message = "bad input",
-                file = "ProductListActivity",
+                file = "DemoActivity",
                 line = 100
             )
         )
