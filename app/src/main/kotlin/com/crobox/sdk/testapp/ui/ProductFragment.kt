@@ -32,7 +32,7 @@ class ProductFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        root = inflater.inflate(R.layout.activity_product, container, false)
+        root = inflater.inflate(R.layout.fragment_product, container, false)
         initView()
         return root
     }

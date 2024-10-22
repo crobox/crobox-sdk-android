@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -32,6 +33,20 @@ class ProductListFragment : Fragment() {
         customAdapter.setOnClickListener(object : ProductAdapter.OnClickListener {
             override fun onClick(position: Int, product: Product) {
                 openProductDetails(product)
+            }
+        })
+
+        val search: SearchView = root.findViewById(R.id.search_bar)
+        search.setIconifiedByDefault(false)
+        search.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                customAdapter.filter(query ?: "")
+                return false
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                customAdapter.filter(newText ?: "")
+                return false
             }
         })
     }

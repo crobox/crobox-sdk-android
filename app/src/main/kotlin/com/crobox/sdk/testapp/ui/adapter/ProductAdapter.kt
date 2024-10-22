@@ -1,5 +1,6 @@
 package com.crobox.sdk.testapp.ui.adapter
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,10 +11,17 @@ import androidx.recyclerview.widget.RecyclerView
 import com.crobox.sdk.testapp.R
 import com.crobox.sdk.testapp.data.model.Product
 import com.crobox.sdk.testapp.util.loadImage
+import java.util.Locale
 
 class ProductAdapter(private val dataSet: List<Product>) :
     RecyclerView.Adapter<ProductAdapter.ViewHolder>() {
     private var onClickListener: OnClickListener? = null
+    var productFilterList: MutableList<Product> = mutableListOf()
+    var valueFilter: String = ""
+
+    init {
+        productFilterList.addAll(dataSet)
+    }
 
     fun setOnClickListener(onClickListener: OnClickListener) {
         this.onClickListener = onClickListener
@@ -61,7 +69,7 @@ class ProductAdapter(private val dataSet: List<Product>) :
 
         // Get element from your dataset at this position and replace the
         // contents of the view with that element
-        val product = dataSet[position]
+        val product = productFilterList[position]
         viewHolder.productImage
 
         if (product.images[0].isNotEmpty()) {
@@ -86,6 +94,25 @@ class ProductAdapter(private val dataSet: List<Product>) :
     }
 
     // Return the size of your dataset (invoked by the layout manager)
-    override fun getItemCount() = dataSet.size
+    override fun getItemCount() = productFilterList.size
+
+    // Filter Class
+    fun filter(charText: String) {
+        Log.d("TEST", "filter: $charText")
+        valueFilter = charText.lowercase(Locale.getDefault())
+        if (valueFilter.isNullOrEmpty()) {
+            productFilterList.clear()
+            productFilterList.addAll(dataSet)
+            notifyDataSetChanged()
+        } else {
+            productFilterList.clear()
+            for (wp in dataSet) {
+                if (wp.name.toLowerCase(Locale.getDefault()).contains(charText)) {
+                    productFilterList.add(wp)
+                }
+            }
+            notifyDataSetChanged()
+        }
+    }
 
 }
