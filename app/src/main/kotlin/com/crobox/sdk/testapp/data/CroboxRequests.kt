@@ -74,7 +74,7 @@ class CroboxRequests(val croboxInstance: Crobox) {
         return _cartPage!!
     }
 
-    private fun testClickEvent() {
+    fun testClickEvent() {
         // Sending Click events
         croboxInstance.clickEvent(
             overviewPage(),
@@ -86,7 +86,7 @@ class CroboxRequests(val croboxInstance: Crobox) {
         )
     }
 
-    private fun testPageViewEvent() {
+    fun testPageViewEvent() {
         // The moment user visits a page/view, eg. CartPage, new request params must be created
         val indexPageParams = RequestQueryParams(
             viewId = UUID.randomUUID(),
@@ -115,7 +115,7 @@ class CroboxRequests(val croboxInstance: Crobox) {
         )
     }
 
-    private fun testAddToCartEvent() {
+    fun testAddToCartEvent() {
         // Sending AddToCart events
         croboxInstance.addToCartEvent(
             overviewPage(),
@@ -127,7 +127,7 @@ class CroboxRequests(val croboxInstance: Crobox) {
         )
     }
 
-    private fun testRemoveFromCartEvent() {
+    fun testRemoveFromCartEvent() {
         // Sending Remove From Cart events
         croboxInstance.removeFromCartEvent(
             getCartPage(),
@@ -139,7 +139,7 @@ class CroboxRequests(val croboxInstance: Crobox) {
         )
     }
 
-    private fun testSendErrorEvent() {
+    fun testSendErrorEvent() {
         // Sending Error events
         croboxInstance.errorEvent(
             getCartPage(),
@@ -153,7 +153,7 @@ class CroboxRequests(val croboxInstance: Crobox) {
         )
     }
 
-    private fun testCheckOutEvent() {
+    fun testCheckOutEvent() {
         // Sending Checkout events
         val checkoutPage = RequestQueryParams(
             viewId = UUID.randomUUID(),
@@ -182,7 +182,7 @@ class CroboxRequests(val croboxInstance: Crobox) {
         )
     }
 
-    private fun testPurchaseEvent() {
+    fun testPurchaseEvent() {
         // Sending Purchase Events
         val pageComplete = RequestQueryParams(
             viewId = UUID.randomUUID(),

@@ -8,7 +8,12 @@ import com.crobox.sdk.core.Crobox
 import com.crobox.sdk.testapp.R
 import com.crobox.sdk.testapp.data.CroboxRequests
 import com.crobox.sdk.testapp.data.model.Product
+import com.crobox.sdk.testapp.data.model.PurchaseItem
 import com.crobox.sdk.testapp.ui.base.BaseActivity
+import com.crobox.sdk.testapp.ui.basket.BasketFragment
+import com.crobox.sdk.testapp.ui.product.ProductFragment
+import com.crobox.sdk.testapp.ui.product.ProductListFragment
+import com.crobox.sdk.testapp.ui.purchase.PurchaseFragment
 import java.util.UUID
 
 class DemoActivity : BaseActivity() {
@@ -46,6 +51,25 @@ class DemoActivity : BaseActivity() {
     }
 
     fun showProductDetails(product: Product) {
-        replaceFragment(ProductFragment())
+        replaceFragment(ProductFragment.newInstance(product))
+    }
+
+    fun addToBasket(product: Product) {
+        onBackPressed()
+        showBasket()
+    }
+
+    fun showBasket() {
+        val dialog = BasketFragment()
+        dialog.show(supportFragmentManager, "basket")
+    }
+
+    fun showPurchase() {
+        val dialog = PurchaseFragment()
+        dialog.show(supportFragmentManager, "purchase")
+    }
+
+    fun getCroboxAPI(): CroboxRequests {
+        return croboxRequests
     }
 }
