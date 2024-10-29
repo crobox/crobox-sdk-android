@@ -2,6 +2,7 @@ package com.crobox.sdk.testapp.data.source
 
 import com.crobox.sdk.testapp.data.model.Product
 import com.crobox.sdk.testapp.data.model.Variant
+import kotlin.random.Random
 
 class ProductDataSource {
 
@@ -21,7 +22,9 @@ class ProductDataSource {
             551.00,
             "Handmade",
             "Metal",
-            49111
+            49111,
+            4.5,
+            generateVariants(1, 35, 45)
         )
         val product2 = Product(
             2,
@@ -33,7 +36,9 @@ class ProductDataSource {
             532.00,
             "Handmade",
             "Granite",
-            42786
+            42786,
+            4.0,
+            generateVariants(2, 36, 47)
         )
         val product3 = Product(
             3,
@@ -45,7 +50,9 @@ class ProductDataSource {
             494.00,
             "Rustic",
             "Cotton",
-            7708
+            7708,
+            3.0,
+            generateVariants(3, 39, 45)
         )
         val product4 = Product(
             4,
@@ -57,7 +64,9 @@ class ProductDataSource {
             520.00,
             "Practical",
             "Rubber",
-            75154
+            75154,
+            5.0,
+            generateVariants(1, 36, 45)
         )
         val product5 = Product(
             5,
@@ -69,7 +78,9 @@ class ProductDataSource {
             675.00,
             "Awesome",
             "Fresh",
-            17537
+            17537,
+            4.8,
+            generateVariants(1, 40, 47)
         )
         val product6 = Product(
             6,
@@ -81,18 +92,19 @@ class ProductDataSource {
             153.00,
             "Handmade",
             "Metal",
-            10854
+            10854,
+            1.0,
+            generateVariants(1, 34, 45)
         )
 
         val products = listOf(product1, product2, product3, product4, product5, product6)
 
-
-        var variant11 = Variant(1, "36", false)
-        var variant12 = Variant(1, "37")
-        var variant13 = Variant(1, "38")
-        var variant14 = Variant(1, "39", false)
-        var variant15 = Variant(1, "40")
-
-        val variants = listOf(variant11, variant12, variant13, variant14, variant15)
+        fun generateVariants(productId: Int, minValue: Int, maxValue: Int): List<Variant> {
+            val range = minValue..maxValue
+            return range.map { value ->
+                val isRandom = Random.nextBoolean() // randomly choose true or false
+                Variant(productId, "$value", isRandom)
+            }
+        }
     }
 }

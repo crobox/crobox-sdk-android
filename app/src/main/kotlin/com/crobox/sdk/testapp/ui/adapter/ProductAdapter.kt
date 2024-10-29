@@ -42,6 +42,7 @@ class ProductAdapter(private val dataSet: List<Product>) :
         val descriptionView: TextView
         val priceView: TextView
         val imageRecyclerView: RecyclerView
+        val topLeftPromotionView: TextView
         val root: View
 
         init {
@@ -52,6 +53,7 @@ class ProductAdapter(private val dataSet: List<Product>) :
             descriptionView = view.findViewById(R.id.product_description)
             priceView = view.findViewById(R.id.product_price)
             imageRecyclerView = view.findViewById(R.id.image_alternatives)
+            topLeftPromotionView = view.findViewById(R.id.promotion_top_left)
         }
     }
 
@@ -90,6 +92,15 @@ class ProductAdapter(private val dataSet: List<Product>) :
         viewHolder.imageRecyclerView.adapter = customAdapter
         viewHolder.root.setOnClickListener {
             onClickListener?.onClick(position, product)
+        }
+
+        with(viewHolder.topLeftPromotionView) {
+            if (product.promotion != null) {
+                visibility = View.VISIBLE
+                text = "SALE"
+            } else {
+                visibility = View.GONE
+            }
         }
     }
 
