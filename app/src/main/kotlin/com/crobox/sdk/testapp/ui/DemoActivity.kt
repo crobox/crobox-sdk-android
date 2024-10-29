@@ -41,7 +41,8 @@ class DemoActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.demo_activity)
-        croboxRequests.executeTestRequests(productId, impressions)
+        croboxRequests.setImpressions(impressions)
+        croboxRequests.getPromotions()
 
         showProductList()
     }
@@ -51,6 +52,10 @@ class DemoActivity : BaseActivity() {
     }
 
     fun showProductDetails(product: Product) {
+        replaceFragment(ProductFragment.newInstance(product))
+    }
+
+    fun showProductDetails(product: PurchaseItem) {
         replaceFragment(ProductFragment.newInstance(product))
     }
 

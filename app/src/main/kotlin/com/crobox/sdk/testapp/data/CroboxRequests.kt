@@ -16,39 +16,41 @@ import com.crobox.sdk.domain.PromotionsResponse
 import com.crobox.sdk.domain.SecondaryMessaging
 import com.crobox.sdk.domain.TextBadge
 import com.crobox.sdk.presenter.PromotionCallback
+import com.crobox.sdk.testapp.data.model.Product
+import com.crobox.sdk.testapp.data.model.PurchaseItem
 import java.util.UUID
 
 class CroboxRequests(val croboxInstance: Crobox) {
 
-    private var productId: String = ""
+//    private var productId: String = ""
     private var impressions = mutableListOf<String>()
 
-    fun executeTestRequests(productId: String, impressions: List<String>) {
-        this.productId = productId
-        this.impressions.clear()
-        this.impressions.addAll(impressions)
-        // If enabled, prints messages via android.util.Log API
-        croboxInstance.enableLogging()
-
-        testClickEvent()
-
-        testPageViewEvent()
-
-        testAddToCartEvent()
-
-        testRemoveFromCartEvent()
-
-        testSendErrorEvent()
-
-        testCheckOutEvent()
-
-        testPurchaseEvent()
-
-        testGetPromotions()
-
-        // Disable error logging
-        croboxInstance.disableLogging()
-    }
+//    fun executeTestRequests(productId: String, impressions: List<String>) {
+//        this.productId = productId
+//        this.impressions.clear()
+//        this.impressions.addAll(impressions)
+//        // If enabled, prints messages via android.util.Log API
+//        croboxInstance.enableLogging()
+//
+//        testClickEvent()
+//
+//        testPageViewEvent()
+//
+//        testAddToCartEvent()
+//
+//        testRemoveFromCartEvent()
+//
+//        testSendErrorEvent()
+//
+//        testCheckOutEvent()
+//
+//        testPurchaseEvent()
+//
+//        testGetPromotions()
+//
+//        // Disable error logging
+//        croboxInstance.disableLogging()
+//    }
 
     var _overviewPage: RequestQueryParams? = null
     var _cartPage: RequestQueryParams? = null
@@ -74,19 +76,19 @@ class CroboxRequests(val croboxInstance: Crobox) {
         return _cartPage!!
     }
 
-    fun testClickEvent() {
+    fun clickEvent(product: Product) {
         // Sending Click events
         croboxInstance.clickEvent(
             overviewPage(),
             clickQueryParams = ClickQueryParams(
-                productId = productId,
-                price = 1.0,
+                productId = product.id.toString(),
+                price = product.price,
                 quantity = 1
             )
         )
     }
 
-    fun testPageViewEvent() {
+    fun pageViewEvent(pageName: String) {
         // The moment user visits a page/view, eg. CartPage, new request params must be created
         val indexPageParams = RequestQueryParams(
             viewId = UUID.randomUUID(),
@@ -97,7 +99,7 @@ class CroboxRequests(val croboxInstance: Crobox) {
         croboxInstance.pageViewEvent(
             indexPageParams,
             PageViewParams(
-                pageTitle = "some page title",
+                pageTitle = pageName,
                 product = ProductParams(
                     productId = "1",
                     price = 1.0,
@@ -115,31 +117,31 @@ class CroboxRequests(val croboxInstance: Crobox) {
         )
     }
 
-    fun testAddToCartEvent() {
+    fun addToCartEvent(item: PurchaseItem) {
         // Sending AddToCart events
         croboxInstance.addToCartEvent(
             overviewPage(),
             cartQueryParams = CartQueryParams(
-                productId = productId,
-                price = 1.0,
-                quantity = 1
+                productId = item.product.id.toString(),
+                price = item.product.price,
+                quantity = item.quantity
             )
         )
     }
 
-    fun testRemoveFromCartEvent() {
+    fun removeFromCartEvent(item: PurchaseItem) {
         // Sending Remove From Cart events
         croboxInstance.removeFromCartEvent(
             getCartPage(),
             cartQueryParams = CartQueryParams(
-                productId = productId,
-                price = 1.0,
-                quantity = 1
+                productId = item.product.id.toString(),
+                price = item.product.price,
+                quantity = item.quantity
             )
         )
     }
 
-    fun testSendErrorEvent() {
+    fun sendErrorEvent() {
         // Sending Error events
         croboxInstance.errorEvent(
             getCartPage(),
@@ -153,58 +155,47 @@ class CroboxRequests(val croboxInstance: Crobox) {
         )
     }
 
-    fun testCheckOutEvent() {
+    fun purchaseItemsToProductItems(items: MutableList<PurchaseItem>): List<ProductParams> {
+        return items.map { item ->
+            ProductParams(
+                productId = item.product.id.toString(),
+                price = item.product.price,
+                quantity = item.quantity,
+                otherProductIds = setOf("3", "5", "7")
+            )
+        }
+    }
+
+    fun checkOutEvent(items: MutableList<PurchaseItem>) {
         // Sending Checkout events
         val checkoutPage = RequestQueryParams(
             viewId = UUID.randomUUID(),
             pageType = PageType.PageCheckout
         )
         // Sending Page View events
+        val productParams = purchaseItemsToProductItems(items)
         croboxInstance.checkoutEvent(
             checkoutPage,
             CheckoutParams(
-                products = setOf(
-                    ProductParams(
-                        productId = "1",
-                        price = 1.0,
-                        quantity = 1,
-                        otherProductIds = setOf("3", "5", "7")
-                    ), ProductParams(
-                        productId = "2",
-                        price = 2.0,
-                        quantity = 2,
-                        otherProductIds = setOf("4", "6", "8")
-                    )
-                ),
+                products = productParams.toSet(),
                 step = "1",
                 customProperties = mapOf(Pair("page-specific", "true"))
             )
         )
     }
 
-    fun testPurchaseEvent() {
+    fun purchaseEvent(items: MutableList<PurchaseItem>) {
         // Sending Purchase Events
         val pageComplete = RequestQueryParams(
             viewId = UUID.randomUUID(),
             pageType = PageType.PageComplete
         )
         // Sending Page View events
+        val productParams = purchaseItemsToProductItems(items)
         croboxInstance.purchaseEvent(
             pageComplete,
             PurchaseParams(
-                products = setOf(
-                    ProductParams(
-                        productId = "1",
-                        price = 1.0,
-                        quantity = 1,
-                        otherProductIds = setOf("3", "5", "7")
-                    ), ProductParams(
-                        productId = "2",
-                        price = 2.0,
-                        quantity = 2,
-                        otherProductIds = setOf("4", "6", "8")
-                    )
-                ),
+                products = productParams.toSet(),
                 transactionId = "abc123",
                 affiliation = "google store",
                 coupon = "some coupon",
@@ -214,7 +205,7 @@ class CroboxRequests(val croboxInstance: Crobox) {
         )
     }
 
-    private fun testGetPromotions() {
+    fun getPromotions() {
         val detailPageParams = RequestQueryParams(
             viewId = UUID.randomUUID(),
             pageType = PageType.PageDetail
@@ -335,5 +326,9 @@ class CroboxRequests(val croboxInstance: Crobox) {
                 """.trimIndent()
         )
 
+    }
+
+    fun setImpressions(impressions: List<String>) {
+        this.impressions = impressions.toMutableList()
     }
 }
