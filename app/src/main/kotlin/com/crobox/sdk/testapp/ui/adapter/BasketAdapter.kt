@@ -95,6 +95,10 @@ class BasketAdapter(private val dataSet: List<PurchaseItem>) :
         viewHolder.deleteView.setOnClickListener {
             onClickListener?.delete(position, product)
         }
+
+        viewHolder.root.setOnClickListener {
+            onClickListener?.onClick(position, product)
+        }
     }
 
     // Return the size of your dataset (invoked by the layout manager)

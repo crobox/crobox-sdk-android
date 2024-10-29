@@ -54,7 +54,7 @@ class BasketFragment : BottomSheetDialogFragment() {
         super.onViewCreated(view, savedInstanceState)
         initData()
         initListener()
-        (requireActivity() as DemoActivity).getCroboxAPI().testPageViewEvent()
+        (requireActivity() as DemoActivity).getCroboxAPI().pageViewEvent("basket")
     }
 
     fun initView() {
@@ -76,23 +76,29 @@ class BasketFragment : BottomSheetDialogFragment() {
 
             override fun increment(position: Int, product: Product) {
                 BasketDataSource.increment(product)
-                (requireActivity() as DemoActivity).getCroboxAPI().testAddToCartEvent()
-                customAdapter.notifyDataSetChanged()
+                val purchaseItem = BasketDataSource.getProduct(product)!!
+                (requireActivity() as DemoActivity).getCroboxAPI().addToCartEvent(purchaseItem)
+                updateBasket()
             }
 
             override fun decrement(position: Int, product: Product) {
                 BasketDataSource.decrement(product)
-                (requireActivity() as DemoActivity).getCroboxAPI().testRemoveFromCartEvent()
-                customAdapter.notifyDataSetChanged()
+                val purchaseItem = BasketDataSource.getProduct(product)!!
+                (requireActivity() as DemoActivity).getCroboxAPI().removeFromCartEvent(purchaseItem)
+                updateBasket()
             }
 
             override fun delete(position: Int, product: Product) {
-                (requireActivity() as DemoActivity).getCroboxAPI().testRemoveFromCartEvent()
+                val purchaseItem = BasketDataSource.getProduct(product)!!
                 BasketDataSource.delete(product)
+                (requireActivity() as DemoActivity).getCroboxAPI().removeFromCartEvent(purchaseItem)
+                updateBasket()
             }
 
             override fun onClick(position: Int, product: Product) {
-                (requireActivity() as DemoActivity).showProductDetails(product)
+                val purchaseItem = BasketDataSource.getProduct(product)!!
+                (requireActivity() as DemoActivity).showProductDetails(purchaseItem)
+                dismiss()
             }
 
         })
@@ -108,7 +114,7 @@ class BasketFragment : BottomSheetDialogFragment() {
 
     fun initListener() {
         continueToPurchase.setOnClickListener {
-            (requireActivity() as DemoActivity).getCroboxAPI().testCheckOutEvent()
+            (requireActivity() as DemoActivity).getCroboxAPI().checkOutEvent(BasketDataSource.items)
             dismiss()
             (requireActivity() as DemoActivity).showPurchase()
         }
