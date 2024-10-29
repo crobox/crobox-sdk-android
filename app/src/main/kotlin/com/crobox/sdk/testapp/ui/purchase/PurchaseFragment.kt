@@ -53,7 +53,7 @@ class PurchaseFragment : BottomSheetDialogFragment() {
         super.onViewCreated(view, savedInstanceState)
         initData()
         initListener()
-        (requireActivity() as DemoActivity).getCroboxAPI().testPageViewEvent()
+        (requireActivity() as DemoActivity).getCroboxAPI().pageViewEvent("purchase")
     }
 
     fun initView() {
@@ -77,7 +77,7 @@ class PurchaseFragment : BottomSheetDialogFragment() {
 
     fun initListener() {
         purchase.setOnClickListener {
-            (requireActivity() as DemoActivity).getCroboxAPI().testPurchaseEvent()
+            (requireActivity() as DemoActivity).getCroboxAPI().purchaseEvent(BasketDataSource.items)
             BasketDataSource.clearAll()
             Toast.makeText(requireContext(), "Purchase completed!", Toast.LENGTH_LONG)
             dismiss()

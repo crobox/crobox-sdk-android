@@ -24,6 +24,10 @@ class BasketDataSource {
         }
 
         fun hasProduct(product: Product): PurchaseItem? {
+            return getProduct(product)
+        }
+
+        fun getProduct(product: Product): PurchaseItem? {
             return items.firstOrNull { it.product.id == product.id }
         }
 
