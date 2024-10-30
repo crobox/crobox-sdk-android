@@ -21,6 +21,10 @@ android {
         targetSdk 34
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"
+
+        buildConfigField "String", "API_BASE_URL", "\"https://api.crobox.com\""
+        buildConfigField "int", "VERSION_CODE", VERSION_CODE
+        buildConfigField "String", "VERSION_NAME", "\"$VERSION_NAME\""
     }
 
     buildTypes {
@@ -41,6 +45,11 @@ android {
         unitTests {
             includeAndroidResources = true
         }
+    }
+
+    // Enable BuildConfig for this library module
+    buildFeatures {
+        buildConfig = true
     }
 }
 

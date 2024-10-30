@@ -21,14 +21,17 @@ internal object CroboxAPIClient {
                     .registerTypeAdapter(UUID::class.java, CustomUUIDDeserializer())
                     .create()
 
-            return Retrofit.Builder().client(client).baseUrl(Constant.API_URL)
+            return Retrofit.Builder()
+                .client(client).baseUrl(Constant.API_URL)
                 .addConverterFactory(GsonConverterFactory.create(gson)).build()
         }
 
     private fun client(): OkHttpClient {
         val client: OkHttpClient = OkHttpClient.Builder()
             .readTimeout(60 * 5, TimeUnit.SECONDS)
-            .connectTimeout(60 * 5, TimeUnit.SECONDS).build()
+            .connectTimeout(60 * 5, TimeUnit.SECONDS)
+            .addInterceptor(UserAgentInterceptor())
+            .build()
 
         return client
 
