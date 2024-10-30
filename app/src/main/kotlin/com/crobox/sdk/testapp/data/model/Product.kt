@@ -17,17 +17,33 @@ data class Product(
     val rating: Double,
     val variants: List<Variant>
 ) {
-    var promotion: PromotionContent? = null
+    var promotionTL: PromotionContent? = null
+    var promotionTR: PromotionContent? = null
 
     init {
         //just for a demo purposes
+        promotionTL = generateTestPromotion("SALE", "#ffffff","#ff2222")
+        promotionTR = generateTestPromotion("OUTLET", "#ffffff","#22ff22")
+    }
+
+    private fun generateTestPromotion(
+        text: String,
+        fontColor: String,
+        backgroundColor: String
+    ): PromotionContent? {
         val hasPromotion = Random.nextInt(3) >= 2
-        if(hasPromotion) {
-            promotion = PromotionContent(
-                config = mapOf(),
+        if (hasPromotion) {
+            return PromotionContent(
+                config = mapOf(
+                    "text" to text,
+                    "fontColor" to color,
+                    "backgroundColor" to backgroundColor,
+                    "borderColor" to backgroundColor
+                ),
                 messageId = "",
-                componentName = "testPromotion"
+                componentName = "mob-app-text-badge.tsx"//text view
             )
         }
+        return null
     }
 }

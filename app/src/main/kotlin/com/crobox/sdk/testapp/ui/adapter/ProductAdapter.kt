@@ -8,6 +8,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.crobox.sdk.domain.TextBadge
 import com.crobox.sdk.testapp.R
 import com.crobox.sdk.testapp.data.model.Product
 import com.crobox.sdk.testapp.util.loadImage
@@ -43,6 +44,7 @@ class ProductAdapter(private val dataSet: List<Product>) :
         val priceView: TextView
         val imageRecyclerView: RecyclerView
         val topLeftPromotionView: TextView
+        val topRightPromotionView: TextView
         val root: View
 
         init {
@@ -54,6 +56,7 @@ class ProductAdapter(private val dataSet: List<Product>) :
             priceView = view.findViewById(R.id.product_price)
             imageRecyclerView = view.findViewById(R.id.image_alternatives)
             topLeftPromotionView = view.findViewById(R.id.promotion_top_left)
+            topRightPromotionView = view.findViewById(R.id.promotion_top_right)
         }
     }
 
@@ -95,9 +98,36 @@ class ProductAdapter(private val dataSet: List<Product>) :
         }
 
         with(viewHolder.topLeftPromotionView) {
-            if (product.promotion != null) {
+            if (product.promotionTL != null) {
                 visibility = View.VISIBLE
-                text = "SALE"
+                val promotion = product.promotionTL?.contentConfig()
+                if(promotion is TextBadge) {
+                    text = promotion.text
+                    if (promotion.backgroundColorAndroid() != null) setBackgroundColor(
+                        promotion.backgroundColorAndroid()!!.toArgb()
+                    )
+                    if (promotion.fontColorAndroid() != null) setTextColor(
+                        promotion.fontColorAndroid()!!.toArgb()
+                    )
+                }
+            } else {
+                visibility = View.GONE
+            }
+        }
+
+        with(viewHolder.topRightPromotionView) {
+            if (product.promotionTR != null) {
+                visibility = View.VISIBLE
+                val promotion = product.promotionTR?.contentConfig()
+                if(promotion is TextBadge) {
+                    text = promotion.text
+                    if (promotion.backgroundColorAndroid() != null) setBackgroundColor(
+                        promotion.backgroundColorAndroid()!!.toArgb()
+                    )
+                    if (promotion.fontColorAndroid() != null) setTextColor(
+                        promotion.fontColorAndroid()!!.toArgb()
+                    )
+                }
             } else {
                 visibility = View.GONE
             }
