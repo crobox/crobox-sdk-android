@@ -23,8 +23,8 @@ android {
         consumerProguardFiles "consumer-rules.pro"
 
         buildConfigField "String", "API_BASE_URL", "\"https://api.crobox.com\""
-        buildConfigField "int", "VERSION_CODE", "1"
-        buildConfigField "String", "VERSION_NAME", "\"1.0\""
+        buildConfigField "int", "VERSION_CODE", VERSION_CODE
+        buildConfigField "String", "VERSION_NAME", "\"$VERSION_NAME\""
     }
 
     buildTypes {
