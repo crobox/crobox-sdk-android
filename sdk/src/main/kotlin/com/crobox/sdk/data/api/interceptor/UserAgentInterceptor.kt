@@ -1,4 +1,4 @@
-package com.crobox.sdk.data.api
+package com.crobox.sdk.data.api.interceptor
 
 import com.crobox.sdk.BuildConfig
 import okhttp3.Interceptor

@@ -1,5 +1,7 @@
 package com.crobox.sdk.data.api
 
+import com.crobox.sdk.data.api.interceptor.MurMurHashInterceptor
+import com.crobox.sdk.data.api.interceptor.UserAgentInterceptor
 import com.google.gson.GsonBuilder
 import com.google.gson.Strictness
 import okhttp3.OkHttpClient
@@ -31,6 +33,7 @@ internal object CroboxAPIClient {
             .readTimeout(60 * 5, TimeUnit.SECONDS)
             .connectTimeout(60 * 5, TimeUnit.SECONDS)
             .addInterceptor(UserAgentInterceptor())
+            .addInterceptor(MurMurHashInterceptor())
             .build()
 
         return client
