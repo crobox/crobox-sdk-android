@@ -5,7 +5,13 @@ package com.crobox.sdk.common
  *  - the language is lowercase, two-letter form of ISO 639-1 language codes
  *  - the country is uppercase, two-letter form of ISO 3166-1 Country codes
  */
-enum class LocaleCode(val code: String) {
+
+class LocaleCode(val code: String) {
+
+    // Secondary constructor that takes a DefaultLocaleCode enum
+    constructor(DefaultLocaleCode: DefaultLocaleCode) : this(DefaultLocaleCode.code)
+}
+enum class DefaultLocaleCode(val code: String) {
     EN_US("en_US"),
     EN_GB("en_GB"),
     EN_CA("en_CA"),
