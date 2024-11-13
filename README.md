@@ -264,7 +264,7 @@ See [test app](app/src/main/kotlin/com/crobox/sdk/testapp/ui/DemoActivity.kt) to
 ### List of screens
 The application includes test UI for the next pages:  <br/>
 **List of Products page**  - display list of test products with test promotion and banners<br/>
-**Product details page**  - display product images, description and available variants.<br/>
+**Product Details page**  - display product images, description and available variants.<br/>
 **Product Basket page**  - display list of products in a user basket<br/>
 **Checkout page**  - dialog with checkout data<br/>
 **Purchase page** - final confirmation to complete purchase
