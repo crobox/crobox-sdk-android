@@ -17,7 +17,7 @@ class MurMurHashInterceptor: Interceptor {
         val queryParamsAsString = originalUrl.encodedQuery ?: ""
 
         val murmur = MurmurHash3_32.hash(queryParamsAsString)
-        println("For data $queryParamsAsString:  base36: $murmur")
+//        println("For data $queryParamsAsString:  base36: $murmur")
 
         // Build a new request with an additional query parameter
         val url = originalRequest.url.newBuilder()

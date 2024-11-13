@@ -26,7 +26,7 @@ object MurmurHash3_32 {
             result.append("-")
         }
 
-        return result.reverse().toString()
+        return result.reverse().toString().lowercase()
     }
 
     fun hash(string: String): String {
@@ -36,7 +36,7 @@ object MurmurHash3_32 {
         val intResult = result.asInt()
         val base36 = intToBase36(intResult)
 
-        println("For data $string: result $result intResult: $intResult base36: $base36")
+//        println("For data $string: result $result intResult: $intResult base36: $base36")
         return base36
     }
 }
