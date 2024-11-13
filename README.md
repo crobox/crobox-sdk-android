@@ -262,21 +262,39 @@ object : PromotionCallback {
 See [test app](app/src/main/kotlin/com/crobox/sdk/testapp/ui/DemoActivity.kt) to see details of Crobox SDK usage.
 
 ### List of screens
-The application includes test UI for the next pages:  
-**List of Products page**  - display list of test products with test promotion and banners
-**Product details page**  - display product images, description and available variants.
-**Product Basket page**  - display list of products in a user basket
-**Checkout page**  - dialog with checkout data
+The application includes test UI for the next pages:  <br/>
+**List of Products page**  - display list of test products with test promotion and banners<br/>
+**Product details page**  - display product images, description and available variants.<br/>
+**Product Basket page**  - display list of products in a user basket<br/>
+**Checkout page**  - dialog with checkout data<br/>
 **Purchase page** - final confirmation to complete purchase
 
 ### List of Events
-Sample App sends Crobox event requests for the next scenarios:  
-**clickEvent**  - used to track click events at object/ specific area.
-**pageViewEvent**  - used to track page view events, for example list of **products, product details, checkout, etc.
-**addToCartEvent**  - used to track analytics when the user add products to the basket
-**removeFromCartEvent**   - used to track analytics when the user removes/delete products to the basket
-**checkOutEvent**  - used to track checkout page
-**purchaseEvent**  - used to track final confirmation for purchase
+Sample App sends Crobox event requests for the next scenarios:  <br/>
+**clickEvent**  - used to track click events at object/ specific area.<br/>
+```kotlin
+(requireActivity() as DemoActivity).getCroboxAPI().clickEvent(product)
+```
+**pageViewEvent**  - used to track page view events, for example list of **products, product details, checkout, etc.<br/>
+```kotlin
+(requireActivity() as DemoActivity).getCroboxAPI().pageViewEvent("basket")
+```
+**addToCartEvent**  - used to track analytics when the user add products to the basket<br/>
+```kotlin
+(requireActivity() as DemoActivity).getCroboxAPI().addToCartEvent(purchaseItem)
+```
+**removeFromCartEvent**   - used to track analytics when the user removes/delete products to the basket<br/>
+```kotlin
+(requireActivity() as DemoActivity).getCroboxAPI().removeFromCartEvent(purchaseItem)
+```
+**checkOutEvent**  - used to track checkout page<br/>
+```kotlin
+(requireActivity() as DemoActivity).getCroboxAPI().checkOutEvent(BasketDataSource.items)
+```
+**purchaseEvent**  - used to track final confirmation for purchase<br/>
+```kotlin
+(requireActivity() as DemoActivity).getCroboxAPI().purchaseEvent(BasketDataSource.items)
+```
 
 ### Get Promotion
 The app executes **getPromotions** request to get a list of test promotions. These test promotions can be shown   
@@ -284,7 +302,7 @@ as a banner to notify end user about "Sales", and "Ads" about specific products.
 
 ### Sample data
 Sample project uses test products and test data sources to visualize the general flow of E-Commerce application.   
-That's why the application operates with a simplified set of data models, like:   
-**Product** data model - specific Object that user can purchase  
-**Variant** data model - Product with specific parameters (size, color, etc).  
-**PurchaseItem** data model - elements that the user puts into Basket.  
+That's why the application operates with a simplified set of data models, like:<br/>   
+**Product** data model - specific Object that user can purchase  <br/>
+**Variant** data model - Product with specific parameters (size, color, etc).<br/>
+**PurchaseItem** data model - elements that the user puts into Basket.
