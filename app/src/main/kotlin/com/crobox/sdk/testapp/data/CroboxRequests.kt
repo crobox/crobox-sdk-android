@@ -22,35 +22,7 @@ import java.util.UUID
 
 class CroboxRequests(val croboxInstance: Crobox) {
 
-//    private var productId: String = ""
     private var impressions = mutableListOf<String>()
-
-//    fun executeTestRequests(productId: String, impressions: List<String>) {
-//        this.productId = productId
-//        this.impressions.clear()
-//        this.impressions.addAll(impressions)
-//        // If enabled, prints messages via android.util.Log API
-//        croboxInstance.enableLogging()
-//
-//        testClickEvent()
-//
-//        testPageViewEvent()
-//
-//        testAddToCartEvent()
-//
-//        testRemoveFromCartEvent()
-//
-//        testSendErrorEvent()
-//
-//        testCheckOutEvent()
-//
-//        testPurchaseEvent()
-//
-//        testGetPromotions()
-//
-//        // Disable error logging
-//        croboxInstance.disableLogging()
-//    }
 
     var _overviewPage: RequestQueryParams? = null
     var _cartPage: RequestQueryParams? = null
@@ -155,7 +127,7 @@ class CroboxRequests(val croboxInstance: Crobox) {
         )
     }
 
-    fun purchaseItemsToProductItems(items: MutableList<PurchaseItem>): List<ProductParams> {
+    private fun purchaseItemsToProductItems(items: MutableList<PurchaseItem>): List<ProductParams> {
         return items.map { item ->
             ProductParams(
                 productId = item.product.id.toString(),
