@@ -5,120 +5,113 @@ package com.crobox.sdk.common
  *  - the language is lowercase, two-letter form of ISO 639-1 language codes
  *  - the country is uppercase, two-letter form of ISO 3166-1 Country codes
  */
-
 class LocaleCode(val code: String) {
 
-    // Secondary constructor that takes a DefaultLocaleCode enum
-    constructor(DefaultLocaleCode: DefaultLocaleCode) : this(DefaultLocaleCode.code)
-}
-enum class DefaultLocaleCode(val code: String) {
-    EN_US("en_US"),
-    EN_GB("en_GB"),
-    EN_CA("en_CA"),
-    EN_AU("en_AU"),
-    EN_IN("en_IN"),
-    EN_NZ("en_NZ"),
-    ES_ES("es_ES"),
-    ES_MX("es_MX"),
-    FR_FR("fr_FR"),
-    FR_CA("fr_CA"),
-    DE_DE("de_DE"),
-    IT_IT("it_IT"),
-    JA_JP("ja_JP"),
-    KO_KR("ko_KR"),
-    PT_PT("pt_PT"),
-    PT_BR("pt_BR"),
-    RU_RU("ru_RU"),
-    ZH_CN("zh_CN"),
-    ZH_TW("zh_TW"),
-    AR_SA("ar_SA"),
-    TR_TR("tr_TR"),
-    AF_ZA("af_ZA"),
-    SQ_AL("sq_AL"),
-    AM_ET("am_ET"),
-    HY_AM("hy_AM"),
-    EU_ES("eu_ES"),
-    BE_BY("be_BY"),
-    BN_BD("bn_BD"),
-    BS_BA("bs_BA"),
-    BG_BG("bg_BG"),
-    CA_ES("ca_ES"),
-    HR_HR("hr_HR"),
-    CS_CZ("cs_CZ"),
-    DA_DK("da_DK"),
-    NL_NL("nl_NL"),
-    EO("eo"),
-    ET_EE("et_EE"),
-    FO_FO("fo_FO"),
-    FI_FI("fi_FI"),
-    GL_ES("gl_ES"),
-    KA_GE("ka_GE"),
-    EL_GR("el_GR"),
-    GU_IN("gu_IN"),
-    HE_IL("he_IL"),
-    HI_IN("hi_IN"),
-    HU_HU("hu_HU"),
-    IS_IS("is_IS"),
-    ID_ID("id_ID"),
-    GA_IE("ga_IE"),
-    IT_IT_NY("it_IT_NY"),
-    JV_ID("jv_ID"),
-    KN_IN("kn_IN"),
-    KK_KZ("kk_KZ"),
-    KM_KH("km_KH"),
-    RW_RW("rw_RW"),
-    KO_KP("ko_KP"),
-    KY_KG("ky_KG"),
-    LO_LA("lo_LA"),
-    LA_VA("la_VA"),
-    LV_LV("lv_LV"),
-    LT_LT("lt_LT"),
-    MK_MK("mk_MK"),
-    MS_MY("ms_MY"),
-    ML_IN("ml_IN"),
-    MR_IN("mr_IN"),
-    MN_MN("mn_MN"),
-    NE_NP("ne_NP"),
-    NB_NO("nb_NO"),
-    NN_NO("nn_NO"),
-    OC_FR("oc_FR"),
-    OR_IN("or_IN"),
-    PA_IN("pa_IN"),
-    FA_IR("fa_IR"),
-    PL_PL("pl_PL"),
-    PT_PT_VR("pt_PT_VR"),
-    PT_PT_TR("pt_PT_TR"),
-    PA_PK("pa_PK"),
-    RO_RO("ro_RO"),
-    RM_CH("rm_CH"),
-    SA_IN("sa_IN"),
-    SR_RS("sr_RS"),
-    SI_LK("si_LK"),
-    SK_SK("sk_SK"),
-    SL_SI("sl_SI"),
-    ES_419("es_419"),
-    SU_ID("su_ID"),
-    SW_KE("sw_KE"),
-    SV_SE("sv_SE"),
-    TL_PH("tl_PH"),
-    TG_TJ("tg_TJ"),
-    TA_IN("ta_IN"),
-    TT_RU("tt_RU"),
-    TE_IN("te_IN"),
-    TH_TH("th_TH"),
-    TR_CY("tr_CY"),
-    UK_UA("uk_UA"),
-    UR_PK("ur_PK"),
-    UZ_UZ("uz_UZ"),
-    VI_VN("vi_VN"),
-    CY_GB("cy_GB"),
-    XH_ZA("xh_ZA"),
-    YI_DE("yi_DE"),
-    YO_NG("yo_NG"),
-    ZU_ZA("zu_ZA");
-
-    override fun toString(): String {
-        return code
+    companion object {
+        val EN_US = LocaleCode("en_US")
+        val EN_GB = LocaleCode("en_GB")
+        val EN_CA = LocaleCode("en_CA")
+        val EN_AU = LocaleCode("en_AU")
+        val EN_IN = LocaleCode("en_IN")
+        val EN_NZ = LocaleCode("en_NZ")
+        val ES_ES = LocaleCode("es_ES")
+        val ES_MX = LocaleCode("es_MX")
+        val FR_FR = LocaleCode("fr_FR")
+        val FR_CA = LocaleCode("fr_CA")
+        val DE_DE = LocaleCode("de_DE")
+        val IT_IT = LocaleCode("it_IT")
+        val JA_JP = LocaleCode("ja_JP")
+        val KO_KR = LocaleCode("ko_KR")
+        val PT_PT = LocaleCode("pt_PT")
+        val PT_BR = LocaleCode("pt_BR")
+        val RU_RU = LocaleCode("ru_RU")
+        val ZH_CN = LocaleCode("zh_CN")
+        val ZH_TW = LocaleCode("zh_TW")
+        val AR_SA = LocaleCode("ar_SA")
+        val TR_TR = LocaleCode("tr_TR")
+        val AF_ZA = LocaleCode("af_ZA")
+        val SQ_AL = LocaleCode("sq_AL")
+        val AM_ET = LocaleCode("am_ET")
+        val HY_AM = LocaleCode("hy_AM")
+        val EU_ES = LocaleCode("eu_ES")
+        val BE_BY = LocaleCode("be_BY")
+        val BN_BD = LocaleCode("bn_BD")
+        val BS_BA = LocaleCode("bs_BA")
+        val BG_BG = LocaleCode("bg_BG")
+        val CA_ES = LocaleCode("ca_ES")
+        val HR_HR = LocaleCode("hr_HR")
+        val CS_CZ = LocaleCode("cs_CZ")
+        val DA_DK = LocaleCode("da_DK")
+        val NL_NL = LocaleCode("nl_NL")
+        val EO = LocaleCode("eo")
+        val ET_EE = LocaleCode("et_EE")
+        val FO_FO = LocaleCode("fo_FO")
+        val FI_FI = LocaleCode("fi_FI")
+        val GL_ES = LocaleCode("gl_ES")
+        val KA_GE = LocaleCode("ka_GE")
+        val EL_GR = LocaleCode("el_GR")
+        val GU_IN = LocaleCode("gu_IN")
+        val HE_IL = LocaleCode("he_IL")
+        val HI_IN = LocaleCode("hi_IN")
+        val HU_HU = LocaleCode("hu_HU")
+        val IS_IS = LocaleCode("is_IS")
+        val ID_ID = LocaleCode("id_ID")
+        val GA_IE = LocaleCode("ga_IE")
+        val IT_IT_NY = LocaleCode("it_IT_NY")
+        val JV_ID = LocaleCode("jv_ID")
+        val KN_IN = LocaleCode("kn_IN")
+        val KK_KZ = LocaleCode("kk_KZ")
+        val KM_KH = LocaleCode("km_KH")
+        val RW_RW = LocaleCode("rw_RW")
+        val KO_KP = LocaleCode("ko_KP")
+        val KY_KG = LocaleCode("ky_KG")
+        val LO_LA = LocaleCode("lo_LA")
+        val LA_VA = LocaleCode("la_VA")
+        val LV_LV = LocaleCode("lv_LV")
+        val LT_LT = LocaleCode("lt_LT")
+        val MK_MK = LocaleCode("mk_MK")
+        val MS_MY = LocaleCode("ms_MY")
+        val ML_IN = LocaleCode("ml_IN")
+        val MR_IN = LocaleCode("mr_IN")
+        val MN_MN = LocaleCode("mn_MN")
+        val NE_NP = LocaleCode("ne_NP")
+        val NB_NO = LocaleCode("nb_NO")
+        val NN_NO = LocaleCode("nn_NO")
+        val OC_FR = LocaleCode("oc_FR")
+        val OR_IN = LocaleCode("or_IN")
+        val PA_IN = LocaleCode("pa_IN")
+        val FA_IR = LocaleCode("fa_IR")
+        val PL_PL = LocaleCode("pl_PL")
+        val PT_PT_VR = LocaleCode("pt_PT_VR")
+        val PT_PT_TR = LocaleCode("pt_PT_TR")
+        val PA_PK = LocaleCode("pa_PK")
+        val RO_RO = LocaleCode("ro_RO")
+        val RM_CH = LocaleCode("rm_CH")
+        val SA_IN = LocaleCode("sa_IN")
+        val SR_RS = LocaleCode("sr_RS")
+        val SI_LK = LocaleCode("si_LK")
+        val SK_SK = LocaleCode("sk_SK")
+        val SL_SI = LocaleCode("sl_SI")
+        val ES_419 = LocaleCode("es_419")
+        val SU_ID = LocaleCode("su_ID")
+        val SW_KE = LocaleCode("sw_KE")
+        val SV_SE = LocaleCode("sv_SE")
+        val TL_PH = LocaleCode("tl_PH")
+        val TG_TJ = LocaleCode("tg_TJ")
+        val TA_IN = LocaleCode("ta_IN")
+        val TT_RU = LocaleCode("tt_RU")
+        val TE_IN = LocaleCode("te_IN")
+        val TH_TH = LocaleCode("th_TH")
+        val TR_CY = LocaleCode("tr_CY")
+        val UK_UA = LocaleCode("uk_UA")
+        val UR_PK = LocaleCode("ur_PK")
+        val UZ_UZ = LocaleCode("uz_UZ")
+        val VI_VN = LocaleCode("vi_VN")
+        val CY_GB = LocaleCode("cy_GB")
+        val XH_ZA = LocaleCode("xh_ZA")
+        val YI_DE = LocaleCode("yi_DE")
+        val YO_NG = LocaleCode("yo_NG")
+        val ZU_ZA = LocaleCode("zu_ZA")
     }
-}
 
+}
