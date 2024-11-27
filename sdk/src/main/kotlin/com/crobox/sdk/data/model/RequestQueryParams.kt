@@ -56,7 +56,7 @@ enum class EventType(internal val type: String) {
 data class ErrorQueryParams(
     val tag: String? = null,
     val name: String? = null,
-    val message: String? = null,
+    var message: String? = null,
     val file: String? = null,
     val line: Int? = null,
 )
