@@ -1,5 +1,6 @@
 package com.crobox.sdk.presenter
 
+import com.crobox.sdk.BuildConfig
 import com.crobox.sdk.common.CroboxDebug
 import com.crobox.sdk.common.CroboxEncoder
 import com.crobox.sdk.config.CroboxConfig
@@ -69,7 +70,8 @@ internal class CroboxAPIPresenter(private val config: CroboxConfig) {
     }
 
     fun event(
-        eventType: EventType, queryParams: RequestQueryParams, additionalParams: Any?
+        eventType: EventType, queryParams: RequestQueryParams, additionalParams: Any?,
+        errorQueryParams: ErrorQueryParams? = null
     ) {
 
         val parameters = eventQuery(queryParams, additionalParams, eventType)
@@ -81,17 +83,46 @@ internal class CroboxAPIPresenter(private val config: CroboxConfig) {
             ) {
                 try {
                     if (!response.isSuccessful) {
-                        CroboxDebug.eventError(response.body().toString())
+                        notifyError(eventType, queryParams, errorQueryParams, response.body().toString())
                     }
                 } catch (ex: Exception) {
-                    CroboxDebug.eventError(response.body().toString())
+                    notifyError(
+                        eventType,
+                        queryParams,
+                        errorQueryParams,
+                        response.body().toString()
+                    )
                 }
             }
 
             override fun onFailure(call: Call<Void?>, t: Throwable) {
-                CroboxDebug.eventError(t.message.toString())
+                notifyError(
+                    eventType,
+                    queryParams,
+                    errorQueryParams,
+                    t.message.toString()
+                )
             }
         })
+    }
+
+    private fun notifyError(
+        eventType: EventType, queryParams: RequestQueryParams,
+        errorQueryParams: ErrorQueryParams?,
+        message: String
+    ) {
+        if (eventType == EventType.Error) {
+            return; //We don't want to have error loop cycle
+        }
+        if (BuildConfig.DEBUG) {
+            CroboxDebug.eventError(message)
+        }
+        if(errorQueryParams != null) errorQueryParams.message = message
+        event(
+            eventType = EventType.Error,
+            queryParams = queryParams,
+            additionalParams = errorQueryParams
+        )
     }
 
     private fun eventQuery(
