@@ -81,7 +81,8 @@ class Crobox private constructor(config: CroboxConfig) {
         presenter.event(
             eventType = EventType.Click,
             queryParams = queryParams,
-            additionalParams = clickQueryParams
+            additionalParams = clickQueryParams,
+            errorQueryParams = ErrorQueryParams("sdk", "click")
         )
     }
 
@@ -99,7 +100,8 @@ class Crobox private constructor(config: CroboxConfig) {
         presenter.event(
             eventType = EventType.AddCart,
             queryParams = queryParams,
-            additionalParams = cartQueryParams
+            additionalParams = cartQueryParams,
+            errorQueryParams = ErrorQueryParams("sdk", "addcart")
         )
     }
 
@@ -116,7 +118,8 @@ class Crobox private constructor(config: CroboxConfig) {
         presenter.event(
             eventType = EventType.RemoveCart,
             queryParams = queryParams,
-            additionalParams = cartQueryParams
+            additionalParams = cartQueryParams,
+            errorQueryParams = ErrorQueryParams("sdk", "rmcart")
         )
     }
 
@@ -148,7 +151,8 @@ class Crobox private constructor(config: CroboxConfig) {
         presenter.event(
             eventType = EventType.PageView,
             queryParams = queryParams,
-            additionalParams = pageViewParams
+            additionalParams = pageViewParams,
+            errorQueryParams = ErrorQueryParams("sdk", "pageview")
         )
     }
 
@@ -162,7 +166,8 @@ class Crobox private constructor(config: CroboxConfig) {
         presenter.event(
             eventType = EventType.Checkout,
             queryParams = queryParams,
-            additionalParams = checkoutParams
+            additionalParams = checkoutParams,
+            errorQueryParams = ErrorQueryParams("sdk", "checkout")
         )
     }
 
@@ -176,7 +181,8 @@ class Crobox private constructor(config: CroboxConfig) {
         presenter.event(
             eventType = EventType.Purchase,
             queryParams = queryParams.copy(pageType = PageType.PageComplete),
-            additionalParams = purchaseParams
+            additionalParams = purchaseParams,
+            errorQueryParams = ErrorQueryParams("sdk", "purchase")
         )
     }
 
@@ -193,7 +199,8 @@ class Crobox private constructor(config: CroboxConfig) {
         presenter.event(
             eventType = EventType.CustomEvent,
             queryParams = queryParams,
-            additionalParams = customQueryParams
+            additionalParams = customQueryParams,
+            errorQueryParams = ErrorQueryParams("sdk", "custom")
         )
     }
 
