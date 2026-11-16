@@ -1,0 +1,85 @@
+name: Release
+
+# Releases a new version: sets it in gradle.properties, commits that on top of main, publishes the SDK
+# to Maven Central, tags the commit and creates the GitHub release. main keeps its -SNAPSHOT version,
+# because branch protection does not let this workflow push to main. See "Releasing" in README.md.
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Version to release, for example 1.1.0"
+        required: true
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    env:
+      VERSION: ${{ inputs.version }}
+      TAG: v${{ inputs.version }}
+
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Check the inputs
+        run: |
+          if [[ ! "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "::error::The version must look like 1.2.3, not '$VERSION'."
+            exit 1
+          fi
+          if git rev-parse -q --verify "refs/tags/$TAG" >/dev/null; then
+            echo "::error::Tag $TAG already exists."
+            exit 1
+          fi
+
+      - name: Set the version
+        run: |
+          sed -i -E "s/^VERSION_NAME=.*/VERSION_NAME=$VERSION/" gradle.properties
+          if ! grep -qx "VERSION_NAME=$VERSION" gradle.properties; then
+            echo "::error::Could not set the version in gradle.properties."
+            exit 1
+          fi
+
+      - name: Commit the version
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -am "Release $VERSION"
+          git tag "$TAG"
+
+      - name: Install JDK 21
+        uses: actions/setup-java@v5
+        with:
+          distribution: 'temurin'
+          java-version: 21
+          cache: gradle
+
+      - name: Build
+        run: ./gradlew build
+
+      # Publishing comes before pushing the tag, so a failed upload leaves no tag behind and the
+      # workflow can simply be run again.
+      - name: Publish to Maven Central
+        run: ./gradlew --stacktrace publishAndReleaseToMavenCentral
+        env:
+          ORG_GRADLE_PROJECT_mavenCentralUsername: ${{ secrets.SONATYPE_NEXUS_TOKENNAME }}
+          ORG_GRADLE_PROJECT_mavenCentralPassword: ${{ secrets.SONATYPE_NEXUS_TOKEN }}
+          ORG_GRADLE_PROJECT_signingInMemoryKey: ${{ secrets.SIGNING_PRIVATE_KEY2 }}
+          ORG_GRADLE_PROJECT_signingInMemoryKeyPassword: ${{ secrets.SIGNING_PASSWORD2 }}
+
+      - name: Push the tag
+        run: git push origin "refs/tags/$TAG"
+
+      - name: Create the GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release create "$TAG" --verify-tag --generate-notes --title "$VERSION"

@@ -358,24 +358,24 @@ The sample app in `app/` uses the SDK from source and is the quickest way to try
 
 ### Releasing
 
-Releases are published to Maven Central (`com.crobox.sdk:crobox-sdk-android`) through the
-[Central Portal](https://central.sonatype.com) by the
-[Publish Release](.github/workflows/publish-release.yml) workflow, which runs on every pushed tag.
+Releases are made by the [Release](.github/workflows/release.yml) workflow (Actions → Release → Run
+workflow, or `gh workflow run release.yml -f version=X.Y.Z`). Enter the new version, for example
+`1.1.0`. Follow semver: removing or changing public API needs a new major version.
 
-1. Set `VERSION_NAME` in [gradle.properties](gradle.properties) to the release version (drop
-   `-SNAPSHOT`) and merge that to `main`. The published version comes from this file, not from the tag.
-   Follow semver: removing or changing public API needs a new major version.
-2. Tag the release commit and push the tag:
-   ```shell
-   git tag vX.Y.Z
-   git push origin vX.Y.Z
-   ```
-3. The workflow signs the artifacts and uploads them to the Central Portal. Because automatic release
-   is off (`SONATYPE_AUTOMATIC_RELEASE` in `gradle.properties`), log in to the Central Portal, open
-   *Deployments*, check the upload and press *Publish*. It can take up to an hour before the version
-   resolves from Maven Central.
-4. Create the GitHub release: `gh release create vX.Y.Z --generate-notes`.
-5. Set `VERSION_NAME` on `main` to the next `-SNAPSHOT` version.
+The workflow:
+
+1. Sets `VERSION_NAME` in [gradle.properties](gradle.properties). The SDK sends it in its `User-Agent`
+   header.
+2. Commits the version on top of `main` as "Release X.Y.Z" and builds it, running all tests.
+3. Signs the artifacts and publishes them to Maven Central (`com.crobox.sdk:crobox-sdk-android`)
+   through the [Central Portal](https://central.sonatype.com). It can take up to an hour before the
+   version resolves from Maven Central.
+4. Tags the release commit `vX.Y.Z` and pushes the tag.
+5. Creates the GitHub release, with notes generated from the merged pull requests.
+
+Branch protection does not let the workflow push to `main`, so the release commit exists only on its
+tag, and `VERSION_NAME` on `main` stays at its `-SNAPSHOT` version. If publishing fails, nothing is
+tagged, so fix the cause and run the workflow again.
 
 The workflow reads these repository secrets:
 
