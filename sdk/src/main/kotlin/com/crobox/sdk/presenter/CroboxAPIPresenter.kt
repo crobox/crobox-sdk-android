@@ -298,7 +298,6 @@ internal class CroboxAPIPresenter(@Volatile var config: CroboxConfig) {
         parameters["pi"] = productParams.productId
         productParams.price?.let { parameters["price"] = it }
         productParams.quantity?.let { parameters["qty"] = it }
-        // otherProductIds is not sent: the server reads `lst` as the name of a product list, not as product ids
     }
 
     /**

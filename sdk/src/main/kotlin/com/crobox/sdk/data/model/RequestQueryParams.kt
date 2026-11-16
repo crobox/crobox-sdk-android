@@ -159,12 +159,9 @@ data class CheckoutParams(
  *  @param productId Product identifier
  *  @param price Optional Product price
  *  @param quantity  Optional quantity
- *  @param otherProductIds Not sent. The server expects a product list name here, not product ids.
  */
 data class ProductParams(
     val productId: String,
     val price: Double? = null,
-    val quantity: Int? = null,
-    @Deprecated("Not sent to Crobox: the server reads this field as a product list name, not as product ids")
-    val otherProductIds: Set<String>? = emptySet()
+    val quantity: Int? = null
 )

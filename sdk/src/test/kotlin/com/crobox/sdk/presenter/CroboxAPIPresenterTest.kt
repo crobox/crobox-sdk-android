@@ -72,18 +72,6 @@ class CroboxAPIPresenterTest {
     }
 
     @Test
-    @Suppress("DEPRECATION")
-    fun otherProductIdsAreNotSentAsAListName() {
-        val view = RequestQueryParams(viewId = UUID.randomUUID(), pageType = PageType.PageDetail)
-        val product = ProductParams(productId = "a", otherProductIds = setOf("b", "c"))
-
-        val query = presenter.eventQuery(view, PageViewParams(product = product), EventType.PageView, null)
-
-        assertEquals("a", query["pi"])
-        assertFalse(query.containsKey("lst"))
-    }
-
-    @Test
     fun configCustomPropertiesAreSentAndPagePropertiesWin() {
         val view = RequestQueryParams(
             viewId = UUID.randomUUID(),
