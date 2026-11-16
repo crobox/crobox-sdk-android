@@ -1,6 +1,9 @@
 package com.crobox.sdk.data.api
 
 import com.crobox.sdk.data.api.interceptor.UserAgentInterceptor
+import com.crobox.sdk.domain.PromotionContent
+import com.crobox.sdk.domain.PromotionsResponse
+import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.Strictness
 import okhttp3.OkHttpClient
@@ -10,17 +13,20 @@ import java.util.UUID
 import java.util.concurrent.TimeUnit
 
 internal object CroboxAPIClient {
+
+    val gson: Gson =
+        GsonBuilder()
+            .setStrictness(Strictness.LENIENT)
+            .disableHtmlEscaping()
+            .enableComplexMapKeySerialization()
+            .registerTypeAdapter(UUID::class.java, CustomUUIDDeserializer())
+            .registerTypeAdapter(PromotionsResponse::class.java, PromotionsResponseDeserializer())
+            .registerTypeAdapter(PromotionContent::class.java, PromotionContentDeserializer())
+            .create()
+
     val clientWithOutToken: Retrofit
         get() {
             val client: OkHttpClient = client()
-
-            val gson =
-                GsonBuilder()
-                    .setStrictness(Strictness.LENIENT)
-                    .disableHtmlEscaping()
-                    .enableComplexMapKeySerialization()
-                    .registerTypeAdapter(UUID::class.java, CustomUUIDDeserializer())
-                    .create()
 
             return Retrofit.Builder()
                 .client(client).baseUrl(Constant.API_URL)

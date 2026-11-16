@@ -241,7 +241,6 @@ internal class CroboxAPIPresenter(@Volatile var config: CroboxConfig) {
      */
     private fun clickEvent(clickParams: ClickQueryParams, parameters: MutableMap<String, Any>) {
         clickParams.productId?.let { parameters["pi"] = it }
-        clickParams.price?.let { parameters["price"] = it }
         clickParams.quantity?.let { parameters["qty"] = it }
     }
 
@@ -252,7 +251,6 @@ internal class CroboxAPIPresenter(@Volatile var config: CroboxConfig) {
         addCartQueryParams: CartQueryParams, parameters: MutableMap<String, Any>
     ) {
         addCartQueryParams.productId?.let { parameters["pi"] = it }
-        addCartQueryParams.price?.let { parameters["price"] = it }
         addCartQueryParams.quantity?.let { parameters["qty"] = it }
     }
 
@@ -263,7 +261,6 @@ internal class CroboxAPIPresenter(@Volatile var config: CroboxConfig) {
         removeFromCartQueryParams: CartQueryParams, parameters: MutableMap<String, Any>
     ) {
         removeFromCartQueryParams.productId?.let { parameters["pi"] = it }
-        removeFromCartQueryParams.price?.let { parameters["price"] = it }
         removeFromCartQueryParams.quantity?.let { parameters["qty"] = it }
     }
 
@@ -276,7 +273,6 @@ internal class CroboxAPIPresenter(@Volatile var config: CroboxConfig) {
         customQueryParams.name?.let { parameters["nm"] = it }
         customQueryParams.promotionId?.let { parameters["promoId"] = it }
         customQueryParams.productId?.let { parameters["pi"] = it }
-        customQueryParams.price?.let { parameters["price"] = it }
         customQueryParams.quantity?.let { parameters["qty"] = it }
     }
 
@@ -305,7 +301,7 @@ internal class CroboxAPIPresenter(@Volatile var config: CroboxConfig) {
      */
     private fun purchaseEvent(purchaseParams: PurchaseParams, parameters: MutableMap<String, Any>) {
         purchaseParams.products?.let { impressions(it, parameters) }
-        purchaseParams.transactionId?.let { parameters["tid"] = it }
+        parameters["tid"] = purchaseParams.transactionId
         purchaseParams.affiliation?.let { parameters["aff"] = it }
         purchaseParams.coupon?.let { parameters["cpn"] = it }
         purchaseParams.revenue?.let { parameters["rev"] = it }
@@ -317,22 +313,22 @@ internal class CroboxAPIPresenter(@Volatile var config: CroboxConfig) {
         parameters: MutableMap<String, Any>
     ) {
         parameters["pi"] = productParams.productId
-        productParams.price?.let { parameters["price"] = it }
         productParams.quantity?.let { parameters["qty"] = it }
+        productParams.list?.let { parameters["lst"] = it }
     }
 
     /**
-     * Sends products in the collector's array format, `imp[N].pi`, `imp[N].qty` and `imp[N].pos`, so quantity and
-     * position reach the server. The flat format, `imp[N]=id`, carries only the id. Price is not sent, the server
-     * takes it from the catalog.
+     * Sends products in the collector's array format, `imp[N].pi`, `imp[N].qty`, `imp[N].lst` and `imp[N].pos`, so
+     * quantity, list and position reach the server. The flat format, `imp[N]=id`, carries only the id.
      */
     private fun impressions(
-        impressions: Set<ProductParams>,
+        impressions: Collection<ProductParams>,
         parameters: MutableMap<String, Any>
     ) {
         for ((index, product) in impressions.withIndex()) {
             parameters["imp[$index].pi"] = product.productId
             product.quantity?.let { parameters["imp[$index].qty"] = it }
+            product.list?.let { parameters["imp[$index].lst"] = it }
             // 1-based, the server treats 0 as an unknown position
             parameters["imp[$index].pos"] = index + 1
         }

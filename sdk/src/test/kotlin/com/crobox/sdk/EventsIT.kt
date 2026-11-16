@@ -59,7 +59,6 @@ class EventsIT {
             overviewPageParams,
             clickQueryParams = ClickQueryParams(
                 productId = productId,
-                price = 1.0,
                 quantity = 1
             )
         )
@@ -75,11 +74,10 @@ class EventsIT {
                 pageTitle = "some page title",
                 product = ProductParams(
                     productId = "1",
-                    price = 1.0,
                     quantity = 1
                 ),
                 searchTerms = "some search terms",
-                impressions = setOf(
+                impressions = listOf(
                     ProductParams(productId = "5"),
                     ProductParams(productId = "6"),
                     ProductParams(productId = "7")
@@ -100,14 +98,12 @@ class EventsIT {
         croboxInstance.checkoutEvent(
             checkoutPage,
             CheckoutParams(
-                products = setOf(
+                products = listOf(
                     ProductParams(
                         productId = "1",
-                        price = 1.0,
                         quantity = 1
                     ), ProductParams(
                         productId = "2",
-                        price = 2.0,
                         quantity = 2
                     )
                 ),
@@ -128,14 +124,12 @@ class EventsIT {
         croboxInstance.purchaseEvent(
             pageComplete,
             PurchaseParams(
-                products = setOf(
+                products = listOf(
                     ProductParams(
                         productId = "1",
-                        price = 1.0,
                         quantity = 1
                     ), ProductParams(
                         productId = "2",
-                        price = 2.0,
                         quantity = 2
                     )
                 ),
@@ -157,7 +151,6 @@ class EventsIT {
             overviewPageParams,
             cartQueryParams = CartQueryParams(
                 productId = productId,
-                price = 1.0,
                 quantity = 1
             )
         )
@@ -172,7 +165,6 @@ class EventsIT {
             cartPageParams,
             cartQueryParams = CartQueryParams(
                 productId = productId,
-                price = 1.0,
                 quantity = 1
             )
         )

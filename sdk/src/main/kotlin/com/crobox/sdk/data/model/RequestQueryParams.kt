@@ -65,12 +65,10 @@ data class ErrorQueryParams(
  * Type specific parameters for click events
  *
  *  @param productId Unique identifier for a product
- *  @param price Product price, if available
  *  @param quantity Quantity, if available
  */
 data class ClickQueryParams(
     val productId: String? = null,
-    val price: Double? = null,
     val quantity: Int? = null
 )
 
@@ -78,12 +76,10 @@ data class ClickQueryParams(
  * Type specific parameters for Add/Remove Cart events
  *
  *  @param productId Unique identifier for a product
- *  @param price Product price, if available
  *  @param quantity Quantity, if available
  */
 data class CartQueryParams(
     val productId: String? = null,
-    val price: Double? = null,
     val quantity: Int? = null
 )
 
@@ -93,14 +89,12 @@ data class CartQueryParams(
  *  @param name Event name
  *  @param promotionId Promotion Id, if available
  *  @param productId Unique identifier for a product
- *  @param price Product price, if available
  *  @param quantity Quantity, if available
  */
 data class CustomQueryParams(
     val name: String? = null,
     val promotionId: UUID? = null,
     val productId: String? = null,
-    val price: Double? = null,
     val quantity: Int? = null
 )
 
@@ -110,30 +104,30 @@ data class CustomQueryParams(
  *  @param pageTitle Optional Page title
  *  @param product Optional product specific parameters
  *  @param searchTerms Optional search terms that led the viewer to this product
- *  @param impressions Optional list of products that are viewed in the same page
+ *  @param impressions Optional products shown on the page, in the order they are shown. Pass a List: a Set merges identical entries.
  *  @param customProperties Optional set of general purpose custom properties, for example to help identifying certain traits of the page
  */
 data class PageViewParams(
     val pageTitle: String? = null,
     val product: ProductParams? = null,
     val searchTerms: String? = null,
-    val impressions: Set<ProductParams>? = null,
+    val impressions: Collection<ProductParams>? = null,
     val customProperties: Map<String, String>? = emptyMap()
 )
 
 /**
  * Type specific parameters for Purchase events
  *
- *  @param products Optional set of products purchased. When empty, the products in the visitor's cart are used.
+ *  @param products Optional products purchased. When empty, the products in the visitor's cart are used.
  *  @param transactionId Transaction identifier. Required: a purchase without one is not recorded. A transaction is only counted once per visitor, so sending it again (for example when the confirmation screen is reopened) is safe.
  *  @param affiliation Optional store or affiliation from which this transaction occurred (e.g. Google Store)
  *  @param coupon Optional coupon
- *  @param revenue Optional the total associated with the transaction
+ *  @param revenue Optional total of the transaction, in the currency of the locale. Without it, Crobox adds up the catalog prices of the products.
  *  @param customProperties Optional set of general purpose custom properties, for example to help identifying certain traits of the page
  */
 data class PurchaseParams(
-    val products: Set<ProductParams>? = null,
-    val transactionId: String? = null,
+    val products: Collection<ProductParams>? = null,
+    val transactionId: String,
     val affiliation: String? = null,
     val coupon: String? = null,
     val revenue: Double? = null,
@@ -143,12 +137,12 @@ data class PurchaseParams(
 /**
  * Type specific parameters for Checkout events
  *
- *  @param products Optional set of products to be purchased
+ *  @param products Optional products to be purchased
  *  @param step  Optional number of the step in the checkout process, for example "1". It must be numeric.
  *  @param customProperties Optional set of general purpose custom properties, for example to help identifying certain traits of the page
  */
 data class CheckoutParams(
-    val products: Set<ProductParams>? = null,
+    val products: Collection<ProductParams>? = null,
     val step: String? = null,
     val customProperties: Map<String, String>? = emptyMap()
 )
@@ -157,11 +151,13 @@ data class CheckoutParams(
  * Product specific parameters for various events
  *
  *  @param productId Product identifier
- *  @param price Optional Product price
- *  @param quantity  Optional quantity
+ *  @param quantity Optional quantity, for example of a purchased product
+ *  @param list Optional name of the list the product is shown in, for example "search results" or "related products"
+ *
+ * The position of a product is its position in the collection it is passed in.
  */
 data class ProductParams(
     val productId: String,
-    val price: Double? = null,
-    val quantity: Int? = null
+    val quantity: Int? = null,
+    val list: String? = null
 )
