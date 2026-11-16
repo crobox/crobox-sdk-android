@@ -335,7 +335,7 @@ That's why the application operates with a simplified set of data models, like:<
 ### Build and test
 
 Building needs JDK 17 or 21. Android Gradle Plugin 8 needs at least 17, and the Gradle version in the
-wrapper (8.9) does not run on JDK 25. CI and the release workflow use 17.
+wrapper (8.9) does not run on JDK 25. CI and the release workflow use 21, the JDK Android Studio ships with.
 
 ```shell
 ./gradlew build                    # compile, lint and run all tests (what CI runs)
