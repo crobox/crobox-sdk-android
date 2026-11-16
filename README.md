@@ -92,20 +92,24 @@ croboxInstance.clickEvent(
     overviewPageParams,
     clickQueryParams = ClickQueryParams(
         productId = "0001ABC",
-        price = 1.0,
         quantity = 1
-    ),
-    eventCallback = object : EventCallback {
-        override fun onSuccess(dictionary: Map<String, String>) {
-            Log.d("EventView onSuccess", dictionary.toString())
-        }
+    )
+)
 
-        override fun onError(msg: String?) {
-            Log.d("EventView onError", "" + msg)
-        }
-    }
+// The products shown on the page, in the order they are shown, optionally with the list they are in
+croboxInstance.pageViewEvent(
+    overviewPageParams,
+    PageViewParams(
+        impressions = listOf(
+            ProductParams(productId = "0001ABC", list = "search results"),
+            ProductParams(productId = "0002DEF", list = "search results")
+        )
+    )
 )
 ```
+
+Prices are not sent: Crobox takes them from the product catalog. A purchase is only recorded with a
+`transactionId`, so `PurchaseParams` requires one.
 
 For retrieving promotions for zero, one or more products, use the specific PlaceholderId that is
 configured with specific page types and linked to campaigns via Crobox Admin App.

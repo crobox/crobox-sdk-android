@@ -54,7 +54,6 @@ class CroboxRequests(val croboxInstance: Crobox) {
             overviewPage(),
             clickQueryParams = ClickQueryParams(
                 productId = product.id.toString(),
-                price = product.price,
                 quantity = 1
             )
         )
@@ -74,11 +73,10 @@ class CroboxRequests(val croboxInstance: Crobox) {
                 pageTitle = pageName,
                 product = ProductParams(
                     productId = "1",
-                    price = 1.0,
                     quantity = 1
                 ),
                 searchTerms = "some search terms",
-                impressions = setOf(
+                impressions = listOf(
                     ProductParams(productId = "5"),
                     ProductParams(productId = "6"),
                     ProductParams(productId = "7")
@@ -94,7 +92,6 @@ class CroboxRequests(val croboxInstance: Crobox) {
             overviewPage(),
             cartQueryParams = CartQueryParams(
                 productId = item.product.id.toString(),
-                price = item.product.price,
                 quantity = item.quantity
             )
         )
@@ -106,7 +103,6 @@ class CroboxRequests(val croboxInstance: Crobox) {
             getCartPage(),
             cartQueryParams = CartQueryParams(
                 productId = item.product.id.toString(),
-                price = item.product.price,
                 quantity = item.quantity
             )
         )
@@ -130,7 +126,6 @@ class CroboxRequests(val croboxInstance: Crobox) {
         return items.map { item ->
             ProductParams(
                 productId = item.product.id.toString(),
-                price = item.product.price,
                 quantity = item.quantity
             )
         }
@@ -147,7 +142,7 @@ class CroboxRequests(val croboxInstance: Crobox) {
         croboxInstance.checkoutEvent(
             checkoutPage,
             CheckoutParams(
-                products = productParams.toSet(),
+                products = productParams,
                 step = "1",
                 customProperties = mapOf(Pair("page-specific", "true"))
             )
@@ -165,7 +160,7 @@ class CroboxRequests(val croboxInstance: Crobox) {
         croboxInstance.purchaseEvent(
             pageComplete,
             PurchaseParams(
-                products = productParams.toSet(),
+                products = productParams,
                 transactionId = "abc123",
                 affiliation = "google store",
                 coupon = "some coupon",

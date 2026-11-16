@@ -2,6 +2,9 @@ package com.crobox.sdk.presenter
 
 import com.crobox.sdk.common.LocaleCode
 import com.crobox.sdk.config.CroboxConfig
+import com.crobox.sdk.data.model.CartQueryParams
+import com.crobox.sdk.data.model.ClickQueryParams
+import com.crobox.sdk.data.model.CustomQueryParams
 import com.crobox.sdk.data.model.EventType
 import com.crobox.sdk.data.model.PageType
 import com.crobox.sdk.data.model.PageViewParams
@@ -46,20 +49,66 @@ class CroboxAPIPresenterTest {
     @Test
     fun impressionsUseTheArrayFormatWithQuantityAndPosition() {
         val view = RequestQueryParams(viewId = UUID.randomUUID(), pageType = PageType.PageComplete)
-        val products = linkedSetOf(
-            ProductParams(productId = "a", quantity = 2),
+        val products = listOf(
+            ProductParams(productId = "a", quantity = 2, list = "search results"),
             ProductParams(productId = "b")
         )
 
-        val query = presenter.eventQuery(view, PurchaseParams(products = products), EventType.Purchase, null)
+        val query = presenter.eventQuery(
+            view, PurchaseParams(products = products, transactionId = "t1"), EventType.Purchase, null
+        )
 
         assertEquals("a", query["imp[0].pi"])
         assertEquals(2, query["imp[0].qty"])
+        assertEquals("search results", query["imp[0].lst"])
         assertEquals(1, query["imp[0].pos"])
         assertEquals("b", query["imp[1].pi"])
         assertEquals(2, query["imp[1].pos"])
         assertFalse(query.containsKey("imp[1].qty"))
+        assertFalse(query.containsKey("imp[1].lst"))
         assertFalse(query.containsKey("imp[0]"))
+        assertEquals("t1", query["tid"])
+    }
+
+    @Test
+    fun impressionsKeepOrderAndRepeatedProducts() {
+        val view = RequestQueryParams(viewId = UUID.randomUUID(), pageType = PageType.PageOverview)
+        val products = listOf(ProductParams("b"), ProductParams("a"), ProductParams("b"))
+
+        val query = presenter.eventQuery(view, PageViewParams(impressions = products), EventType.PageView, null)
+
+        assertEquals("b", query["imp[0].pi"])
+        assertEquals("a", query["imp[1].pi"])
+        assertEquals("b", query["imp[2].pi"])
+        assertEquals(3, query["imp[2].pos"])
+    }
+
+    @Test
+    fun productDetailSendsListNameAndNoPrice() {
+        val view = RequestQueryParams(viewId = UUID.randomUUID(), pageType = PageType.PageDetail)
+
+        val query = presenter.eventQuery(
+            view, PageViewParams(product = ProductParams("1", quantity = 2, list = "related")), EventType.PageView, null
+        )
+
+        assertEquals("1", query["pi"])
+        assertEquals(2, query["qty"])
+        assertEquals("related", query["lst"])
+        assertFalse(query.containsKey("price"))
+    }
+
+    @Test
+    fun clickCartAndCustomEventsSendNoPrice() {
+        val view = RequestQueryParams(viewId = UUID.randomUUID(), pageType = PageType.PageOverview)
+
+        listOf(
+            presenter.eventQuery(view, ClickQueryParams(productId = "1", quantity = 1), EventType.Click, null),
+            presenter.eventQuery(view, CartQueryParams(productId = "1", quantity = 1), EventType.AddCart, null),
+            presenter.eventQuery(view, CustomQueryParams(name = "x", productId = "1"), EventType.CustomEvent, null)
+        ).forEach { query ->
+            assertEquals("1", query["pi"])
+            assertFalse(query.containsKey("price"))
+        }
     }
 
     @Test

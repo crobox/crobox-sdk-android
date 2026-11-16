@@ -52,11 +52,30 @@ class ColorUtilTest {
     }
 
     @Test
+    fun testHexAlphaIsLastAsInCss() {
+        val halfRed = Color.valueOf(Color.argb(0x80, 255, 0, 0))
+        assertEquals(halfRed, toAndroidColor("#ff000080"))
+        assertEquals(halfRed, toAndroidColor("#FF000080"))
+        assertEquals(red, toAndroidColor("#ff0000ff"))
+        assertEquals(Color.valueOf(Color.argb(0, 0, 0, 255)), toAndroidColor("#0000ff00"))
+    }
+
+    @Test
+    fun testHexShorthands() {
+        assertEquals(red, toAndroidColor("#f00"))
+        assertEquals(white, toAndroidColor("#FFF"))
+        assertEquals(Color.valueOf(Color.argb(0x88, 0, 0, 255)), toAndroidColor("#00f8"))
+    }
+
+    @Test
     fun testFailure() {
         assertNull(toAndroidColor(null))
         assertNull(toAndroidColor("err"))
+        assertNull(toAndroidColor("#"))
         assertNull(toAndroidColor("#00000"))
         assertNull(toAndroidColor("#0000000"))
+        assertNull(toAndroidColor("#gggggg"))
+        assertNull(toAndroidColor("#ff00000000"))
         assertNull(toAndroidColor("rgba(255, 255, 255)"))
         assertNull(toAndroidColor("rgba(255, 255, 255, 0 ,0)"))
     }
