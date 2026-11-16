@@ -2,6 +2,7 @@ package com.crobox.sdk.presenter
 
 import com.crobox.sdk.common.LocaleCode
 import com.crobox.sdk.config.CroboxConfig
+import com.crobox.sdk.data.model.CheckoutParams
 import com.crobox.sdk.data.model.EventType
 import com.crobox.sdk.data.model.PageType
 import com.crobox.sdk.data.model.PageViewParams
@@ -12,6 +13,7 @@ import okio.Buffer
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Test
+import java.util.TimeZone
 import java.util.UUID
 
 class CroboxAPIPresenterTest {
@@ -106,6 +108,35 @@ class CroboxAPIPresenterTest {
 
         assertEquals("JohnDoe", query["uid"])
         assertEquals("nl_BE", query["lc"])
+    }
+
+    @Test
+    fun checkoutWithoutStepStillSendsAStep() {
+        val view = RequestQueryParams(viewId = UUID.randomUUID(), pageType = PageType.PageCart)
+
+        val query = presenter.eventQuery(view, CheckoutParams(), EventType.Checkout, PageType.PageCheckout)
+
+        assertEquals("0", query["stp"])
+        assertEquals(PageType.PageCheckout.value, query["pt"])
+    }
+
+    @Test
+    fun timezoneIsHoursEastOfUtc() {
+        val winter = 1_704_067_200_000L // 2024-01-01T00:00:00Z
+        val summer = 1_719_792_000_000L // 2024-07-01T00:00:00Z
+
+        assertEquals(1, presenter.timezoneOffsetHours(TimeZone.getTimeZone("Europe/Amsterdam"), winter))
+        assertEquals(2, presenter.timezoneOffsetHours(TimeZone.getTimeZone("Europe/Amsterdam"), summer))
+        assertEquals(-5, presenter.timezoneOffsetHours(TimeZone.getTimeZone("America/New_York"), winter))
+        assertEquals(5.5, presenter.timezoneOffsetHours(TimeZone.getTimeZone("Asia/Kolkata"), winter))
+    }
+
+    @Test
+    fun configuredTimezoneWins() {
+        val presenter = CroboxAPIPresenter(config.copy(timezone = 3))
+        val view = RequestQueryParams(viewId = UUID.randomUUID(), pageType = PageType.PageIndex)
+
+        assertEquals(3, presenter.eventQuery(view, null, EventType.Click, null)["tz"])
     }
 
     @Test

@@ -124,8 +124,8 @@ data class PageViewParams(
 /**
  * Type specific parameters for Purchase events
  *
- *  @param products Optional set of products purchased
- *  @param transactionId Optional transaction identifier
+ *  @param products Optional set of products purchased. When empty, the products in the visitor's cart are used.
+ *  @param transactionId Transaction identifier. Required: a purchase without one is not recorded. A transaction is only counted once per visitor, so sending it again (for example when the confirmation screen is reopened) is safe.
  *  @param affiliation Optional store or affiliation from which this transaction occurred (e.g. Google Store)
  *  @param coupon Optional coupon
  *  @param revenue Optional the total associated with the transaction
@@ -144,7 +144,7 @@ data class PurchaseParams(
  * Type specific parameters for Checkout events
  *
  *  @param products Optional set of products to be purchased
- *  @param step  Optional number representing a step in the checkout process
+ *  @param step  Number of the step in the checkout process, for example "1". It must be numeric; when null, 0 (unknown step) is sent.
  *  @param customProperties Optional set of general purpose custom properties, for example to help identifying certain traits of the page
  */
 data class CheckoutParams(

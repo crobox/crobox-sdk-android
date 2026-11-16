@@ -24,6 +24,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.net.URLEncoder
+import java.util.TimeZone
 
 internal class CroboxAPIPresenter(@Volatile var config: CroboxConfig) {
 
@@ -190,7 +191,7 @@ internal class CroboxAPIPresenter(@Volatile var config: CroboxConfig) {
         config.localeCode?.let { parameters["lc"] = it.code }
         config.userId?.let { parameters["uid"] = it }
         parameters["ts"] = CroboxEncoder.toBase36(System.currentTimeMillis())
-        config.timezone?.let { parameters["tz"] = it }
+        parameters["tz"] = config.timezone ?: timezoneOffsetHours()
         parameters["pt"] = (pageType ?: queryParams.pageType).value
         queryParams.pageName?.let { parameters["lh"] = it }
         // Visitor-level properties first, so page-level properties with the same key win
@@ -274,7 +275,8 @@ internal class CroboxAPIPresenter(@Volatile var config: CroboxConfig) {
      */
     private fun checkoutEvent(checkoutParams: CheckoutParams, parameters: MutableMap<String, Any>) {
         checkoutParams.products?.let { impressions(it, parameters) }
-        checkoutParams.step?.let { parameters["stp"] = it }
+        // The server only records a checkout when `stp` is present, so send 0 (unknown step) when none is given
+        parameters["stp"] = checkoutParams.step ?: "0"
         checkoutParams.customProperties?.let { customProperties(it, parameters) }
     }
 
@@ -315,6 +317,18 @@ internal class CroboxAPIPresenter(@Volatile var config: CroboxConfig) {
             // 1-based, the server treats 0 as an unknown position
             parameters["imp[$index].pos"] = index + 1
         }
+    }
+
+    /**
+     * The device's current offset from UTC in hours, in the same form as the web snippet: positive east of UTC,
+     * with a fraction for zones such as India (5.5).
+     */
+    internal fun timezoneOffsetHours(
+        timeZone: TimeZone = TimeZone.getDefault(),
+        now: Long = System.currentTimeMillis()
+    ): Number {
+        val hours = timeZone.getOffset(now) / 3_600_000.0
+        return if (hours % 1.0 == 0.0) hours.toInt() else hours
     }
 
     private fun customProperties(

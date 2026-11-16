@@ -12,7 +12,7 @@ import java.util.UUID
  *  @param currencyCode Contains information about the valid currency. It must be uppercase, three-letter form of ISO 4217 currency codes. It is useful if there are more than one currency configured in the Crobox Container.
  *  @param localeCode Locale code combination for the localization,
  *  @param userId It is an identifier that allows coupling between Crobox user profiles with the client's user profiles, if available.
- *  @param timezone Timezone
+ *  @param timezone Offset from UTC in whole hours, positive east of UTC (for example 1 for CET). When null, the device's current offset is sent.
  *  @param customProperties Free format custom properties to be forwarded to Crobox endpoints with each request, for example to help identifying certain traits of a visitor. Example: Map("mobileUser", "yes")
  */
 data class CroboxConfig(
