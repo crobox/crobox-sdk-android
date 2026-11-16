@@ -30,8 +30,10 @@ internal object CroboxAPIClient {
 
     private fun client(): OkHttpClient {
         val client: OkHttpClient = OkHttpClient.Builder()
-            .readTimeout(60 * 5, TimeUnit.SECONDS)
-            .connectTimeout(60 * 5, TimeUnit.SECONDS)
+            // Promotions are rendered while the user waits, so fail fast instead of holding the screen for minutes
+            .connectTimeout(10, TimeUnit.SECONDS)
+            .readTimeout(15, TimeUnit.SECONDS)
+            .callTimeout(30, TimeUnit.SECONDS)
             .addInterceptor(UserAgentInterceptor())
             .addInterceptor(MurMurHashInterceptor())
             .build()

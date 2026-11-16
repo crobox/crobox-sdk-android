@@ -1,7 +1,7 @@
 package com.crobox.sdk.testapp.ui
 
 import android.os.Bundle
-import com.crobox.sdk.common.CurrencyCode
+import com.crobox.sdk.common.CroboxVisitor
 import com.crobox.sdk.common.LocaleCode
 import com.crobox.sdk.config.CroboxConfig
 import com.crobox.sdk.core.Crobox
@@ -14,7 +14,6 @@ import com.crobox.sdk.testapp.ui.basket.BasketFragment
 import com.crobox.sdk.testapp.ui.product.ProductFragment
 import com.crobox.sdk.testapp.ui.product.ProductListFragment
 import com.crobox.sdk.testapp.ui.purchase.PurchaseFragment
-import java.util.UUID
 
 class DemoActivity : BaseActivity() {
 
@@ -26,17 +25,19 @@ class DemoActivity : BaseActivity() {
         listOf("1", "product1", "product2", "product3", "product4", "product5")
     private val productId = impressions[0]
 
-    // CroboxInstance is the single point of all interactions, keeping the configuration and providing all functionality
-    private val croboxInstance = Crobox.getInstance(
-        CroboxConfig(
-            containerId = containerId,
-            visitorId = UUID.randomUUID(),
-            currencyCode = CurrencyCode.USD,
-            localeCode = LocaleCode.EN_US
+    // CroboxInstance is the single point of all interactions, keeping the configuration and providing all functionality.
+    // The visitorId is stored on the device, so the user stays the same visitor across app launches.
+    private val croboxInstance by lazy {
+        Crobox.getInstance(
+            CroboxConfig(
+                containerId = containerId,
+                visitorId = CroboxVisitor.visitorId(this),
+                localeCode = LocaleCode("en_US")
+            )
         )
-    )
+    }
 
-    private var croboxRequests = CroboxRequests(croboxInstance)
+    private val croboxRequests by lazy { CroboxRequests(croboxInstance) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

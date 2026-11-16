@@ -22,20 +22,22 @@ data class PromotionContent(
     val messageId: String,
 
     /**
-     * Component Name
+     * Name of the campaign's component, as a module name, for example `MobAppTextBadgeTsx`
      */
     @SerializedName("component")
     val componentName: String
 ) {
 
     /**
-     * Returns component if an Image, Text Badge or Secondary Messaging is available
+     * Returns the content as an Image Badge, Text Badge or Secondary Messaging when the campaign uses one of the
+     * mobile app components (`MobAppImageBadgeTsx`, `MobAppTextBadgeTsx` or `MobAppSecondaryMessagingTsx`), or null
+     * for any other component.
      */
     fun contentConfig(): PromotionContentConfig? {
         return when (componentName) {
-            "mob-app-image-badge.tsx" -> getImageBadge()
-            "mob-app-text-badge.tsx" -> getTextBadge()
-            "mob-app-secondary-messaging.tsx" -> getSecondaryMessaging()
+            "MobAppImageBadgeTsx" -> getImageBadge()
+            "MobAppTextBadgeTsx" -> getTextBadge()
+            "MobAppSecondaryMessagingTsx" -> getSecondaryMessaging()
             else -> null
         }
     }

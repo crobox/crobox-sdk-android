@@ -1,117 +1,45 @@
 package com.crobox.sdk.common
 
+import java.util.Locale
+
 /**
- * LocaleCodes are in the from of {language}-{COUNTRY} format where
- *  - the language is lowercase, two-letter form of ISO 639-1 language codes
- *  - the country is uppercase, two-letter form of ISO 3166-1 Country codes
+ * The locale of the visitor, in the form `{language}_{COUNTRY}`, for example `en_US`, where
+ *  - the language is the lowercase, two-letter ISO 639-1 language code
+ *  - the country is the uppercase, two-letter ISO 3166-1 country code
+ *
+ * Crobox uses it to select one of the regions configured for your container, and with it the language, country and
+ * currency of the request. Use a code that matches one of those regions. When none matches, the container's
+ * fallback region is used.
+ *
+ * ```
+ * LocaleCode("en_US")
+ * LocaleCode.of(Locale.getDefault())
+ * ```
  */
 class LocaleCode(val code: String) {
 
     companion object {
-        val EN_US = LocaleCode("en_US")
-        val EN_GB = LocaleCode("en_GB")
-        val EN_CA = LocaleCode("en_CA")
-        val EN_AU = LocaleCode("en_AU")
-        val EN_IN = LocaleCode("en_IN")
-        val EN_NZ = LocaleCode("en_NZ")
-        val ES_ES = LocaleCode("es_ES")
-        val ES_MX = LocaleCode("es_MX")
-        val FR_FR = LocaleCode("fr_FR")
-        val FR_CA = LocaleCode("fr_CA")
-        val DE_DE = LocaleCode("de_DE")
-        val IT_IT = LocaleCode("it_IT")
-        val JA_JP = LocaleCode("ja_JP")
-        val KO_KR = LocaleCode("ko_KR")
-        val PT_PT = LocaleCode("pt_PT")
-        val PT_BR = LocaleCode("pt_BR")
-        val RU_RU = LocaleCode("ru_RU")
-        val ZH_CN = LocaleCode("zh_CN")
-        val ZH_TW = LocaleCode("zh_TW")
-        val AR_SA = LocaleCode("ar_SA")
-        val TR_TR = LocaleCode("tr_TR")
-        val AF_ZA = LocaleCode("af_ZA")
-        val SQ_AL = LocaleCode("sq_AL")
-        val AM_ET = LocaleCode("am_ET")
-        val HY_AM = LocaleCode("hy_AM")
-        val EU_ES = LocaleCode("eu_ES")
-        val BE_BY = LocaleCode("be_BY")
-        val BN_BD = LocaleCode("bn_BD")
-        val BS_BA = LocaleCode("bs_BA")
-        val BG_BG = LocaleCode("bg_BG")
-        val CA_ES = LocaleCode("ca_ES")
-        val HR_HR = LocaleCode("hr_HR")
-        val CS_CZ = LocaleCode("cs_CZ")
-        val DA_DK = LocaleCode("da_DK")
-        val NL_NL = LocaleCode("nl_NL")
-        val EO = LocaleCode("eo")
-        val ET_EE = LocaleCode("et_EE")
-        val FO_FO = LocaleCode("fo_FO")
-        val FI_FI = LocaleCode("fi_FI")
-        val GL_ES = LocaleCode("gl_ES")
-        val KA_GE = LocaleCode("ka_GE")
-        val EL_GR = LocaleCode("el_GR")
-        val GU_IN = LocaleCode("gu_IN")
-        val HE_IL = LocaleCode("he_IL")
-        val HI_IN = LocaleCode("hi_IN")
-        val HU_HU = LocaleCode("hu_HU")
-        val IS_IS = LocaleCode("is_IS")
-        val ID_ID = LocaleCode("id_ID")
-        val GA_IE = LocaleCode("ga_IE")
-        val IT_IT_NY = LocaleCode("it_IT_NY")
-        val JV_ID = LocaleCode("jv_ID")
-        val KN_IN = LocaleCode("kn_IN")
-        val KK_KZ = LocaleCode("kk_KZ")
-        val KM_KH = LocaleCode("km_KH")
-        val RW_RW = LocaleCode("rw_RW")
-        val KO_KP = LocaleCode("ko_KP")
-        val KY_KG = LocaleCode("ky_KG")
-        val LO_LA = LocaleCode("lo_LA")
-        val LA_VA = LocaleCode("la_VA")
-        val LV_LV = LocaleCode("lv_LV")
-        val LT_LT = LocaleCode("lt_LT")
-        val MK_MK = LocaleCode("mk_MK")
-        val MS_MY = LocaleCode("ms_MY")
-        val ML_IN = LocaleCode("ml_IN")
-        val MR_IN = LocaleCode("mr_IN")
-        val MN_MN = LocaleCode("mn_MN")
-        val NE_NP = LocaleCode("ne_NP")
-        val NB_NO = LocaleCode("nb_NO")
-        val NN_NO = LocaleCode("nn_NO")
-        val OC_FR = LocaleCode("oc_FR")
-        val OR_IN = LocaleCode("or_IN")
-        val PA_IN = LocaleCode("pa_IN")
-        val FA_IR = LocaleCode("fa_IR")
-        val PL_PL = LocaleCode("pl_PL")
-        val PT_PT_VR = LocaleCode("pt_PT_VR")
-        val PT_PT_TR = LocaleCode("pt_PT_TR")
-        val PA_PK = LocaleCode("pa_PK")
-        val RO_RO = LocaleCode("ro_RO")
-        val RM_CH = LocaleCode("rm_CH")
-        val SA_IN = LocaleCode("sa_IN")
-        val SR_RS = LocaleCode("sr_RS")
-        val SI_LK = LocaleCode("si_LK")
-        val SK_SK = LocaleCode("sk_SK")
-        val SL_SI = LocaleCode("sl_SI")
-        val ES_419 = LocaleCode("es_419")
-        val SU_ID = LocaleCode("su_ID")
-        val SW_KE = LocaleCode("sw_KE")
-        val SV_SE = LocaleCode("sv_SE")
-        val TL_PH = LocaleCode("tl_PH")
-        val TG_TJ = LocaleCode("tg_TJ")
-        val TA_IN = LocaleCode("ta_IN")
-        val TT_RU = LocaleCode("tt_RU")
-        val TE_IN = LocaleCode("te_IN")
-        val TH_TH = LocaleCode("th_TH")
-        val TR_CY = LocaleCode("tr_CY")
-        val UK_UA = LocaleCode("uk_UA")
-        val UR_PK = LocaleCode("ur_PK")
-        val UZ_UZ = LocaleCode("uz_UZ")
-        val VI_VN = LocaleCode("vi_VN")
-        val CY_GB = LocaleCode("cy_GB")
-        val XH_ZA = LocaleCode("xh_ZA")
-        val YI_DE = LocaleCode("yi_DE")
-        val YO_NG = LocaleCode("yo_NG")
-        val ZU_ZA = LocaleCode("zu_ZA")
+
+        /**
+         * Creates a LocaleCode from a [Locale], for example `en_US` from `Locale.US`, or `en` for a locale without a
+         * country.
+         */
+        @JvmStatic
+        fun of(locale: Locale): LocaleCode {
+            // Older Android and Java versions report the legacy codes for Hebrew, Indonesian and Yiddish
+            val language = when (val language = locale.language) {
+                "iw" -> "he"
+                "in" -> "id"
+                "ji" -> "yi"
+                else -> language
+            }
+            return LocaleCode(if (locale.country.isEmpty()) language else "${language}_${locale.country}")
+        }
     }
 
+    override fun equals(other: Any?): Boolean = other is LocaleCode && other.code == code
+
+    override fun hashCode(): Int = code.hashCode()
+
+    override fun toString(): String = code
 }

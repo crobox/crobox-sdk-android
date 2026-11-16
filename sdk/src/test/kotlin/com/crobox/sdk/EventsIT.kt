@@ -1,6 +1,5 @@
 package com.crobox.sdk
 
-import com.crobox.sdk.common.CurrencyCode
 import com.crobox.sdk.common.LocaleCode
 import com.crobox.sdk.config.CroboxConfig
 import com.crobox.sdk.core.Crobox
@@ -25,8 +24,7 @@ class EventsIT {
         CroboxConfig(
             containerId = containerId,
             visitorId = UUID.randomUUID(),
-            currencyCode = CurrencyCode.USD,
-            localeCode = LocaleCode.EN_US
+            localeCode = LocaleCode("en_US")
         )
     )
 
@@ -78,8 +76,7 @@ class EventsIT {
                 product = ProductParams(
                     productId = "1",
                     price = 1.0,
-                    quantity = 1,
-                    otherProductIds = setOf("2", "3", "4")
+                    quantity = 1
                 ),
                 searchTerms = "some search terms",
                 impressions = setOf(
@@ -107,13 +104,11 @@ class EventsIT {
                     ProductParams(
                         productId = "1",
                         price = 1.0,
-                        quantity = 1,
-                        otherProductIds = setOf("3", "5", "7")
+                        quantity = 1
                     ), ProductParams(
                         productId = "2",
                         price = 2.0,
-                        quantity = 2,
-                        otherProductIds = setOf("4", "6", "8")
+                        quantity = 2
                     )
                 ),
                 step = "1",
@@ -137,13 +132,11 @@ class EventsIT {
                     ProductParams(
                         productId = "1",
                         price = 1.0,
-                        quantity = 1,
-                        otherProductIds = setOf("3", "5", "7")
+                        quantity = 1
                     ), ProductParams(
                         productId = "2",
                         price = 2.0,
-                        quantity = 2,
-                        otherProductIds = setOf("4", "6", "8")
+                        quantity = 2
                     )
                 ),
                 transactionId = "abc123",

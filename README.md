@@ -26,12 +26,20 @@ dependencies {
 First configure and create a `Crobox` singleton as below, where
 
 - `containerId` should be assigned by Crobox
-- `visitorId` should be unique for visitors. It must stay the same across the user's session (or
-  longer if preferred)
+- `visitorId` identifies the visitor. It must stay the same across app launches: Crobox assigns
+  campaign variants and the control group per visitor, so a new visitorId on every launch re-buckets
+  the user and makes A/B results unreliable. Use `CroboxVisitor.visitorId(context)`, which stores it
+  on the device, or persist your own
+- `localeCode` selects one of the regions (language, country and currency) configured for your
+  container in Crobox, for example `LocaleCode("en_US")` or `LocaleCode.of(Locale.getDefault())`.
+  Without it, or when it matches no region, the container's fallback region is used
 - `userId` should optionally be used to link the current visitor with client's user management
   system, if exists
+- `timezone` is optional. The device's time zone is sent by default; set it, for example to
+  `TimeZone.getTimeZone("Europe/Amsterdam")`, only to use a different one
 
 ```kotlin
+import com.crobox.sdk.common.CroboxVisitor
 import com.crobox.sdk.common.LocaleCode
 import com.crobox.sdk.core.Crobox
 import com.crobox.sdk.config.CroboxConfig
@@ -43,16 +51,31 @@ import java.util.UUID
 val croboxInstance = Crobox.getInstance(
     CroboxConfig(
         containerId = "xlrc9t",
-        visitorId = UUID.randomUUID(),
+        visitorId = CroboxVisitor.visitorId(context),
+        localeCode = LocaleCode("en_US"),
         userId = "JohnDoe"
     )
 )
 
 ```
 
+`getInstance` applies the config only on the first call. To change it later, for example to set the
+`userId` after login or to switch the locale (and with it the region and currency), use `updateConfig`:
+
+```kotlin
+croboxInstance.updateConfig(croboxInstance.config.copy(userId = "JohnDoe"))
+
+// On logout, when the next person on the device should be a new visitor
+croboxInstance.updateConfig(
+    croboxInstance.config.copy(userId = null, visitorId = CroboxVisitor.reset(context))
+)
+```
+
 RequestQueryParams contains page specific parameters, shared by all requests fired from the same
-page/view.
-It must be recreated when the page/view is displayed.
+page/view. Create **one per screen the user sees**, and use it for the pageview and for every
+promotions and event request on that screen. Create a new one when the user goes to another screen
+or comes back to this one. The server counts every new `viewId` as a page, so a new one per request
+double-counts pages, and one for the whole app merges every screen into a single page.
 
 ```kotlin
 val overviewPageParams = RequestQueryParams(
@@ -146,7 +169,7 @@ object : PromotionCallback {
             val productId = promotion.productId ?: ""
             promotion.content?.let { content: PromotionContent ->
                 val messageId = content.messageId
-                val componentName = content.component
+                val componentName = content.componentName
                 val configMap = content.config
                 for (c in configMap) {
                     val configKey = c.key
@@ -227,9 +250,9 @@ object : PromotionCallback {
 | Name            | Type                    | Description                                                                                                                                                         |
 |-----------------|-------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | messageId       | String                  | As Campaigns might have alternative messages, Message Id identifies the message assigned to this promotion                                                          |
-| componentName   | String                  | Component Name                                                                                                                                                      |
+| componentName   | String                  | Name of the campaign's component, as a module name, e.g. `MobAppTextBadgeTsx`                                                                                       |
 | config          | Map<String, String>     | Map of all visual configuration items, managed via Crobox Admin app. <br/>Example:<br/> ```Map("Text1_text" : "Best Seller", "Text1_color" : "#0e1111")```          |
-| contentConfig() | PromotionContentConfig? | Returns component configuration if an Image, Text Badge or Secondary Messaging is available as compliant. **Requires** prior configuration setup in Crobox platform |
+| contentConfig() | PromotionContentConfig? | The content as an `ImageBadge`, `TextBadge` or `SecondaryMessaging` when the campaign uses `MobAppImageBadgeTsx`, `MobAppTextBadgeTsx` or `MobAppSecondaryMessagingTsx`, otherwise null |
 
 
 ### ImageBadge

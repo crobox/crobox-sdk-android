@@ -6,7 +6,7 @@ import java.util.concurrent.atomic.AtomicInteger
 /**
  * Common parameters for all requests sent from the same page view.
  *
- *  @param viewId Unique identifier for a unique page viewing, reused between various event and promotion requests from the same page. It must be refreshed when a user goes to another page or reloads the same page.
+ *  @param viewId Unique identifier for a unique page viewing. Create one RequestQueryParams per screen the user sees, and use it for the pageview and for every promotions and event request on that screen. Create a new one when the user goes to another screen or comes back to this one. The server counts every new viewId as a page.
  *  @param pageType One of the values in predefined list of types of pages of the whole e-commerce funnel
  *  @param customProperties Free format custom properties to be forwarded to Crobox endpoints, for example to help identifying certain traits of a visitor. Example: Map("mobileUser", "yes")
  *  @param pageName Free format Page Name if exists
@@ -124,8 +124,8 @@ data class PageViewParams(
 /**
  * Type specific parameters for Purchase events
  *
- *  @param products Optional set of products purchased
- *  @param transactionId Optional transaction identifier
+ *  @param products Optional set of products purchased. When empty, the products in the visitor's cart are used.
+ *  @param transactionId Transaction identifier. Required: a purchase without one is not recorded. A transaction is only counted once per visitor, so sending it again (for example when the confirmation screen is reopened) is safe.
  *  @param affiliation Optional store or affiliation from which this transaction occurred (e.g. Google Store)
  *  @param coupon Optional coupon
  *  @param revenue Optional the total associated with the transaction
@@ -144,7 +144,7 @@ data class PurchaseParams(
  * Type specific parameters for Checkout events
  *
  *  @param products Optional set of products to be purchased
- *  @param step  Optional number representing a step in the checkout process
+ *  @param step  Optional number of the step in the checkout process, for example "1". It must be numeric.
  *  @param customProperties Optional set of general purpose custom properties, for example to help identifying certain traits of the page
  */
 data class CheckoutParams(
@@ -159,11 +159,9 @@ data class CheckoutParams(
  *  @param productId Product identifier
  *  @param price Optional Product price
  *  @param quantity  Optional quantity
- *  @param otherProductIds Optional set of accompanying productIds which this particular product belongs to
  */
 data class ProductParams(
     val productId: String,
     val price: Double? = null,
-    val quantity: Int? = null,
-    val otherProductIds: Set<String>? = emptySet()
+    val quantity: Int? = null
 )
