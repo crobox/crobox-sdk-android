@@ -108,8 +108,7 @@ croboxInstance.pageViewEvent(
 )
 ```
 
-Prices are not sent: Crobox takes them from the product catalog. A purchase is only recorded with a
-`transactionId`, so `PurchaseParams` requires one.
+A purchase is only recorded with a `transactionId`, so `PurchaseParams` requires one.
 
 For retrieving promotions for zero, one or more products, use the specific PlaceholderId that is
 configured with specific page types and linked to campaigns via Crobox Admin App.

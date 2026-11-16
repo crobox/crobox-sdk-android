@@ -66,8 +66,6 @@ data class ErrorQueryParams(
  *
  *  @param productId Unique identifier for a product
  *  @param quantity Quantity, if available
- *
- * The price is not sent: Crobox takes it from the product catalog.
  */
 data class ClickQueryParams(
     val productId: String? = null,
@@ -79,8 +77,6 @@ data class ClickQueryParams(
  *
  *  @param productId Unique identifier for a product
  *  @param quantity Quantity, if available
- *
- * The price is not sent: Crobox takes it from the product catalog.
  */
 data class CartQueryParams(
     val productId: String? = null,
@@ -94,8 +90,6 @@ data class CartQueryParams(
  *  @param promotionId Promotion Id, if available
  *  @param productId Unique identifier for a product
  *  @param quantity Quantity, if available
- *
- * The price is not sent: Crobox takes it from the product catalog.
  */
 data class CustomQueryParams(
     val name: String? = null,
@@ -160,8 +154,7 @@ data class CheckoutParams(
  *  @param quantity Optional quantity, for example of a purchased product
  *  @param list Optional name of the list the product is shown in, for example "search results" or "related products"
  *
- * The price is not sent: Crobox takes it from the product catalog. The position of a product is its position in the
- * collection it is passed in.
+ * The position of a product is its position in the collection it is passed in.
  */
 data class ProductParams(
     val productId: String,

@@ -319,8 +319,7 @@ internal class CroboxAPIPresenter(@Volatile var config: CroboxConfig) {
 
     /**
      * Sends products in the collector's array format, `imp[N].pi`, `imp[N].qty`, `imp[N].lst` and `imp[N].pos`, so
-     * quantity, list and position reach the server. The flat format, `imp[N]=id`, carries only the id. Price is not
-     * sent, the server takes it from the catalog.
+     * quantity, list and position reach the server. The flat format, `imp[N]=id`, carries only the id.
      */
     private fun impressions(
         impressions: Collection<ProductParams>,
