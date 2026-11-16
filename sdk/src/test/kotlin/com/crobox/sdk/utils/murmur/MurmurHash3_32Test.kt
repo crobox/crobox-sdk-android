@@ -34,4 +34,24 @@ class MurmurHash3_32Test {
         val result3 = MurmurHash3_32.hash(testQuery3)
         assertEquals("-1lmz7r", result3)
     }
+
+    @Test
+    fun murmur3MatchesGuavaReferenceValues() {
+        // Expected values produced by Guava's Hashing.murmur3_32_fixed().hashBytes(..).asInt(),
+        // covering every tail length (0-3 trailing bytes) and multi-byte UTF-8 input.
+        val vectors = mapOf(
+            "" to 0,
+            "a" to 1009084850,
+            "ab" to -1681926305,
+            "abc" to -1277324294,
+            "abcd" to 1139631978,
+            "test" to -1167338989,
+            "Hello, world!" to -1070186941,
+            "The quick brown fox jumps over the lazy dog" to 776992547,
+            "héllo wörld ✓ 😀" to 2126341468,
+        )
+        for ((input, expected) in vectors) {
+            assertEquals(input, expected, MurmurHash3_32.murmur3_32(input.toByteArray(Charsets.UTF_8)))
+        }
+    }
 }

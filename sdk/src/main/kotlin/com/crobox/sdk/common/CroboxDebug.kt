@@ -1,16 +1,15 @@
 package com.crobox.sdk.common
 
-import io.github.oshai.kotlinlogging.KotlinLogging
+import android.util.Log
 
 internal object CroboxDebug {
 
-    private val logger = KotlinLogging.logger { TAG }
-    private val TAG = "croboxSDK"
+    private const val TAG = "croboxSDK"
     var loggingEnabled = false
 
     private fun printText(text: String) {
         if (loggingEnabled) {
-            logger.debug { text }
+            Log.d(TAG, text)
         }
     }
 
