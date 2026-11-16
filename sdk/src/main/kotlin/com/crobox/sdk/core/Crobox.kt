@@ -24,10 +24,37 @@ class Crobox private constructor(config: CroboxConfig) {
         @Volatile
         private var instance: Crobox? = null
 
+        /**
+         * Returns the Crobox singleton, creating it with [config] on the first call.
+         *
+         * Later calls return the same instance and do not apply [config]. Use [updateConfig] to change the
+         * configuration, for example to set the userId after login or to switch locale or currency.
+         */
         fun getInstance(config: CroboxConfig): Crobox =
             instance ?: synchronized(this) {
                 instance ?: Crobox(config).also { instance = it }
             }
+    }
+
+    /**
+     * The configuration used for every request.
+     */
+    val config: CroboxConfig
+        get() = presenter.config
+
+    /**
+     * Replaces the configuration for all following requests.
+     *
+     * Use it to set or clear the userId on login or logout, or to switch locale or currency:
+     *
+     * ```
+     * crobox.updateConfig(crobox.config.copy(userId = "JohnDoe"))
+     * ```
+     *
+     * Keep the same visitorId unless the visitor should become a new visitor, for example on logout.
+     */
+    fun updateConfig(config: CroboxConfig) {
+        presenter.config = config
     }
 
     fun enableLogging() {
@@ -162,7 +189,8 @@ class Crobox private constructor(config: CroboxConfig) {
         presenter.event(
             eventType = EventType.Checkout,
             queryParams = queryParams,
-            additionalParams = checkoutParams
+            additionalParams = checkoutParams,
+            pageType = PageType.PageCheckout
         )
     }
 
@@ -175,8 +203,9 @@ class Crobox private constructor(config: CroboxConfig) {
     fun purchaseEvent(queryParams: RequestQueryParams, purchaseParams: PurchaseParams) {
         presenter.event(
             eventType = EventType.Purchase,
-            queryParams = queryParams.copy(pageType = PageType.PageComplete),
-            additionalParams = purchaseParams
+            queryParams = queryParams,
+            additionalParams = purchaseParams,
+            pageType = PageType.PageComplete
         )
     }
 

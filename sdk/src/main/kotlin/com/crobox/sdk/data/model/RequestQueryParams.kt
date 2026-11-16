@@ -6,7 +6,7 @@ import java.util.concurrent.atomic.AtomicInteger
 /**
  * Common parameters for all requests sent from the same page view.
  *
- *  @param viewId Unique identifier for a unique page viewing, reused between various event and promotion requests from the same page. It must be refreshed when a user goes to another page or reloads the same page.
+ *  @param viewId Unique identifier for a unique page viewing. Create one RequestQueryParams per screen the user sees, and use it for the pageview and for every promotions and event request on that screen. Create a new one when the user goes to another screen or comes back to this one. The server counts every new viewId as a page.
  *  @param pageType One of the values in predefined list of types of pages of the whole e-commerce funnel
  *  @param customProperties Free format custom properties to be forwarded to Crobox endpoints, for example to help identifying certain traits of a visitor. Example: Map("mobileUser", "yes")
  *  @param pageName Free format Page Name if exists
@@ -159,11 +159,12 @@ data class CheckoutParams(
  *  @param productId Product identifier
  *  @param price Optional Product price
  *  @param quantity  Optional quantity
- *  @param otherProductIds Optional set of accompanying productIds which this particular product belongs to
+ *  @param otherProductIds Not sent. The server expects a product list name here, not product ids.
  */
 data class ProductParams(
     val productId: String,
     val price: Double? = null,
     val quantity: Int? = null,
+    @Deprecated("Not sent to Crobox: the server reads this field as a product list name, not as product ids")
     val otherProductIds: Set<String>? = emptySet()
 )

@@ -26,12 +26,15 @@ dependencies {
 First configure and create a `Crobox` singleton as below, where
 
 - `containerId` should be assigned by Crobox
-- `visitorId` should be unique for visitors. It must stay the same across the user's session (or
-  longer if preferred)
+- `visitorId` identifies the visitor. It must stay the same across app launches: Crobox assigns
+  campaign variants and the control group per visitor, so a new visitorId on every launch re-buckets
+  the user and makes A/B results unreliable. Use `CroboxVisitor.visitorId(context)`, which stores it
+  on the device, or persist your own
 - `userId` should optionally be used to link the current visitor with client's user management
   system, if exists
 
 ```kotlin
+import com.crobox.sdk.common.CroboxVisitor
 import com.crobox.sdk.common.LocaleCode
 import com.crobox.sdk.core.Crobox
 import com.crobox.sdk.config.CroboxConfig
@@ -43,16 +46,30 @@ import java.util.UUID
 val croboxInstance = Crobox.getInstance(
     CroboxConfig(
         containerId = "xlrc9t",
-        visitorId = UUID.randomUUID(),
+        visitorId = CroboxVisitor.visitorId(context),
         userId = "JohnDoe"
     )
 )
 
 ```
 
+`getInstance` applies the config only on the first call. To change it later, for example to set the
+`userId` after login or to switch locale or currency, use `updateConfig`:
+
+```kotlin
+croboxInstance.updateConfig(croboxInstance.config.copy(userId = "JohnDoe"))
+
+// On logout, when the next person on the device should be a new visitor
+croboxInstance.updateConfig(
+    croboxInstance.config.copy(userId = null, visitorId = CroboxVisitor.reset(context))
+)
+```
+
 RequestQueryParams contains page specific parameters, shared by all requests fired from the same
-page/view.
-It must be recreated when the page/view is displayed.
+page/view. Create **one per screen the user sees**, and use it for the pageview and for every
+promotions and event request on that screen. Create a new one when the user goes to another screen
+or comes back to this one. The server counts every new `viewId` as a page, so a new one per request
+double-counts pages, and one for the whole app merges every screen into a single page.
 
 ```kotlin
 val overviewPageParams = RequestQueryParams(

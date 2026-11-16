@@ -11,6 +11,7 @@ import com.crobox.sdk.data.model.ClickQueryParams
 import com.crobox.sdk.data.model.CustomQueryParams
 import com.crobox.sdk.data.model.ErrorQueryParams
 import com.crobox.sdk.data.model.EventType
+import com.crobox.sdk.data.model.PageType
 import com.crobox.sdk.data.model.PageViewParams
 import com.crobox.sdk.data.model.ProductParams
 import com.crobox.sdk.data.model.PurchaseParams
@@ -22,8 +23,9 @@ import okhttp3.RequestBody.Companion.toRequestBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.net.URLEncoder
 
-internal class CroboxAPIPresenter(private val config: CroboxConfig) {
+internal class CroboxAPIPresenter(@Volatile var config: CroboxConfig) {
 
     private val apiInterface: CroboxAPI = CroboxAPIClient.clientWithOutToken.create(
         CroboxAPI::class.java
@@ -68,11 +70,19 @@ internal class CroboxAPIPresenter(private val config: CroboxConfig) {
             })
     }
 
+    /**
+     * @param pageType Overrides [RequestQueryParams.pageType] for this event only. The override is passed separately,
+     * instead of through `queryParams.copy(..)`, so the event keeps using the view's counter (`e`). A copy would
+     * start again at 0, and the collector drops events whose (cid, pid, vid, e) it has seen before.
+     */
     fun event(
-        eventType: EventType, queryParams: RequestQueryParams, additionalParams: Any?
+        eventType: EventType,
+        queryParams: RequestQueryParams,
+        additionalParams: Any?,
+        pageType: PageType? = null
     ) {
 
-        val parameters = eventQuery(queryParams, additionalParams, eventType)
+        val parameters = eventQuery(queryParams, additionalParams, eventType, pageType)
         val stringParameters = parameters.mapValues { it.value.toString() }
 
         apiInterface.event(stringParameters).enqueue(object : Callback<Void?> {
@@ -94,12 +104,15 @@ internal class CroboxAPIPresenter(private val config: CroboxConfig) {
         })
     }
 
-    private fun eventQuery(
-        queryParams: RequestQueryParams, additionalParams: Any?, eventType: EventType
+    internal fun eventQuery(
+        queryParams: RequestQueryParams,
+        additionalParams: Any?,
+        eventType: EventType,
+        pageType: PageType?
     ): Map<String, Any> {
 
         // Mandatory parameters
-        val parameters = commonQueryParams(queryParams)
+        val parameters = commonQueryParams(queryParams, pageType)
         parameters["t"] = eventType.type
 
         // Additional parameters based on event type
@@ -141,9 +154,10 @@ internal class CroboxAPIPresenter(private val config: CroboxConfig) {
     }
 
 
-    private fun promotionRequestBody(impressions: List<String>): RequestBody {
-        val bodyStr =
-            impressions.indices.zip(impressions).joinToString("&") { t -> "${t.first}=${t.second}" }
+    internal fun promotionRequestBody(impressions: List<String>): RequestBody {
+        // The server parses the body as a query string, so an id containing &, =, + or % must be encoded
+        val bodyStr = impressions.withIndex()
+            .joinToString("&") { (index, productId) -> "$index=${URLEncoder.encode(productId, "UTF-8")}" }
 
         return bodyStr.toRequestBody("text/plain".toMediaTypeOrNull())
     }
@@ -157,8 +171,11 @@ internal class CroboxAPIPresenter(private val config: CroboxConfig) {
     }
 
     private fun commonQueryParams(
-        queryParams: RequestQueryParams
+        queryParams: RequestQueryParams,
+        pageType: PageType? = null
     ): MutableMap<String, Any> {
+        val config = this.config
+
         // Mandatory parameters
         val parameters = mutableMapOf<String, Any>(
             "cid" to config.containerId,
@@ -174,13 +191,11 @@ internal class CroboxAPIPresenter(private val config: CroboxConfig) {
         config.userId?.let { parameters["uid"] = it }
         parameters["ts"] = CroboxEncoder.toBase36(System.currentTimeMillis())
         config.timezone?.let { parameters["tz"] = it }
-        queryParams.pageType?.let { parameters["pt"] = it.value }
+        parameters["pt"] = (pageType ?: queryParams.pageType).value
         queryParams.pageName?.let { parameters["lh"] = it }
-        queryParams.customProperties?.let {
-            for ((key, value) in it) {
-                parameters["cp.$key"] = value
-            }
-        }
+        // Visitor-level properties first, so page-level properties with the same key win
+        config.customProperties?.let { customProperties(it, parameters) }
+        queryParams.customProperties?.let { customProperties(it, parameters) }
 
         return parameters
     }
@@ -282,16 +297,23 @@ internal class CroboxAPIPresenter(private val config: CroboxConfig) {
         parameters["pi"] = productParams.productId
         productParams.price?.let { parameters["price"] = it }
         productParams.quantity?.let { parameters["qty"] = it }
-        productParams.otherProductIds?.let { parameters["lst"] = it.joinToString() }
+        // otherProductIds is not sent: the server reads `lst` as the name of a product list, not as product ids
     }
 
+    /**
+     * Sends products in the collector's array format, `imp[N].pi`, `imp[N].qty` and `imp[N].pos`, so quantity and
+     * position reach the server. The flat format, `imp[N]=id`, carries only the id. Price is not sent, the server
+     * takes it from the catalog.
+     */
     private fun impressions(
-        impressions:Set<ProductParams>,
+        impressions: Set<ProductParams>,
         parameters: MutableMap<String, Any>
     ) {
-        val impressionsList = impressions.map{ it.productId }.toList()
-        for (m in impressionsList.indices.zip(impressionsList)) {
-            parameters["imp[${m.first}]"] = m.second
+        for ((index, product) in impressions.withIndex()) {
+            parameters["imp[$index].pi"] = product.productId
+            product.quantity?.let { parameters["imp[$index].qty"] = it }
+            // 1-based, the server treats 0 as an unknown position
+            parameters["imp[$index].pos"] = index + 1
         }
     }
 

@@ -75,8 +75,7 @@ class CroboxRequests(val croboxInstance: Crobox) {
                 product = ProductParams(
                     productId = "1",
                     price = 1.0,
-                    quantity = 1,
-                    otherProductIds = setOf("2", "3", "4")
+                    quantity = 1
                 ),
                 searchTerms = "some search terms",
                 impressions = setOf(
@@ -132,8 +131,7 @@ class CroboxRequests(val croboxInstance: Crobox) {
             ProductParams(
                 productId = item.product.id.toString(),
                 price = item.product.price,
-                quantity = item.quantity,
-                otherProductIds = setOf("3", "5", "7")
+                quantity = item.quantity
             )
         }
     }
