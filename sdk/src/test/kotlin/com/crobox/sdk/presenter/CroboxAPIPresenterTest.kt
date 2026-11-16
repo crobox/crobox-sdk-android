@@ -2,7 +2,6 @@ package com.crobox.sdk.presenter
 
 import com.crobox.sdk.common.LocaleCode
 import com.crobox.sdk.config.CroboxConfig
-import com.crobox.sdk.data.model.CheckoutParams
 import com.crobox.sdk.data.model.EventType
 import com.crobox.sdk.data.model.PageType
 import com.crobox.sdk.data.model.PageViewParams
@@ -108,16 +107,6 @@ class CroboxAPIPresenterTest {
 
         assertEquals("JohnDoe", query["uid"])
         assertEquals("nl_BE", query["lc"])
-    }
-
-    @Test
-    fun checkoutWithoutStepStillSendsAStep() {
-        val view = RequestQueryParams(viewId = UUID.randomUUID(), pageType = PageType.PageCart)
-
-        val query = presenter.eventQuery(view, CheckoutParams(), EventType.Checkout, PageType.PageCheckout)
-
-        assertEquals("0", query["stp"])
-        assertEquals(PageType.PageCheckout.value, query["pt"])
     }
 
     @Test

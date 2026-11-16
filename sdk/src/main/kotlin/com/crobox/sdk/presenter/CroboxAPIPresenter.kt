@@ -275,8 +275,7 @@ internal class CroboxAPIPresenter(@Volatile var config: CroboxConfig) {
      */
     private fun checkoutEvent(checkoutParams: CheckoutParams, parameters: MutableMap<String, Any>) {
         checkoutParams.products?.let { impressions(it, parameters) }
-        // The server only records a checkout when `stp` is present, so send 0 (unknown step) when none is given
-        parameters["stp"] = checkoutParams.step ?: "0"
+        checkoutParams.step?.let { parameters["stp"] = it }
         checkoutParams.customProperties?.let { customProperties(it, parameters) }
     }
 

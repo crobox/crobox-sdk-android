@@ -144,7 +144,7 @@ data class PurchaseParams(
  * Type specific parameters for Checkout events
  *
  *  @param products Optional set of products to be purchased
- *  @param step  Number of the step in the checkout process, for example "1". It must be numeric; when null, 0 (unknown step) is sent.
+ *  @param step  Optional number of the step in the checkout process, for example "1". It must be numeric.
  *  @param customProperties Optional set of general purpose custom properties, for example to help identifying certain traits of the page
  */
 data class CheckoutParams(
