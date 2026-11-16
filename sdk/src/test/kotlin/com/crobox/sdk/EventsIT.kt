@@ -1,6 +1,5 @@
 package com.crobox.sdk
 
-import com.crobox.sdk.common.CurrencyCode
 import com.crobox.sdk.common.LocaleCode
 import com.crobox.sdk.config.CroboxConfig
 import com.crobox.sdk.core.Crobox
@@ -25,7 +24,6 @@ class EventsIT {
         CroboxConfig(
             containerId = containerId,
             visitorId = UUID.randomUUID(),
-            currencyCode = CurrencyCode.USD,
             localeCode = LocaleCode("en_US")
         )
     )

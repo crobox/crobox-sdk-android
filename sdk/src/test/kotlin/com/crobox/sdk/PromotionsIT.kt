@@ -1,6 +1,5 @@
 package com.crobox.sdk
 
-import com.crobox.sdk.common.CurrencyCode
 import com.crobox.sdk.common.LocaleCode
 import com.crobox.sdk.config.CroboxConfig
 import com.crobox.sdk.core.Crobox
@@ -33,7 +32,6 @@ class PromotionsIT {
         CroboxConfig(
             containerId = containerId,
             visitorId = Conf.pid,
-            currencyCode = CurrencyCode.USD,
             localeCode = LocaleCode("en_US")
         )
     )

@@ -2,7 +2,6 @@ package com.crobox.sdk.testapp.ui
 
 import android.os.Bundle
 import com.crobox.sdk.common.CroboxVisitor
-import com.crobox.sdk.common.CurrencyCode
 import com.crobox.sdk.common.LocaleCode
 import com.crobox.sdk.config.CroboxConfig
 import com.crobox.sdk.core.Crobox
@@ -33,7 +32,6 @@ class DemoActivity : BaseActivity() {
             CroboxConfig(
                 containerId = containerId,
                 visitorId = CroboxVisitor.visitorId(this),
-                currencyCode = CurrencyCode.USD,
                 localeCode = LocaleCode("en_US")
             )
         )

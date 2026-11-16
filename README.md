@@ -58,7 +58,7 @@ val croboxInstance = Crobox.getInstance(
 ```
 
 `getInstance` applies the config only on the first call. To change it later, for example to set the
-`userId` after login or to switch locale or currency, use `updateConfig`:
+`userId` after login or to switch the locale (and with it the region and currency), use `updateConfig`:
 
 ```kotlin
 croboxInstance.updateConfig(croboxInstance.config.copy(userId = "JohnDoe"))

@@ -28,7 +28,7 @@ class Crobox private constructor(config: CroboxConfig) {
          * Returns the Crobox singleton, creating it with [config] on the first call.
          *
          * Later calls return the same instance and do not apply [config]. Use [updateConfig] to change the
-         * configuration, for example to set the userId after login or to switch locale or currency.
+         * configuration, for example to set the userId after login or to switch the locale (and with it the region and currency).
          */
         fun getInstance(config: CroboxConfig): Crobox =
             instance ?: synchronized(this) {
@@ -45,7 +45,7 @@ class Crobox private constructor(config: CroboxConfig) {
     /**
      * Replaces the configuration for all following requests.
      *
-     * Use it to set or clear the userId on login or logout, or to switch locale or currency:
+     * Use it to set or clear the userId on login or logout, or to switch the locale (and with it the region and currency):
      *
      * ```
      * crobox.updateConfig(crobox.config.copy(userId = "JohnDoe"))

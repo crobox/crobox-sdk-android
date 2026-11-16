@@ -187,7 +187,6 @@ internal class CroboxAPIPresenter(@Volatile var config: CroboxConfig) {
         )
 
         // Optional parameters
-        config.currencyCode?.let { parameters["cc"] = it.toString() }
         config.localeCode?.let { parameters["lc"] = it.code }
         config.userId?.let { parameters["uid"] = it }
         parameters["ts"] = CroboxEncoder.toBase36(System.currentTimeMillis())

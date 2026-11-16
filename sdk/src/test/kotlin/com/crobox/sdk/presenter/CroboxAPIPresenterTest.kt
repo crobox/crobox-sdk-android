@@ -95,6 +95,8 @@ class CroboxAPIPresenterTest {
 
         assertEquals("JohnDoe", query["uid"])
         assertEquals("nl_BE", query["lc"])
+        // The currency comes from the region the locale selects
+        assertFalse(query.containsKey("cc"))
     }
 
     @Test
