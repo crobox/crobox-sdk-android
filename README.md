@@ -329,3 +329,58 @@ That's why the application operates with a simplified set of data models, like:<
 **Product** data model - specific Object that user can purchase  <br/>
 **Variant** data model - Product with specific parameters (size, color, etc).<br/>
 **PurchaseItem** data model - elements that the user puts into Basket.
+
+## Development
+
+### Build and test
+
+Building needs JDK 17 or 21. Android Gradle Plugin 8 needs at least 17, and the Gradle version in the
+wrapper (8.9) does not run on JDK 25. CI and the release workflow use 17.
+
+```shell
+./gradlew build                    # compile, lint and run all tests (what CI runs)
+./gradlew :sdk:testDebugUnitTest   # SDK tests only
+```
+
+The tests in `sdk/src/test` include two integration tests that call the live Crobox API with the
+test container `xlrc9t`, so they need network access:
+
+- `PromotionsIT` requests promotions and checks that the response parses.
+- `EventsIT` sends one of each event type. It asserts nothing; check that the events arrive in the
+  Crobox dashboard for container `xlrc9t`.
+
+They run as part of `./gradlew build` and therefore on every CI build.
+
+The sample app in `app/` uses the SDK from source and is the quickest way to try a change on a device.
+
+### Releasing
+
+Releases are published to Maven Central (`com.crobox.sdk:crobox-sdk-android`) through the
+[Central Portal](https://central.sonatype.com) by the
+[Publish Release](.github/workflows/publish-release.yml) workflow, which runs on every pushed tag.
+
+1. Set `VERSION_NAME` in [gradle.properties](gradle.properties) to the release version (drop
+   `-SNAPSHOT`) and merge that to `main`. The published version comes from this file, not from the tag.
+   Follow semver: removing or changing public API needs a new major version.
+2. Tag the release commit and push the tag:
+   ```shell
+   git tag vX.Y.Z
+   git push origin vX.Y.Z
+   ```
+3. The workflow signs the artifacts and uploads them to the Central Portal. Because automatic release
+   is off (`SONATYPE_AUTOMATIC_RELEASE` in `gradle.properties`), log in to the Central Portal, open
+   *Deployments*, check the upload and press *Publish*. It can take up to an hour before the version
+   resolves from Maven Central.
+4. Create the GitHub release: `gh release create vX.Y.Z --generate-notes`.
+5. Set `VERSION_NAME` on `main` to the next `-SNAPSHOT` version.
+
+The workflow reads these repository secrets:
+
+| Secret                     | Content                                                            |
+|----------------------------|--------------------------------------------------------------------|
+| `SONATYPE_NEXUS_TOKENNAME` | Username of a Central Portal user token (*Account → Generate User Token*) |
+| `SONATYPE_NEXUS_TOKEN`     | Password of that user token                                        |
+| `SIGNING_PRIVATE_KEY2`     | ASCII-armored GPG private key used to sign the artifacts           |
+| `SIGNING_PASSWORD2`        | Passphrase of that key                                             |
+
+The token must belong to a Central Portal account with access to the `com.crobox.sdk` namespace.
