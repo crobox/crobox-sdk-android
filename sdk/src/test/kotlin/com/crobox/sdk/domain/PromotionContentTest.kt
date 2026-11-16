@@ -4,7 +4,6 @@ import android.graphics.Color
 import com.google.gson.Gson
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
-import org.junit.Assert.assertTrue
 import org.junit.Assert.fail
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -111,19 +110,9 @@ class PromotionContentTest {
     }
 
     @Test
-    fun contentConfigDoesNotDependOnTheComponentName() {
-        val content = PromotionContent(
-            config = mapOf("text" to "SALE", "backgroundColor" to "#ba031d"),
-            messageId = "m",
-            componentName = "AnyOtherName"
-        )
-        assertTrue(content.contentConfig() is TextBadge)
-    }
-
-    @Test
     fun contentConfigIsNullForOtherComponents() {
         val content = PromotionContent(
-            config = mapOf("Text1_text" to "SALE"),
+            config = mapOf("text" to "SALE", "backgroundColor" to "#ba031d"),
             messageId = "m",
             componentName = "PlpHighlightMobileTsx"
         )
