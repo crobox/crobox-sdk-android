@@ -148,7 +148,7 @@ class ProductAdapter(private val dataSet: List<Product>) :
         } else {
             productFilterList.clear()
             for (wp in dataSet) {
-                if (wp.name.toLowerCase(Locale.getDefault()).contains(charText)) {
+                if (wp.name.lowercase(Locale.getDefault()).contains(charText)) {
                     productFilterList.add(wp)
                 }
             }
