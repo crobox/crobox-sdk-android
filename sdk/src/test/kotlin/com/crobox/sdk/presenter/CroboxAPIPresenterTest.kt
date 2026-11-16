@@ -11,7 +11,9 @@ import com.crobox.sdk.data.model.RequestQueryParams
 import okio.Buffer
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
+import org.junit.Assert.assertNotEquals
 import org.junit.Test
+import java.net.SocketTimeoutException
 import java.util.TimeZone
 import java.util.UUID
 
@@ -125,5 +127,31 @@ class CroboxAPIPresenterTest {
         body.writeTo(buffer)
 
         assertEquals("0=a%26b%3Dc&1=100%25&2=plain", buffer.readUtf8())
+    }
+
+    @Test
+    fun failureIsReportedAsSdkErrorEvent() {
+        val view = RequestQueryParams(viewId = UUID.randomUUID(), pageType = PageType.PageIndex)
+        val query = presenter.eventQuery(view, presenter.failureReport("purchase", "HTTP 400"), EventType.Error, null)
+
+        assertEquals("error", query["t"])
+        assertEquals("sdk", query["tg"])
+        assertEquals("purchase", query["nm"])
+        assertEquals("HTTP 400", query["msg"])
+    }
+
+    @Test
+    fun failureMessageHasTheExceptionClassAndMessage() {
+        assertEquals("SocketTimeoutException: timeout", presenter.failureMessage(SocketTimeoutException("timeout")))
+        assertEquals("SocketTimeoutException", presenter.failureMessage(SocketTimeoutException()))
+    }
+
+    @Test
+    fun checkoutAndPurchaseFailuresAreNamedApart() {
+        with(presenter) {
+            assertEquals("checkout", EventType.Checkout.requestName)
+            assertEquals("purchase", EventType.Purchase.requestName)
+            assertNotEquals(EventType.PageView.requestName, EventType.Purchase.requestName)
+        }
     }
 }

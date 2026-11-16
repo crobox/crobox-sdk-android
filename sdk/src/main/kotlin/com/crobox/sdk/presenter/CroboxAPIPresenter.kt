@@ -55,8 +55,10 @@ internal class CroboxAPIPresenter(@Volatile var config: CroboxConfig) {
                                 ?: promotionCallback.onError("Successful http but null body")
                         } else {
                             // http errors [300...600)
-                            promotionCallback.onError(response.body().toString())
-                            CroboxDebug.promotionError(response.body().toString())
+                            val message = "HTTP ${response.code()}"
+                            promotionCallback.onError(message)
+                            CroboxDebug.promotionError(message)
+                            reportFailure("promotions", queryParams, message)
                         }
                     } catch (ex: Exception) {
                         promotionCallback.onError(ex.message ?: "")
@@ -67,6 +69,10 @@ internal class CroboxAPIPresenter(@Volatile var config: CroboxConfig) {
                 override fun onFailure(call: Call<PromotionsResponse?>, t: Throwable) {
                     promotionCallback.onError(t.message ?: "")
                     CroboxDebug.promotionError(t.message ?: "")
+                    // A cancelled request is not an error
+                    if (!call.isCanceled) {
+                        reportFailure("promotions", queryParams, failureMessage(t))
+                    }
                 }
             })
     }
@@ -90,19 +96,35 @@ internal class CroboxAPIPresenter(@Volatile var config: CroboxConfig) {
             override fun onResponse(
                 call: Call<Void?>, response: Response<Void?>
             ) {
-                try {
-                    if (!response.isSuccessful) {
-                        CroboxDebug.eventError(response.body().toString())
-                    }
-                } catch (ex: Exception) {
-                    CroboxDebug.eventError(response.body().toString())
+                if (!response.isSuccessful) {
+                    failed("HTTP ${response.code()}")
                 }
             }
 
             override fun onFailure(call: Call<Void?>, t: Throwable) {
-                CroboxDebug.eventError(t.message.toString())
+                // A cancelled request is not an error
+                if (!call.isCanceled) {
+                    failed(failureMessage(t))
+                }
+            }
+
+            private fun failed(message: String) {
+                CroboxDebug.eventError(message)
+                // Reporting a failed error event would loop
+                if (eventType != EventType.Error) {
+                    reportFailure(eventType.requestName, queryParams, message)
+                }
             }
         })
+    }
+
+    /**
+     * Sends an error event for a request that failed, so that failures on users' devices show up in Crobox.
+     *
+     * @param request The request that failed, for example `pageview` or `promotions`. Sent as the error's name.
+     */
+    private fun reportFailure(request: String, queryParams: RequestQueryParams, message: String) {
+        event(EventType.Error, queryParams, failureReport(request, message))
     }
 
     internal fun eventQuery(
@@ -315,6 +337,31 @@ internal class CroboxAPIPresenter(@Volatile var config: CroboxConfig) {
             parameters["imp[$index].pos"] = index + 1
         }
     }
+
+    internal fun failureReport(request: String, message: String) =
+        ErrorQueryParams(tag = "sdk", name = request, message = message)
+
+    /**
+     * The exception's class and message. The request URL is left out: it carries the userId and custom properties.
+     */
+    internal fun failureMessage(t: Throwable): String =
+        listOfNotNull(t.javaClass.simpleName, t.message).joinToString(": ")
+
+    /**
+     * The name of the request in error events, the same as the iOS SDK sends. Checkout and purchase events are
+     * sent as page views, so [EventType.type] does not tell them apart.
+     */
+    internal val EventType.requestName: String
+        get() = when (this) {
+            EventType.Click -> "click"
+            EventType.AddCart -> "addcart"
+            EventType.RemoveCart -> "rmcart"
+            EventType.PageView -> "pageview"
+            EventType.Checkout -> "checkout"
+            EventType.Purchase -> "purchase"
+            EventType.Error -> "error"
+            EventType.CustomEvent -> "custom"
+        }
 
     /**
      * The current offset of [timeZone] from UTC in hours, in the same form as the web snippet: positive east of UTC,
