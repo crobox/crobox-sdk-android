@@ -30,6 +30,9 @@ First configure and create a `Crobox` singleton as below, where
   campaign variants and the control group per visitor, so a new visitorId on every launch re-buckets
   the user and makes A/B results unreliable. Use `CroboxVisitor.visitorId(context)`, which stores it
   on the device, or persist your own
+- `localeCode` selects one of the regions (language, country and currency) configured for your
+  container in Crobox, for example `LocaleCode("en_US")` or `LocaleCode.of(Locale.getDefault())`.
+  Without it, or when it matches no region, the container's fallback region is used
 - `userId` should optionally be used to link the current visitor with client's user management
   system, if exists
 
@@ -47,6 +50,7 @@ val croboxInstance = Crobox.getInstance(
     CroboxConfig(
         containerId = "xlrc9t",
         visitorId = CroboxVisitor.visitorId(context),
+        localeCode = LocaleCode("en_US"),
         userId = "JohnDoe"
     )
 )

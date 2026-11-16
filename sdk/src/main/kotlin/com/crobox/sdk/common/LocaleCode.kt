@@ -1,129 +1,45 @@
 package com.crobox.sdk.common
 
+import java.util.Locale
+
 /**
- * LocaleCodes are in the from of {language}_{COUNTRY} format where
- *  - the language is lowercase, two-letter form of ISO 639-1 language codes
- *  - the country is uppercase, two-letter form of ISO 3166-1 Country codes
+ * The locale of the visitor, in the form `{language}_{COUNTRY}`, for example `en_US`, where
+ *  - the language is the lowercase, two-letter ISO 639-1 language code
+ *  - the country is the uppercase, two-letter ISO 3166-1 country code
  *
- * Use one of the predefined codes, for example `LocaleCode.EN_US`, or create one for any other locale with
- * `LocaleCode("nl_BE")`.
+ * Crobox uses it to select one of the regions configured for your container, and with it the language, country and
+ * currency of the request. Use a code that matches one of those regions. When none matches, the container's
+ * fallback region is used.
  *
- * This was an enum up to 1.0.10. `LocaleCode.EN_US` still compiles from Kotlin and Java, but enum-only API
- * (`name`, `values()`, `valueOf()`, exhaustive `when`) is gone, so this needs a minor version bump.
+ * ```
+ * LocaleCode("en_US")
+ * LocaleCode.of(Locale.getDefault())
+ * ```
  */
 class LocaleCode(val code: String) {
+
+    companion object {
+
+        /**
+         * Creates a LocaleCode from a [Locale], for example `en_US` from `Locale.US`, or `en` for a locale without a
+         * country.
+         */
+        @JvmStatic
+        fun of(locale: Locale): LocaleCode {
+            // Older Android and Java versions report the legacy codes for Hebrew, Indonesian and Yiddish
+            val language = when (val language = locale.language) {
+                "iw" -> "he"
+                "in" -> "id"
+                "ji" -> "yi"
+                else -> language
+            }
+            return LocaleCode(if (locale.country.isEmpty()) language else "${language}_${locale.country}")
+        }
+    }
 
     override fun equals(other: Any?): Boolean = other is LocaleCode && other.code == code
 
     override fun hashCode(): Int = code.hashCode()
 
     override fun toString(): String = code
-
-    companion object {
-        @JvmField val EN_US = LocaleCode("en_US")
-        @JvmField val EN_GB = LocaleCode("en_GB")
-        @JvmField val EN_CA = LocaleCode("en_CA")
-        @JvmField val EN_AU = LocaleCode("en_AU")
-        @JvmField val EN_IN = LocaleCode("en_IN")
-        @JvmField val EN_NZ = LocaleCode("en_NZ")
-        @JvmField val ES_ES = LocaleCode("es_ES")
-        @JvmField val ES_MX = LocaleCode("es_MX")
-        @JvmField val FR_FR = LocaleCode("fr_FR")
-        @JvmField val FR_CA = LocaleCode("fr_CA")
-        @JvmField val DE_DE = LocaleCode("de_DE")
-        @JvmField val IT_IT = LocaleCode("it_IT")
-        @JvmField val JA_JP = LocaleCode("ja_JP")
-        @JvmField val KO_KR = LocaleCode("ko_KR")
-        @JvmField val PT_PT = LocaleCode("pt_PT")
-        @JvmField val PT_BR = LocaleCode("pt_BR")
-        @JvmField val RU_RU = LocaleCode("ru_RU")
-        @JvmField val ZH_CN = LocaleCode("zh_CN")
-        @JvmField val ZH_TW = LocaleCode("zh_TW")
-        @JvmField val AR_SA = LocaleCode("ar_SA")
-        @JvmField val TR_TR = LocaleCode("tr_TR")
-        @JvmField val AF_ZA = LocaleCode("af_ZA")
-        @JvmField val SQ_AL = LocaleCode("sq_AL")
-        @JvmField val AM_ET = LocaleCode("am_ET")
-        @JvmField val HY_AM = LocaleCode("hy_AM")
-        @JvmField val EU_ES = LocaleCode("eu_ES")
-        @JvmField val BE_BY = LocaleCode("be_BY")
-        @JvmField val BN_BD = LocaleCode("bn_BD")
-        @JvmField val BS_BA = LocaleCode("bs_BA")
-        @JvmField val BG_BG = LocaleCode("bg_BG")
-        @JvmField val CA_ES = LocaleCode("ca_ES")
-        @JvmField val HR_HR = LocaleCode("hr_HR")
-        @JvmField val CS_CZ = LocaleCode("cs_CZ")
-        @JvmField val DA_DK = LocaleCode("da_DK")
-        @JvmField val NL_NL = LocaleCode("nl_NL")
-        @JvmField val EO = LocaleCode("eo")
-        @JvmField val ET_EE = LocaleCode("et_EE")
-        @JvmField val FO_FO = LocaleCode("fo_FO")
-        @JvmField val FI_FI = LocaleCode("fi_FI")
-        @JvmField val GL_ES = LocaleCode("gl_ES")
-        @JvmField val KA_GE = LocaleCode("ka_GE")
-        @JvmField val EL_GR = LocaleCode("el_GR")
-        @JvmField val GU_IN = LocaleCode("gu_IN")
-        @JvmField val HE_IL = LocaleCode("he_IL")
-        @JvmField val HI_IN = LocaleCode("hi_IN")
-        @JvmField val HU_HU = LocaleCode("hu_HU")
-        @JvmField val IS_IS = LocaleCode("is_IS")
-        @JvmField val ID_ID = LocaleCode("id_ID")
-        @JvmField val GA_IE = LocaleCode("ga_IE")
-        @JvmField val IT_IT_NY = LocaleCode("it_IT_NY")
-        @JvmField val JV_ID = LocaleCode("jv_ID")
-        @JvmField val KN_IN = LocaleCode("kn_IN")
-        @JvmField val KK_KZ = LocaleCode("kk_KZ")
-        @JvmField val KM_KH = LocaleCode("km_KH")
-        @JvmField val RW_RW = LocaleCode("rw_RW")
-        @JvmField val KO_KP = LocaleCode("ko_KP")
-        @JvmField val KY_KG = LocaleCode("ky_KG")
-        @JvmField val LO_LA = LocaleCode("lo_LA")
-        @JvmField val LA_VA = LocaleCode("la_VA")
-        @JvmField val LV_LV = LocaleCode("lv_LV")
-        @JvmField val LT_LT = LocaleCode("lt_LT")
-        @JvmField val MK_MK = LocaleCode("mk_MK")
-        @JvmField val MS_MY = LocaleCode("ms_MY")
-        @JvmField val ML_IN = LocaleCode("ml_IN")
-        @JvmField val MR_IN = LocaleCode("mr_IN")
-        @JvmField val MN_MN = LocaleCode("mn_MN")
-        @JvmField val NE_NP = LocaleCode("ne_NP")
-        @JvmField val NB_NO = LocaleCode("nb_NO")
-        @JvmField val NN_NO = LocaleCode("nn_NO")
-        @JvmField val OC_FR = LocaleCode("oc_FR")
-        @JvmField val OR_IN = LocaleCode("or_IN")
-        @JvmField val PA_IN = LocaleCode("pa_IN")
-        @JvmField val FA_IR = LocaleCode("fa_IR")
-        @JvmField val PL_PL = LocaleCode("pl_PL")
-        @JvmField val PT_PT_VR = LocaleCode("pt_PT_VR")
-        @JvmField val PT_PT_TR = LocaleCode("pt_PT_TR")
-        @JvmField val PA_PK = LocaleCode("pa_PK")
-        @JvmField val RO_RO = LocaleCode("ro_RO")
-        @JvmField val RM_CH = LocaleCode("rm_CH")
-        @JvmField val SA_IN = LocaleCode("sa_IN")
-        @JvmField val SR_RS = LocaleCode("sr_RS")
-        @JvmField val SI_LK = LocaleCode("si_LK")
-        @JvmField val SK_SK = LocaleCode("sk_SK")
-        @JvmField val SL_SI = LocaleCode("sl_SI")
-        @JvmField val ES_419 = LocaleCode("es_419")
-        @JvmField val SU_ID = LocaleCode("su_ID")
-        @JvmField val SW_KE = LocaleCode("sw_KE")
-        @JvmField val SV_SE = LocaleCode("sv_SE")
-        @JvmField val TL_PH = LocaleCode("tl_PH")
-        @JvmField val TG_TJ = LocaleCode("tg_TJ")
-        @JvmField val TA_IN = LocaleCode("ta_IN")
-        @JvmField val TT_RU = LocaleCode("tt_RU")
-        @JvmField val TE_IN = LocaleCode("te_IN")
-        @JvmField val TH_TH = LocaleCode("th_TH")
-        @JvmField val TR_CY = LocaleCode("tr_CY")
-        @JvmField val UK_UA = LocaleCode("uk_UA")
-        @JvmField val UR_PK = LocaleCode("ur_PK")
-        @JvmField val UZ_UZ = LocaleCode("uz_UZ")
-        @JvmField val VI_VN = LocaleCode("vi_VN")
-        @JvmField val CY_GB = LocaleCode("cy_GB")
-        @JvmField val XH_ZA = LocaleCode("xh_ZA")
-        @JvmField val YI_DE = LocaleCode("yi_DE")
-        @JvmField val YO_NG = LocaleCode("yo_NG")
-        @JvmField val ZU_ZA = LocaleCode("zu_ZA")
-    }
-
 }

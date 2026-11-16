@@ -26,7 +26,7 @@ class EventsIT {
             containerId = containerId,
             visitorId = UUID.randomUUID(),
             currencyCode = CurrencyCode.USD,
-            localeCode = LocaleCode.EN_US
+            localeCode = LocaleCode("en_US")
         )
     )
 

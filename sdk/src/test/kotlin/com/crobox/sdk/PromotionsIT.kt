@@ -34,7 +34,7 @@ class PromotionsIT {
             containerId = containerId,
             visitorId = Conf.pid,
             currencyCode = CurrencyCode.USD,
-            localeCode = LocaleCode.EN_US
+            localeCode = LocaleCode("en_US")
         )
     )
 

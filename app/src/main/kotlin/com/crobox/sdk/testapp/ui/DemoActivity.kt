@@ -34,7 +34,7 @@ class DemoActivity : BaseActivity() {
                 containerId = containerId,
                 visitorId = CroboxVisitor.visitorId(this),
                 currencyCode = CurrencyCode.USD,
-                localeCode = LocaleCode.EN_US
+                localeCode = LocaleCode("en_US")
             )
         )
     }

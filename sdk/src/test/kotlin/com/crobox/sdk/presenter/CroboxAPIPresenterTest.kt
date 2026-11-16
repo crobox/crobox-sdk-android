@@ -20,7 +20,7 @@ class CroboxAPIPresenterTest {
     private val config = CroboxConfig(
         containerId = "xlrc9t",
         visitorId = UUID.randomUUID(),
-        localeCode = LocaleCode.EN_US,
+        localeCode = LocaleCode("en_US"),
         customProperties = mapOf("app" to "yes", "shared" to "visitor")
     )
 
