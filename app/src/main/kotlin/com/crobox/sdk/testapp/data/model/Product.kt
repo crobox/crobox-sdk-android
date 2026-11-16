@@ -41,7 +41,7 @@ data class Product(
                     "borderColor" to backgroundColor
                 ),
                 messageId = "",
-                componentName = "mob-app-text-badge.tsx"//text view
+                componentName = "MobAppTextBadgeTsx"//text view
             )
         }
         return null

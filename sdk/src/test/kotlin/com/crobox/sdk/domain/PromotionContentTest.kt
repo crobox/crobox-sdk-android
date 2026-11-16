@@ -3,6 +3,8 @@ package com.crobox.sdk.domain
 import android.graphics.Color
 import com.google.gson.Gson
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNull
+import org.junit.Assert.assertTrue
 import org.junit.Assert.fail
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -17,7 +19,7 @@ class PromotionContentTest {
     fun contentConfigAsTextBadge() {
         val contentWithTextBadge = """
             {
-                "component": "${"mob-app-text-badge.tsx"}",
+                "component": "MobAppTextBadgeTsx",
                 "config": {
                     "text": "text badge text",
                     "fontColor": "#aaaaaa",
@@ -31,7 +33,7 @@ class PromotionContentTest {
             when (it) {
                 is TextBadge -> {
                     assertEquals("text badge text", it.text)
-                    assertEquals("mob-app-text-badge.tsx", it.name)
+                    assertEquals("MobAppTextBadgeTsx", it.name)
                     assertEquals("#aaaaaa", it.fontColor)
                     assertEquals("#bbbbbb", it.backgroundColor)
                     assertEquals("rgba(204, 204, 204, 0.5)", it.borderColor)
@@ -57,7 +59,7 @@ class PromotionContentTest {
     fun contentConfigAsImageBadge() {
         val contentWithImageBadge = """
             {
-                "component": "mob-app-image-badge.tsx",
+                "component": "MobAppImageBadgeTsx",
                 "config": {
                     "image": "some image url",
                     "altText": "some image altText"
@@ -69,7 +71,7 @@ class PromotionContentTest {
             when (it) {
                 is ImageBadge -> {
                     assertEquals("some image url", it.image)
-                    assertEquals("mob-app-image-badge.tsx", it.name)
+                    assertEquals("MobAppImageBadgeTsx", it.name)
                     assertEquals("some image altText", it.altText)
                 }
 
@@ -84,7 +86,7 @@ class PromotionContentTest {
     fun contentConfigAsSecondaryMessaging() {
         val contentWithSecondaryMessaging = """
             {
-                "component": "${"mob-app-secondary-messaging.tsx"}",
+                "component": "MobAppSecondaryMessagingTsx",
                 "config": {
                     "text": "secondary badge text",
                     "fontColor": "#aaaaaa"
@@ -97,7 +99,7 @@ class PromotionContentTest {
             when (it) {
                 is SecondaryMessaging -> {
                     assertEquals("secondary badge text", it.text)
-                    assertEquals("mob-app-secondary-messaging.tsx", it.name)
+                    assertEquals("MobAppSecondaryMessagingTsx", it.name)
                     assertEquals("#aaaaaa", it.fontColor)
                 }
 
@@ -106,5 +108,25 @@ class PromotionContentTest {
 
             }
         } ?: fail("config should exist")
+    }
+
+    @Test
+    fun contentConfigDoesNotDependOnTheComponentName() {
+        val content = PromotionContent(
+            config = mapOf("text" to "SALE", "backgroundColor" to "#ba031d"),
+            messageId = "m",
+            componentName = "AnyOtherName"
+        )
+        assertTrue(content.contentConfig() is TextBadge)
+    }
+
+    @Test
+    fun contentConfigIsNullForOtherComponents() {
+        val content = PromotionContent(
+            config = mapOf("Text1_text" to "SALE"),
+            messageId = "m",
+            componentName = "PlpHighlightMobileTsx"
+        )
+        assertNull(content.contentConfig())
     }
 }

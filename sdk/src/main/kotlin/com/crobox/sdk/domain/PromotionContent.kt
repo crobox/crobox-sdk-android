@@ -22,22 +22,27 @@ data class PromotionContent(
     val messageId: String,
 
     /**
-     * Component Name
+     * Name of the component configured for the campaign, as a module name, for example `MobAppTextBadgeTsx`
      */
     @SerializedName("component")
     val componentName: String
 ) {
 
     /**
-     * Returns component if an Image, Text Badge or Secondary Messaging is available
+     * Returns the content as an Image Badge, Text Badge or Secondary Messaging, based on the keys in [config]:
+     *  - "image" (and optionally "altText"): [ImageBadge]
+     *  - "text" with "backgroundColor" or "borderColor" (and optionally "fontColor"): [TextBadge]
+     *  - "text" (and optionally "fontColor"): [SecondaryMessaging]
+     *
+     * Returns null when the config has none of these, for example for a component of your own; use [config] and
+     * [componentName] directly in that case.
      */
-    fun contentConfig(): PromotionContentConfig? {
-        return when (componentName) {
-            "mob-app-image-badge.tsx" -> getImageBadge()
-            "mob-app-text-badge.tsx" -> getTextBadge()
-            "mob-app-secondary-messaging.tsx" -> getSecondaryMessaging()
-            else -> null
-        }
+    fun contentConfig(): PromotionContentConfig? = when {
+        config.containsKey("image") -> getImageBadge()
+        config.containsKey("text") && (config.containsKey("backgroundColor") || config.containsKey("borderColor")) ->
+            getTextBadge()
+        config.containsKey("text") -> getSecondaryMessaging()
+        else -> null
     }
 
     /**

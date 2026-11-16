@@ -167,7 +167,7 @@ object : PromotionCallback {
             val productId = promotion.productId ?: ""
             promotion.content?.let { content: PromotionContent ->
                 val messageId = content.messageId
-                val componentName = content.component
+                val componentName = content.componentName
                 val configMap = content.config
                 for (c in configMap) {
                     val configKey = c.key
@@ -248,9 +248,9 @@ object : PromotionCallback {
 | Name            | Type                    | Description                                                                                                                                                         |
 |-----------------|-------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | messageId       | String                  | As Campaigns might have alternative messages, Message Id identifies the message assigned to this promotion                                                          |
-| componentName   | String                  | Component Name                                                                                                                                                      |
+| componentName   | String                  | Name of the campaign's component, as a module name, e.g. `MobAppTextBadgeTsx`                                                                                       |
 | config          | Map<String, String>     | Map of all visual configuration items, managed via Crobox Admin app. <br/>Example:<br/> ```Map("Text1_text" : "Best Seller", "Text1_color" : "#0e1111")```          |
-| contentConfig() | PromotionContentConfig? | Returns component configuration if an Image, Text Badge or Secondary Messaging is available as compliant. **Requires** prior configuration setup in Crobox platform |
+| contentConfig() | PromotionContentConfig? | The content as an `ImageBadge` (config has `image`), `TextBadge` (`text` with `backgroundColor` or `borderColor`) or `SecondaryMessaging` (`text` only), or null |
 
 
 ### ImageBadge
