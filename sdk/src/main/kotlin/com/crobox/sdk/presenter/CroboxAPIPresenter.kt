@@ -190,7 +190,7 @@ internal class CroboxAPIPresenter(@Volatile var config: CroboxConfig) {
         config.localeCode?.let { parameters["lc"] = it.code }
         config.userId?.let { parameters["uid"] = it }
         parameters["ts"] = CroboxEncoder.toBase36(System.currentTimeMillis())
-        parameters["tz"] = config.timezone ?: timezoneOffsetHours()
+        parameters["tz"] = timezoneOffsetHours(config.timezone ?: TimeZone.getDefault())
         parameters["pt"] = (pageType ?: queryParams.pageType).value
         queryParams.pageName?.let { parameters["lh"] = it }
         // Visitor-level properties first, so page-level properties with the same key win
@@ -317,7 +317,7 @@ internal class CroboxAPIPresenter(@Volatile var config: CroboxConfig) {
     }
 
     /**
-     * The device's current offset from UTC in hours, in the same form as the web snippet: positive east of UTC,
+     * The current offset of [timeZone] from UTC in hours, in the same form as the web snippet: positive east of UTC,
      * with a fraction for zones such as India (5.5).
      */
     internal fun timezoneOffsetHours(

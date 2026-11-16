@@ -35,6 +35,8 @@ First configure and create a `Crobox` singleton as below, where
   Without it, or when it matches no region, the container's fallback region is used
 - `userId` should optionally be used to link the current visitor with client's user management
   system, if exists
+- `timezone` is optional. The device's time zone is sent by default; set it, for example to
+  `TimeZone.getTimeZone("Europe/Amsterdam")`, only to use a different one
 
 ```kotlin
 import com.crobox.sdk.common.CroboxVisitor

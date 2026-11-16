@@ -112,10 +112,10 @@ class CroboxAPIPresenterTest {
 
     @Test
     fun configuredTimezoneWins() {
-        val presenter = CroboxAPIPresenter(config.copy(timezone = 3))
+        val presenter = CroboxAPIPresenter(config.copy(timezone = TimeZone.getTimeZone("Asia/Kolkata")))
         val view = RequestQueryParams(viewId = UUID.randomUUID(), pageType = PageType.PageIndex)
 
-        assertEquals(3, presenter.eventQuery(view, null, EventType.Click, null)["tz"])
+        assertEquals(5.5, presenter.eventQuery(view, null, EventType.Click, null)["tz"])
     }
 
     @Test
