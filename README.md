@@ -377,8 +377,9 @@ The workflow:
 5. Creates the GitHub release, with notes generated from the merged pull requests.
 
 Branch protection does not let the workflow push to `main`, so the release commit exists only on its
-tag, and `VERSION_NAME` on `main` stays at its `-SNAPSHOT` version. If publishing fails, nothing is
-tagged, so fix the cause and run the workflow again.
+tag, and `VERSION_NAME` on `main` stays at its `-SNAPSHOT` version. After a release, bump it on `main`
+in a pull request to the next patch version, for example `1.1.1-SNAPSHOT` after `1.1.0`. If publishing
+fails, nothing is tagged, so fix the cause and run the workflow again.
 
 The workflow reads these repository secrets:
 
