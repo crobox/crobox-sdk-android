@@ -9,7 +9,8 @@ Crobox SDK for Android
 This is an asynchronous SDK kit for consuming Crobox API for android applications. Written in Kotlin
 from the ground up.
 
-First add the dependency to your project:
+The SDK is published to Maven Central and needs `minSdk` 26 (Android 8.0) or later. Add the
+dependency to your project:
 
 ```kotlin
 repositories {
@@ -17,9 +18,11 @@ repositories {
 }
 
 dependencies {
-    implementation("com.crobox.sdk:crobox-sdk-android:$crobox-sdk-android_version")
+    implementation("com.crobox.sdk:crobox-sdk-android:1.1.0")
 }
 ```
+
+See the [releases](https://github.com/crobox/crobox-sdk-android/releases) for the latest version.
 
 ## Start using Crobox SDK
 
@@ -116,9 +119,9 @@ configured with specific page types and linked to campaigns via Crobox Admin App
 ```kotlin
 
 val promotionsCallback = object : PromotionCallback {
-    override fun onPromotions(response: PromotionsResponse?) {}
+    override fun onPromotions(response: PromotionsResponse) {}
 
-    override fun onError(msg: String?) {}
+    override fun onError(msg: String) {}
 }
 
 val impressions: List<String> = listOf("001ABC", "002DEF")
@@ -337,8 +340,8 @@ That's why the application operates with a simplified set of data models, like:<
 
 ### Build and test
 
-Building needs JDK 17 or 21. Android Gradle Plugin 8 needs at least 17, and the Gradle version in the
-wrapper (8.9) does not run on JDK 25. CI and the release workflow use 21, the JDK Android Studio ships with.
+Building needs JDK 17 or later, which Android Gradle Plugin 9 and Gradle 9 require. CI and the release
+workflow use 21, the JDK Android Studio ships with.
 
 ```shell
 ./gradlew build                    # compile, lint and run all tests (what CI runs)
@@ -374,8 +377,9 @@ The workflow:
 5. Creates the GitHub release, with notes generated from the merged pull requests.
 
 Branch protection does not let the workflow push to `main`, so the release commit exists only on its
-tag, and `VERSION_NAME` on `main` stays at its `-SNAPSHOT` version. If publishing fails, nothing is
-tagged, so fix the cause and run the workflow again.
+tag, and `VERSION_NAME` on `main` stays at its `-SNAPSHOT` version. After a release, bump it on `main`
+in a pull request to the next patch version, for example `1.1.1-SNAPSHOT` after `1.1.0`. If publishing
+fails, nothing is tagged, so fix the cause and run the workflow again.
 
 The workflow reads these repository secrets:
 
