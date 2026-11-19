@@ -16,7 +16,7 @@ import org.robolectric.RobolectricTestRunner
 @RunWith(RobolectricTestRunner::class)
 class GradientTest {
 
-    private fun color(hex: String): Color = ColorUtil.toAndroidColor(hex)!!
+    private fun color(hex: String): Int = ColorUtil.parseColor(hex)!!
 
     @Test
     fun parsesTheAppsLinearGradient() {
@@ -48,7 +48,7 @@ class GradientTest {
             Gradient.Linear(
                 45f,
                 listOf(
-                    GradientStop(Color.valueOf(Color.argb(128, 255, 0, 0)), 0.1f),
+                    GradientStop(Color.argb(128, 255, 0, 0), 0.1f),
                     GradientStop(color("#0000ff"), 0.9f)
                 )
             ),
@@ -121,16 +121,14 @@ class GradientTest {
 
     @Test
     fun textBadgeHasABackgroundForAGradientOrAColor() {
-        fun badge(background: String?) = TextBadge("Sale", null, background, null, "MobAppTextBadgeTsx")
+        fun badge(background: String?) = TextBadge("Sale", null, background, null)
 
         val gradient = badge("linear-gradient(90deg, #ff0000 0%, #0000ff 100%)")
         assertNotNull(gradient.backgroundDrawable())
         assertTrue(gradient.backgroundShader(100f, 20f) is LinearGradient)
-        assertNull(gradient.backgroundColorAndroid())
 
         val solid = badge("#ff0000")
         assertNotNull(solid.backgroundDrawable())
-        assertEquals(color("#ff0000"), solid.backgroundColorAndroid())
 
         assertNull(badge(null).backgroundDrawable())
         assertNull(badge(null).backgroundShader(100f, 20f))

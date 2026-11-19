@@ -28,7 +28,7 @@ class GradientRenderingTest {
         val failures = mutableListOf<String>()
         for (case in cases) {
             val bitmap = Bitmap.createBitmap(case.width, case.height, Bitmap.Config.ARGB_8888)
-            TextBadge("Sale", null, case.css, null, "MobAppTextBadgeTsx").backgroundDrawable()!!.apply {
+            TextBadge("Sale", null, case.css, null).backgroundDrawable()!!.apply {
                 setBounds(0, 0, case.width, case.height)
                 draw(Canvas(bitmap))
             }

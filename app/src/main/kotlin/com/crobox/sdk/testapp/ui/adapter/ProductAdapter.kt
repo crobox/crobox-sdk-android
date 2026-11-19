@@ -100,13 +100,11 @@ class ProductAdapter(private val dataSet: List<Product>) :
         with(viewHolder.topLeftPromotionView) {
             if (product.promotionTL != null) {
                 visibility = View.VISIBLE
-                val promotion = product.promotionTL?.contentConfig()
-                if(promotion is TextBadge) {
+                val promotion = product.promotionTL?.component()
+                if (promotion is TextBadge) {
                     text = promotion.text
                     setBadgeBackground(promotion)
-                    if (promotion.fontColorAndroid() != null) setTextColor(
-                        promotion.fontColorAndroid()!!.toArgb()
-                    )
+                    promotion.fontColor?.let { setTextColor(it) }
                 }
             } else {
                 visibility = View.GONE
@@ -116,13 +114,11 @@ class ProductAdapter(private val dataSet: List<Product>) :
         with(viewHolder.topRightPromotionView) {
             if (product.promotionTR != null) {
                 visibility = View.VISIBLE
-                val promotion = product.promotionTR?.contentConfig()
-                if(promotion is TextBadge) {
+                val promotion = product.promotionTR?.component()
+                if (promotion is TextBadge) {
                     text = promotion.text
                     setBadgeBackground(promotion)
-                    if (promotion.fontColorAndroid() != null) setTextColor(
-                        promotion.fontColorAndroid()!!.toArgb()
-                    )
+                    promotion.fontColor?.let { setTextColor(it) }
                 }
             } else {
                 visibility = View.GONE

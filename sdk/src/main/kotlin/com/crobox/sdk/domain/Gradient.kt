@@ -1,7 +1,6 @@
 package com.crobox.sdk.domain
 
 import android.graphics.Canvas
-import android.graphics.Color
 import android.graphics.ColorFilter
 import android.graphics.LinearGradient
 import android.graphics.Matrix
@@ -39,7 +38,7 @@ internal sealed class Gradient {
     /** Returns a shader that paints this gradient over an area of [width] by [height] pixels, or null when it is empty */
     fun toShader(width: Float, height: Float): Shader? {
         if (width <= 0f || height <= 0f) return null
-        val colors = stops.map { it.color.toArgb() }.toIntArray()
+        val colors = stops.map { it.color }.toIntArray()
         val positions = stops.map { it.position }.toFloatArray()
         return when (this) {
             is Linear -> {
@@ -67,7 +66,7 @@ internal sealed class Gradient {
 }
 
 /** A color at [position] along the gradient, from 0 at its start to 1 at its end */
-internal data class GradientStop(val color: Color, val position: Float)
+internal data class GradientStop(val color: Int, val position: Float)
 
 /**
  * The start and end of a CSS linear gradient's line, as `[x0, y0, x1, y1]`. The line runs through the center at the
@@ -87,7 +86,7 @@ internal object GradientParser {
 
     /** Parses a color setting: a gradient, or a plain color as a gradient of that one color */
     fun parseBackground(value: String?): Gradient? {
-        return parse(value) ?: ColorUtil.toAndroidColor(value)?.let { color ->
+        return parse(value) ?: ColorUtil.parseColor(value)?.let { color ->
             Gradient.Linear(180f, listOf(GradientStop(color, 0f), GradientStop(color, 1f)))
         }
     }
@@ -142,13 +141,13 @@ internal object GradientParser {
 
     private fun parseStops(arguments: List<String>): List<GradientStop>? {
         if (arguments.size < 2) return null
-        val colors = mutableListOf<Color>()
+        val colors = mutableListOf<Int>()
         val positions = mutableListOf<Float?>()
         for (argument in arguments) {
             val colorEnd = if (argument.contains('(')) argument.indexOf(')') + 1 else argument.indexOfFirst { it.isWhitespace() }
             val color = if (colorEnd <= 0) argument else argument.substring(0, colorEnd)
             val position = if (colorEnd <= 0) "" else argument.substring(colorEnd).trim()
-            colors += ColorUtil.toAndroidColor(color) ?: return null
+            colors += ColorUtil.parseColor(color) ?: return null
             positions += if (position.isEmpty()) null else {
                 percentage.matchEntire(position)?.groupValues?.get(1)?.toFloat()?.div(100f) ?: return null
             }

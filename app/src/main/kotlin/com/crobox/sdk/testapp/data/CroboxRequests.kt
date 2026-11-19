@@ -240,33 +240,27 @@ class CroboxRequests(val croboxInstance: Crobox) {
             val campaignId = promotion.campaignId
             val variantId = promotion.variantId
             val productId = promotion.productId ?: ""
-            val configStr = promotion.content?.contentConfig()?.let {
+            val configStr = promotion.content?.component()?.let {
                 when (it) {
                     is SecondaryMessaging ->
                         """
                             Secondary Messaging Text: ${it.text}
-                            Secondary Messaging Font Color:${it.fontColor}"
-                            Secondary Messaging Font Android Color:${it.fontColorAndroid()}"
+                            Secondary Messaging Font Color: ${it.fontColor?.let { color -> "#%08x".format(color) }}
                         """.trimIndent()
 
                     is TextBadge ->
                         """
                             Text: ${it.text}
-                            Font Color: ${it.fontColor}
-                            Border Color: ${it.borderColor}
-                            Background Color: ${it.backgroundColor}"
-                            Font Android Color: ${it.fontColorAndroid()}
-                            Border Android Color: ${it.borderColorAndroid()}
-                            Background Android Color: ${it.backgroundColorAndroid()}"
+                            Font Color: ${it.fontColor?.let { color -> "#%08x".format(color) }}
+                            Border Color: ${it.borderColor?.let { color -> "#%08x".format(color) }}
+                            Background: ${it.backgroundDrawable()}
                         """.trimIndent()
 
                     is ImageBadge ->
                         """
-                            Image: ${it.image}
+                            Image URL: ${it.imageUrl}
                             AltText: ${it.altText}
                         """.trimIndent()
-
-                    else -> "unknown"
                 }
             }
 

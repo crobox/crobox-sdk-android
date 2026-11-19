@@ -29,54 +29,18 @@ data class PromotionContent(
 ) {
 
     /**
-     * Returns the content as an Image Badge, Text Badge or Secondary Messaging when the campaign uses one of the
-     * mobile app components (`MobAppImageBadgeTsx`, `MobAppTextBadgeTsx` or `MobAppSecondaryMessagingTsx`), or null
-     * for any other component.
+     * Returns what the promotion shows when its campaign uses one of the App components (`MobAppTextBadgeTsx`,
+     * `MobAppImageBadgeTsx` or `MobAppSecondaryMessagingTsx`), or null for any other component.
      */
-    fun contentConfig(): PromotionContentConfig? {
+    fun component(): PromotionComponent? {
         return when (componentName) {
-            "MobAppImageBadgeTsx" -> getImageBadge()
-            "MobAppTextBadgeTsx" -> getTextBadge()
-            "MobAppSecondaryMessagingTsx" -> getSecondaryMessaging()
+            "MobAppTextBadgeTsx" -> config["text"]?.let { text ->
+                TextBadge(text, config["fontColor"], config["backgroundColor"], config["borderColor"])
+            }
+
+            "MobAppImageBadgeTsx" -> config["image"]?.let { ImageBadge(it, config["altText"]) }
+            "MobAppSecondaryMessagingTsx" -> config["text"]?.let { SecondaryMessaging(it, config["fontColor"]) }
             else -> null
         }
     }
-
-    /**
-     * Returns an Image Badge if an image component exists with the following pre-defined keys: "image" and "altText"
-     */
-    private fun getImageBadge(): ImageBadge? {
-        return config["image"]?.let { ImageBadge(it, config["altText"], componentName) }
-    }
-
-    /**
-     * Returns a Text Badge if a text component exists with the following pre-defined keys: "text", "fontColor", "backgroundColor" and "borderColor"
-     */
-    private fun getTextBadge(): TextBadge? {
-        return config["text"]?.let { text ->
-            TextBadge(
-                text,
-                config["fontColor"],
-                config["backgroundColor"],
-                config["borderColor"],
-                componentName
-            )
-
-        }
-    }
-
-    /**
-     * Returns Secondary Messaging if a text component exists with the following pre-defined keys: "text", "fontColor"
-     */
-    private fun getSecondaryMessaging(): SecondaryMessaging? {
-        return config["text"]?.let { text ->
-            SecondaryMessaging(
-                text,
-                config["fontColor"],
-                componentName
-            )
-
-        }
-    }
 }
-
