@@ -6,6 +6,7 @@ import android.graphics.RadialGradient
 import com.crobox.sdk.domain.GradientParser.parse
 import org.junit.Assert.assertArrayEquals
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
@@ -108,13 +109,30 @@ class GradientTest {
     }
 
     @Test
-    fun textBadgeHasAGradientOrAColor() {
-        val gradient = TextBadge("Sale", null, "linear-gradient(90deg, #ff0000 0%, #0000ff 100%)", null, "MobAppTextBadgeTsx")
-        assertTrue(gradient.backgroundGradient() is Gradient.Linear)
+    fun parsesABackgroundThatIsAGradientOrAPlainColor() {
+        assertTrue(GradientParser.parseBackground("linear-gradient(90deg, #ff0000 0%, #0000ff 100%)") is Gradient.Linear)
+        assertEquals(
+            Gradient.Linear(180f, listOf(GradientStop(color("#ff0000"), 0f), GradientStop(color("#ff0000"), 1f))),
+            GradientParser.parseBackground("#ff0000")
+        )
+        assertNull(GradientParser.parseBackground(null))
+        assertNull(GradientParser.parseBackground("nonsense"))
+    }
+
+    @Test
+    fun textBadgeHasABackgroundForAGradientOrAColor() {
+        fun badge(background: String?) = TextBadge("Sale", null, background, null, "MobAppTextBadgeTsx")
+
+        val gradient = badge("linear-gradient(90deg, #ff0000 0%, #0000ff 100%)")
+        assertNotNull(gradient.backgroundDrawable())
+        assertTrue(gradient.backgroundShader(100f, 20f) is LinearGradient)
         assertNull(gradient.backgroundColorAndroid())
 
-        val solid = TextBadge("Sale", null, "#ff0000", null, "MobAppTextBadgeTsx")
-        assertNull(solid.backgroundGradient())
+        val solid = badge("#ff0000")
+        assertNotNull(solid.backgroundDrawable())
         assertEquals(color("#ff0000"), solid.backgroundColorAndroid())
+
+        assertNull(badge(null).backgroundDrawable())
+        assertNull(badge(null).backgroundShader(100f, 20f))
     }
 }

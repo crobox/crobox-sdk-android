@@ -131,12 +131,7 @@ class ProductAdapter(private val dataSet: List<Product>) :
     }
 
     private fun TextView.setBadgeBackground(badge: TextBadge) {
-        val gradient = badge.backgroundGradient()
-        val color = badge.backgroundColorAndroid()
-        when {
-            gradient != null -> background = gradient.toDrawable()
-            color != null -> setBackgroundColor(color.toArgb())
-        }
+        badge.backgroundDrawable()?.let { background = it }
     }
 
     // Return the size of your dataset (invoked by the layout manager)

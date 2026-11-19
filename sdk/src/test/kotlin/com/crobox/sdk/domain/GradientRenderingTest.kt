@@ -11,8 +11,8 @@ import org.robolectric.annotation.GraphicsMode
 import kotlin.math.abs
 
 /**
- * Draws each gradient as a badge's background and compares pixels with what Chromium draws for the same CSS, which is
- * what the App's preview shows. The expected colors were read from Chromium's screenshots of these cases, and the iOS
+ * Draws each background, a plain color or a gradient, as a badge's background and compares pixels with what Chromium
+ * draws for the same CSS, which is what the App's preview shows. The expected colors were read from Chromium's screenshots of these cases, and the iOS
  * SDK checks the same ones.
  */
 @RunWith(RobolectricTestRunner::class)
@@ -28,7 +28,7 @@ class GradientRenderingTest {
         val failures = mutableListOf<String>()
         for (case in cases) {
             val bitmap = Bitmap.createBitmap(case.width, case.height, Bitmap.Config.ARGB_8888)
-            GradientParser.parse(case.css)!!.toDrawable().apply {
+            TextBadge("Sale", null, case.css, null, "MobAppTextBadgeTsx").backgroundDrawable()!!.apply {
                 setBounds(0, 0, case.width, case.height)
                 draw(Canvas(bitmap))
             }
@@ -51,6 +51,15 @@ class GradientRenderingTest {
     }
 
     private val cases = listOf(
+            Case(
+                "#ff6396",
+                100, 40,
+                listOf(
+                    Sample(10, 4, "#ff6396"),
+                    Sample(50, 20, "#ff6396"),
+                    Sample(90, 36, "#ff6396")
+                )
+            ),
             Case(
                 "linear-gradient(87deg, #24d9f3 0%, #f40472 62%, #f74703 100%)",
                 200, 100,

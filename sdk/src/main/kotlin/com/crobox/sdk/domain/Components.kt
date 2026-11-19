@@ -1,6 +1,8 @@
 package com.crobox.sdk.domain
 
 import android.graphics.Color
+import android.graphics.Shader
+import android.graphics.drawable.Drawable
 import com.crobox.sdk.domain.ColorUtil.toAndroidColor
 
 interface PromotionContentConfig {
@@ -47,11 +49,19 @@ data class TextBadge(
     }
 
     /**
-     * Returns the background gradient when the background is set with the gradient input, or null when it is a plain
-     * color or there is none
+     * Returns a drawable that fills its bounds with the background, a plain color or a gradient, with rounded corners
+     * of [cornerRadius] pixels, to use as a view's background, or null when there is none
      */
-    fun backgroundGradient(): Gradient? {
-        return GradientParser.parse(backgroundColor)
+    fun backgroundDrawable(cornerRadius: Float = 0f): Drawable? {
+        return GradientParser.parseBackground(backgroundColor)?.toDrawable(cornerRadius)
+    }
+
+    /**
+     * Returns a shader that paints the background, a plain color or a gradient, over an area of [width] by [height]
+     * pixels, for example for a Compose `ShaderBrush`, or null when there is no background or the area is empty
+     */
+    fun backgroundShader(width: Float, height: Float): Shader? {
+        return GradientParser.parseBackground(backgroundColor)?.toShader(width, height)
     }
 
     fun borderColorAndroid(): Color? {

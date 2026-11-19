@@ -19,9 +19,10 @@ import kotlin.math.sin
 
 /**
  * A gradient set in a color setting with the Crobox App's gradient input, which stores it as a CSS
- * `linear-gradient(...)` or `radial-gradient(circle, ...)`.
+ * `linear-gradient(...)` or `radial-gradient(circle, ...)`. A plain color is a gradient of that one color, so that
+ * both are drawn the same way.
  */
-sealed class Gradient {
+internal sealed class Gradient {
 
     /** The color stops, at least two, in order of their position */
     abstract val stops: List<GradientStop>
@@ -35,10 +36,7 @@ sealed class Gradient {
     /** A circular gradient from the center out to the farthest corner */
     data class Radial(override val stops: List<GradientStop>) : Gradient()
 
-    /**
-     * Returns a shader that paints this gradient over an area of [width] by [height] pixels, for example for a
-     * Compose `ShaderBrush`, or null when the area is empty.
-     */
+    /** Returns a shader that paints this gradient over an area of [width] by [height] pixels, or null when it is empty */
     fun toShader(width: Float, height: Float): Shader? {
         if (width <= 0f || height <= 0f) return null
         val colors = stops.map { it.color.toArgb() }.toIntArray()
@@ -69,7 +67,7 @@ sealed class Gradient {
 }
 
 /** A color at [position] along the gradient, from 0 at its start to 1 at its end */
-data class GradientStop(val color: Color, val position: Float)
+internal data class GradientStop(val color: Color, val position: Float)
 
 /**
  * The start and end of a CSS linear gradient's line, as `[x0, y0, x1, y1]`. The line runs through the center at the
@@ -86,6 +84,13 @@ internal fun linearGradientLine(angle: Float, width: Float, height: Float): Floa
 }
 
 internal object GradientParser {
+
+    /** Parses a color setting: a gradient, or a plain color as a gradient of that one color */
+    fun parseBackground(value: String?): Gradient? {
+        return parse(value) ?: ColorUtil.toAndroidColor(value)?.let { color ->
+            Gradient.Linear(180f, listOf(GradientStop(color, 0f), GradientStop(color, 1f)))
+        }
+    }
 
     private val angle = Regex("""^(-?\d+(?:\.\d+)?)deg$""")
     private val percentage = Regex("""^(-?\d+(?:\.\d+)?)%$""")
