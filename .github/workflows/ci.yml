@@ -3,8 +3,8 @@ name: Android CI
 on:
   push:
     branches: [ "main" ]
+  # Every pull request, so that one stacked on another gets checked too
   pull_request:
-    branches: [ "main" ]
 
 jobs:
   build:

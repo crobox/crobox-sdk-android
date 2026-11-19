@@ -6,16 +6,16 @@ import android.graphics.Color
 internal object ColorUtil {
 
     /**
-     * Parses a CSS color: `#RGB`, `#RGBA`, `#RRGGBB`, `#RRGGBBAA` or `rgba(r, g, b, a)`, or returns null when the
-     * string is not a valid color.
+     * Parses a CSS color: `#RGB`, `#RGBA`, `#RRGGBB`, `#RRGGBBAA` or `rgba(r, g, b, a)` into a color int, or returns
+     * null when the string is not a valid color.
      *
      * Hex colors are read in CSS order, with the alpha last. [Color.parseColor] reads 8 digits as `#AARRGGBB`, which
      * would turn a half-transparent red, `#ff000080`, into an opaque dark blue.
      */
-    fun toAndroidColor(colorStr: String?): Color? {
+    fun parseColor(colorStr: String?): Int? {
         try {
             if (colorStr?.startsWith("#") == true) {
-                return parseHexColor(colorStr)?.let { Color.valueOf(it) }
+                return parseHexColor(colorStr)
             } else if (colorStr?.startsWith("rgba") == true) {
                 val rgba =
                     colorStr
@@ -31,7 +31,7 @@ internal object ColorUtil {
                 val green = rgba[1].toInt()
                 val blue = rgba[2].toInt()
                 val alpha = (rgba[3] * 255.0f + 0.5f).toInt()
-                return Color.valueOf(Color.argb(alpha, red, green, blue))
+                return Color.argb(alpha, red, green, blue)
             } else {
                 throw IllegalArgumentException("Malformed input $colorStr")
             }

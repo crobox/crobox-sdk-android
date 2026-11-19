@@ -181,33 +181,25 @@ object : PromotionCallback {
                     val configKey = c.key
                     val configValue = c.value
                 }
-                promotion.content?.contentConfig()?.let {
-                  when (it) {
-                    is SecondaryMessaging -> {
-                      val name = it.name
-                      val text = it.text
-                      val fontColor = it.fontColor
-                      val fontColorAndroid = it.fontColorAndroid() ?: Color.valueOf(Color.WHITE)
-                    }
-  
+                when (val component = content.component()) {
                     is TextBadge -> {
-                      val name = it.name
-                      val text = it.text
-                      val fontColor = it.fontColor
-                      val borderColor = it.borderColor
-                      val backgroundColor = it.backgroundColor
-                      val fontColorAndroid = it.fontColorAndroid() ?: Color.valueOf(Color.WHITE)
-                      val borderColorAndroid = it.borderColorAndroid() ?: Color.valueOf(Color.WHITE)
-                      val backgroundColorAndroid = it.backgroundColorAndroid() ?: Color.valueOf(Color.WHITE)
+                        badgeView.text = component.text
+                        component.fontColor?.let { badgeView.setTextColor(it) }
+                        // The background, a plain color or a gradient
+                        badgeView.background = component.backgroundDrawable(cornerRadius = 8f)
                     }
-  
+
                     is ImageBadge -> {
-                      val name = it.name
-                      val image = it.image
-                      val altText = it.altText
+                        val imageUrl = component.imageUrl
+                        val altText = component.altText
                     }
-  
-                  }
+
+                    is SecondaryMessaging -> {
+                        messageView.text = component.text
+                        component.fontColor?.let { messageView.setTextColor(it) }
+                    }
+
+                    null -> {}
                 }
             }
         }
@@ -258,33 +250,36 @@ object : PromotionCallback {
 | messageId       | String                  | As Campaigns might have alternative messages, Message Id identifies the message assigned to this promotion                                                          |
 | componentName   | String                  | Name of the campaign's component, as a module name, e.g. `MobAppTextBadgeTsx`                                                                                       |
 | config          | Map<String, String>     | Map of all visual configuration items, managed via Crobox Admin app. <br/>Example:<br/> ```Map("Text1_text" : "Best Seller", "Text1_color" : "#0e1111")```          |
-| contentConfig() | PromotionContentConfig? | The content as an `ImageBadge`, `TextBadge` or `SecondaryMessaging` when the campaign uses `MobAppImageBadgeTsx`, `MobAppTextBadgeTsx` or `MobAppSecondaryMessagingTsx`, otherwise null |
+| component()     | PromotionComponent?     | What the promotion shows when the campaign uses an App component: a `TextBadge` (`MobAppTextBadgeTsx`), an `ImageBadge` (`MobAppImageBadgeTsx`) or `SecondaryMessaging` (`MobAppSecondaryMessagingTsx`), otherwise null |
 
 
 ### ImageBadge
 
-| Name    | Type    | Description    |
-|---------|---------|----------------|
-| image   | String  | Image URL      |
-| altText | String? | Alternate text |
+| Name     | Type    | Description                                |
+|----------|---------|--------------------------------------------|
+| imageUrl | String  | The image's URL                            |
+| altText  | String? | Text that describes the image, for screen readers |
 
 ### TextBadge
 
-| Name            | Type    | Description               |
-|-----------------|---------|---------------------------|
-| text            | String  | Text message              |
-| fontColor       | String  | Font color                |
-| backgroundColor | String? | Optional background color |
-| borderColor     | String? | Optional border color     |
+| Name                             | Type      | Description                                                                                                       |
+|----------------------------------|-----------|-------------------------------------------------------------------------------------------------------------------|
+| text                             | String    | The text                                                                                                          |
+| fontColor                        | Int?      | The text's color as a color int, for `TextView.setTextColor`                                                     |
+| borderColor                      | Int?      | The border's color as a color int                                                                                 |
+| backgroundDrawable(cornerRadius) | Drawable? | The background, a plain color or a gradient, as a view's background, with rounded corners of `cornerRadius` pixels |
+| backgroundShader(width, height)  | Shader?   | The background, a plain color or a gradient, for an area of that size, for example for a Compose `ShaderBrush`     |
 
+The background is set in the App as a color, or as a gradient with its gradient input. Gradients look as they do in the
+App's preview: a linear gradient's angle runs clockwise from the bottom up (90deg runs from left to right), and a radial
+gradient runs from the center out to the farthest corner.
 
 ### SecondaryMessaging
 
-| Name            | Type    | Description               |
-|-----------------|---------|---------------------------|
-| text            | String  | Text message              |
-| fontColor       | String  | Font color                |
-
+| Name      | Type   | Description                                                    |
+|-----------|--------|----------------------------------------------------------------|
+| text      | String | The text                                                       |
+| fontColor | Int?   | The text's color as a color int, for `TextView.setTextColor`   |
 
 ## Samples
 

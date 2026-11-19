@@ -1,65 +1,70 @@
 package com.crobox.sdk.domain
 
-import android.graphics.Color
-import com.crobox.sdk.domain.ColorUtil.toAndroidColor
+import android.graphics.Shader
+import android.graphics.drawable.Drawable
 
-interface PromotionContentConfig {
-    val name: String
-}
+/**
+ * What a promotion shows when its campaign uses one of the App components, which the app draws natively: a
+ * [TextBadge], an [ImageBadge] or [SecondaryMessaging].
+ */
+sealed interface PromotionComponent
 
+/**
+ * An image, from the App image badge
+ */
 data class ImageBadge(
-    /// Image url
-    val image: String,
+    /** The image's URL */
+    val imageUrl: String,
 
-    /// Alternate Text
-    val altText: String?,
+    /** Text that describes the image, for screen readers */
+    val altText: String?
+) : PromotionComponent
 
-    /// Component name
-    override val name: String
-) : PromotionContentConfig
-
-data class TextBadge(
-    /// Text message
+/**
+ * A short text on a background, from the App text badge
+ */
+data class TextBadge internal constructor(
+    /** The text */
     val text: String,
 
-    /// Font color as hex for opaque colors or rgba for transparent colors
-    val fontColor: String?,
+    private val fontColorValue: String?,
+    private val backgroundValue: String?,
+    private val borderColorValue: String?
+) : PromotionComponent {
 
-    /// Background color as hex for opaque colors or rgba for transparent colors
-    val backgroundColor: String?,
+    /** The text's color as a color int, for example for `TextView.setTextColor`, or null when none is set */
+    val fontColor: Int? = ColorUtil.parseColor(fontColorValue)
 
-    /// Border color as hex for opaque colors or rgba for transparent colors
-    val borderColor: String?,
+    /** The border's color as a color int, or null when none is set */
+    val borderColor: Int? = ColorUtil.parseColor(borderColorValue)
 
-    /// Component name
-    override val name: String
-) : PromotionContentConfig {
-    fun fontColorAndroid(): Color? {
-        return toAndroidColor(fontColor)
+    /**
+     * Returns a drawable that fills its bounds with the background, a plain color or a gradient, with rounded corners
+     * of [cornerRadius] pixels, to use as a view's background, or null when there is none
+     */
+    fun backgroundDrawable(cornerRadius: Float = 0f): Drawable? {
+        return GradientParser.parseBackground(backgroundValue)?.toDrawable(cornerRadius)
     }
 
-    fun backgroundColorAndroid(): Color? {
-        return toAndroidColor(backgroundColor)
+    /**
+     * Returns a shader that paints the background, a plain color or a gradient, over an area of [width] by [height]
+     * pixels, for example for a Compose `ShaderBrush`, or null when there is no background or the area is empty
+     */
+    fun backgroundShader(width: Float, height: Float): Shader? {
+        return GradientParser.parseBackground(backgroundValue)?.toShader(width, height)
     }
-
-    fun borderColorAndroid(): Color? {
-        return toAndroidColor(borderColor)
-    }
-
 }
 
-data class SecondaryMessaging(
-    /// Text message
+/**
+ * A line of text, from the App secondary messaging
+ */
+data class SecondaryMessaging internal constructor(
+    /** The text */
     val text: String,
 
-    /// Font color as hex for opaque colors or rgba for transparent colors
-    val fontColor: String?,
+    private val fontColorValue: String?
+) : PromotionComponent {
 
-    /// Component name
-    override val name: String
-) : PromotionContentConfig {
-
-    fun fontColorAndroid(): Color? {
-        return toAndroidColor(fontColor)
-    }
+    /** The text's color as a color int, for example for `TextView.setTextColor`, or null when none is set */
+    val fontColor: Int? = ColorUtil.parseColor(fontColorValue)
 }
