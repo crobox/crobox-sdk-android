@@ -20,10 +20,10 @@ class DemoActivity : BaseActivity() {
     // Use the Container ID assigned by Crobox
     private val containerId = "xlrc9t"
 
-    // Collection of products/impressions
-    private val impressions: List<String> =
+    // Collection of product ids
+    private val productIds: List<String> =
         listOf("1", "product1", "product2", "product3", "product4", "product5")
-    private val productId = impressions[0]
+    private val productId = productIds[0]
 
     // CroboxInstance is the single point of all interactions, keeping the configuration and providing all functionality.
     // The visitorId is stored on the device, so the user stays the same visitor across app launches.
@@ -42,7 +42,7 @@ class DemoActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.demo_activity)
-        croboxRequests.setImpressions(impressions)
+        croboxRequests.setProductIds(productIds)
         croboxRequests.getPromotions()
 
         showProductList()

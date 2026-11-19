@@ -4,35 +4,35 @@ import java.util.UUID
 import java.util.concurrent.atomic.AtomicInteger
 
 /**
- * Common parameters for all requests sent from the same page view.
+ * Common parameters for all requests sent from the same view.
  *
- *  @param viewId Unique identifier for a unique page viewing. Create one RequestQueryParams per screen the user sees, and use it for the pageview and for every promotions and event request on that screen. Create a new one when the user goes to another screen or comes back to this one. The server counts every new viewId as a page.
- *  @param pageType One of the values in predefined list of types of pages of the whole e-commerce funnel
+ *  @param viewId Unique identifier for a unique view. Create one ViewContext per screen the user sees, and use it for the view event and for every promotions and event request on that screen. Create a new one when the user goes to another screen or comes back to this one. The server counts every new viewId as a page.
+ *  @param viewType One of the values in predefined list of types of views of the whole e-commerce funnel
  *  @param customProperties Free format custom properties to be forwarded to Crobox endpoints, for example to help identifying certain traits of a visitor. Example: Map("mobileUser", "yes")
- *  @param pageName Free format Page Name if exists
+ *  @param viewName Free format view name if exists
  */
-data class RequestQueryParams(
+data class ViewContext(
     val viewId: UUID,
-    val pageType: PageType,
+    val viewType: ViewType,
     val customProperties: Map<String, String>? = null,
-    val pageName: String? = null
+    val viewName: String? = null
 ) {
     private val counter = AtomicInteger(0)
-    fun viewCounter(): Int = counter.getAndIncrement()
+    internal fun viewCounter(): Int = counter.getAndIncrement()
 }
 
-enum class PageType(val value: Int) {
-    PageOther(0),
-    PageIndex(1),
-    PageOverview(2),
-    PageDetail(3),
-    PageCart(4),
-    PageCheckout(5),
-    PageComplete(6),
-    PageSearch(7);
+enum class ViewType(val value: Int) {
+    Other(0),
+    Index(1),
+    Overview(2),
+    Detail(3),
+    Cart(4),
+    Checkout(5),
+    Complete(6),
+    Search(7);
 }
 
-enum class EventType(internal val type: String) {
+internal enum class EventType(val type: String) {
     Click("click"),           // Click
     AddCart("cart"),          // Add to Shopping Cart
     RemoveCart("rmcart"),     // Remove from Shopping Cart
@@ -53,7 +53,7 @@ enum class EventType(internal val type: String) {
  *  @param line Line number, if available
  */
 
-data class ErrorQueryParams(
+data class ErrorParams(
     val tag: String? = null,
     val name: String? = null,
     val message: String? = null,
@@ -67,7 +67,7 @@ data class ErrorQueryParams(
  *  @param productId Unique identifier for a product
  *  @param quantity Quantity, if available
  */
-data class ClickQueryParams(
+data class ClickParams(
     val productId: String? = null,
     val quantity: Int? = null
 )
@@ -78,7 +78,7 @@ data class ClickQueryParams(
  *  @param productId Unique identifier for a product
  *  @param quantity Quantity, if available
  */
-data class CartQueryParams(
+data class CartParams(
     val productId: String? = null,
     val quantity: Int? = null
 )
@@ -91,7 +91,7 @@ data class CartQueryParams(
  *  @param productId Unique identifier for a product
  *  @param quantity Quantity, if available
  */
-data class CustomQueryParams(
+data class CustomEventParams(
     val name: String? = null,
     val promotionId: UUID? = null,
     val productId: String? = null,
@@ -99,16 +99,16 @@ data class CustomQueryParams(
 )
 
 /**
- * Type specific parameters for Page View events
+ * Type specific parameters for view events
  *
- *  @param pageTitle Optional Page title
+ *  @param title Optional view title
  *  @param product Optional product specific parameters
  *  @param searchTerms Optional search terms that led the viewer to this product
  *  @param impressions Optional products shown on the page, in the order they are shown. Pass a List: a Set merges identical entries.
  *  @param customProperties Optional set of general purpose custom properties, for example to help identifying certain traits of the page
  */
-data class PageViewParams(
-    val pageTitle: String? = null,
+data class ViewParams(
+    val title: String? = null,
     val product: ProductParams? = null,
     val searchTerms: String? = null,
     val impressions: Collection<ProductParams>? = null,
