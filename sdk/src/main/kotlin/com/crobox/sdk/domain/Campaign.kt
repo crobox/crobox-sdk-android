@@ -10,7 +10,7 @@ data class Campaign (
      * Campaign ID
      */
     @SerializedName("id")
-    val id: String,
+    val id: Int,
 
     /**
      * Campaign Name
@@ -22,7 +22,7 @@ data class Campaign (
      * Id of the Campaign Variant
      */
     @SerializedName("variantId")
-    val variantId: String,
+    val variantId: Int,
 
     /**
      * Name of the Campaign Variant
