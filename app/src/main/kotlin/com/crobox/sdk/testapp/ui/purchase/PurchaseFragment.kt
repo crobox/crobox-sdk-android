@@ -53,7 +53,7 @@ class PurchaseFragment : BottomSheetDialogFragment() {
         super.onViewCreated(view, savedInstanceState)
         initData()
         initListener()
-        (requireActivity() as DemoActivity).getCroboxAPI().pageViewEvent("purchase")
+        (requireActivity() as DemoActivity).getCroboxAPI().viewEvent("purchase")
     }
 
     fun initView() {

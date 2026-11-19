@@ -28,7 +28,7 @@ class ProductListFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initListener()
-        (requireActivity() as DemoActivity).getCroboxAPI().pageViewEvent("product-list")
+        (requireActivity() as DemoActivity).getCroboxAPI().viewEvent("product-list")
     }
 
     private fun initView() {

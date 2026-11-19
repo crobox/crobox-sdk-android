@@ -2,16 +2,16 @@ package com.crobox.sdk.core
 
 import com.crobox.sdk.common.CroboxDebug
 import com.crobox.sdk.config.CroboxConfig
-import com.crobox.sdk.data.model.CartQueryParams
+import com.crobox.sdk.data.model.CartParams
 import com.crobox.sdk.data.model.CheckoutParams
-import com.crobox.sdk.data.model.ClickQueryParams
-import com.crobox.sdk.data.model.CustomQueryParams
-import com.crobox.sdk.data.model.ErrorQueryParams
+import com.crobox.sdk.data.model.ClickParams
+import com.crobox.sdk.data.model.CustomEventParams
+import com.crobox.sdk.data.model.ErrorParams
 import com.crobox.sdk.data.model.EventType
-import com.crobox.sdk.data.model.PageType
-import com.crobox.sdk.data.model.PageViewParams
 import com.crobox.sdk.data.model.PurchaseParams
-import com.crobox.sdk.data.model.RequestQueryParams
+import com.crobox.sdk.data.model.ViewContext
+import com.crobox.sdk.data.model.ViewParams
+import com.crobox.sdk.data.model.ViewType
 import com.crobox.sdk.presenter.CroboxAPIPresenter
 import com.crobox.sdk.presenter.PromotionCallback
 
@@ -57,39 +57,40 @@ class Crobox private constructor(config: CroboxConfig) {
         presenter.config = config
     }
 
-    fun enableLogging() {
-        CroboxDebug.loggingEnabled = true
-    }
-
-    fun disableLogging() {
-        CroboxDebug.loggingEnabled = false
-    }
+    /**
+     * Whether the SDK logs failed requests to Logcat, under the tag `croboxSDK`. Off by default.
+     */
+    var isLoggingEnabled: Boolean
+        get() = CroboxDebug.loggingEnabled
+        set(value) {
+            CroboxDebug.loggingEnabled = value
+        }
 
 
     /**
      * For retrieval of Promotions
      *
-     * A Placeholder represent a predesignated point on the user interface, where the promotion will be located and displayed.
-     * Placeholders are linked with Campaigns which has all promotion attributes, UI components, messages, time frame etc.
+     * A Placement represents a predesignated point on the user interface, where the promotion will be located and displayed.
+     * Placements are linked with Campaigns which has all promotion attributes, UI components, messages, time frame etc.
      * These are all managed via the Crobox Admin application.
      *
-     *  @param placeholderId Identifier of the placeholder
-     *  @param queryParams Common query parameters, shared by the requests sent from the same page view
-     *  @param impressions List of product ID's which promotions are requested for. It may be empty for the pages where products are not involved. (e.g. Checkout page)
-     *  @param promotionCallback The callback to be notified for the response or if an error occurs before, during or after the request is sent
+     *  @param placementId Identifier of the placement
+     *  @param view Common parameters, shared by the requests sent from the same view
+     *  @param productIds List of product ID's which promotions are requested for. It may be empty for the views where products are not involved. (e.g. Checkout view)
+     *  @param callback The callback to be notified for the response or if an error occurs before, during or after the request is sent
      *
      */
     fun promotions(
-        placeholderId: Int,
-        queryParams: RequestQueryParams,
-        impressions: List<String> = emptyList(),
-        promotionCallback: PromotionCallback
+        placementId: Int,
+        view: ViewContext,
+        productIds: List<String> = emptyList(),
+        callback: PromotionCallback
     ) {
         presenter.promotions(
-            placeholderId = placeholderId,
-            queryParams = queryParams,
-            impressions = impressions,
-            promotionCallback = promotionCallback
+            placementId = placementId,
+            view = view,
+            productIds = productIds,
+            callback = callback
         )
     }
 
@@ -98,17 +99,17 @@ class Crobox private constructor(config: CroboxConfig) {
      *
      * Click events forms the measurement data for Click-through rate (CTR) for campaigns.
      *
-     *  @param queryParams Common query parameters, shared by the requests sent from the same page view
-     *  @param clickQueryParams Event specific query parameters for Click Events
+     *  @param view Common parameters, shared by the requests sent from the same view
+     *  @param params Event specific parameters for Click Events
      */
     fun clickEvent(
-        queryParams: RequestQueryParams,
-        clickQueryParams: ClickQueryParams? = null
+        view: ViewContext,
+        params: ClickParams? = null
     ) {
         presenter.event(
             eventType = EventType.Click,
-            queryParams = queryParams,
-            additionalParams = clickQueryParams
+            view = view,
+            params = params
         )
     }
 
@@ -116,115 +117,114 @@ class Crobox private constructor(config: CroboxConfig) {
     /**
      * For sending an Add To Cart Event, to track the metrics of customer's intention of making a purchase.
      *
-     *  @param queryParams Common query parameters, shared by the requests sent from the same page view
-     *  @param cartQueryParams Event specific query parameters for AddToCart and RemoveFromCart Events
+     *  @param view Common parameters, shared by the requests sent from the same view
+     *  @param params Event specific parameters for AddToCart and RemoveFromCart Events
      */
     fun addToCartEvent(
-        queryParams: RequestQueryParams,
-        cartQueryParams: CartQueryParams? = null
+        view: ViewContext,
+        params: CartParams? = null
     ) {
         presenter.event(
             eventType = EventType.AddCart,
-            queryParams = queryParams,
-            additionalParams = cartQueryParams
+            view = view,
+            params = params
         )
     }
 
     /**
      * For sending an Remove From Cart Event, to track the metrics of product's removal from a purchase.
      *
-     *  @param queryParams Common query parameters, shared by the requests sent from the same page view
-     *  @param cartQueryParams Event specific query parameters for AddToCart and RemoveFromCart Events
+     *  @param view Common parameters, shared by the requests sent from the same view
+     *  @param params Event specific parameters for AddToCart and RemoveFromCart Events
      */
     fun removeFromCartEvent(
-        queryParams: RequestQueryParams,
-        cartQueryParams: CartQueryParams? = null
+        view: ViewContext,
+        params: CartParams? = null
     ) {
         presenter.event(
             eventType = EventType.RemoveCart,
-            queryParams = queryParams,
-            additionalParams = cartQueryParams
+            view = view,
+            params = params
         )
     }
 
     /**
      * For reporting a general-purpose error event
      *
-     *  @param queryParams Common query parameters, shared by the requests sent from the same page view
-     *  @param errorQueryParams Event specific query parameters for Error Events
+     *  @param view Common parameters, shared by the requests sent from the same view
+     *  @param params Event specific parameters for Error Events
      */
     fun errorEvent(
-        queryParams: RequestQueryParams,
-        errorQueryParams: ErrorQueryParams? = null
+        view: ViewContext,
+        params: ErrorParams? = null
     ) {
         presenter.event(
             eventType = EventType.Error,
-            queryParams = queryParams,
-            additionalParams = errorQueryParams
+            view = view,
+            params = params
         )
     }
 
 
     /**
-     * For reporting page view events
+     * For reporting view events
      *
-     *  @param queryParams Common query parameters, shared by the requests sent from the same page view
-     *  @param pageViewParams Event specific query parameters for Page View Events
+     *  @param view Common parameters, shared by the requests sent from the same view
+     *  @param params Event specific parameters for View Events
      */
-    fun pageViewEvent(queryParams: RequestQueryParams, pageViewParams: PageViewParams? = null) {
+    fun viewEvent(view: ViewContext, params: ViewParams? = null) {
         presenter.event(
             eventType = EventType.PageView,
-            queryParams = queryParams,
-            additionalParams = pageViewParams
+            view = view,
+            params = params
         )
     }
 
     /**
      * For reporting checkout events
      *
-     *  @param queryParams Common query parameters, shared by the requests sent from the same page view
-     *  @param checkoutParams Event specific query parameters for Checkout Events
+     *  @param view Common parameters, shared by the requests sent from the same view
+     *  @param params Event specific parameters for Checkout Events
      */
-    fun checkoutEvent(queryParams: RequestQueryParams, checkoutParams: CheckoutParams) {
+    fun checkoutEvent(view: ViewContext, params: CheckoutParams) {
         presenter.event(
             eventType = EventType.Checkout,
-            queryParams = queryParams,
-            additionalParams = checkoutParams,
-            pageType = PageType.PageCheckout
+            view = view,
+            params = params,
+            viewType = ViewType.Checkout
         )
     }
 
     /**
      * For reporting purchase events
      *
-     *  @param queryParams Common query parameters, shared by the requests sent from the same page view
-     *  @param purchaseParams Event specific query parameters for Purchase Events
+     *  @param view Common parameters, shared by the requests sent from the same view
+     *  @param params Event specific parameters for Purchase Events
      */
-    fun purchaseEvent(queryParams: RequestQueryParams, purchaseParams: PurchaseParams) {
+    fun purchaseEvent(view: ViewContext, params: PurchaseParams) {
         presenter.event(
             eventType = EventType.Purchase,
-            queryParams = queryParams,
-            additionalParams = purchaseParams,
-            pageType = PageType.PageComplete
+            view = view,
+            params = params,
+            viewType = ViewType.Complete
         )
     }
 
     /**
      * For reporting custom events
      *
-     *  @param queryParams Common query parameters, shared by the requests sent from the same page view
-     *  @param customQueryParams Event specific query parameters for Custom Events
+     *  @param view Common parameters, shared by the requests sent from the same view
+     *  @param params Event specific parameters for Custom Events
      */
     fun customEvent(
-        queryParams: RequestQueryParams,
-        customQueryParams: CustomQueryParams? = null,
+        view: ViewContext,
+        params: CustomEventParams? = null,
     ) {
         presenter.event(
             eventType = EventType.CustomEvent,
-            queryParams = queryParams,
-            additionalParams = customQueryParams
+            view = view,
+            params = params
         )
     }
 
 }
-

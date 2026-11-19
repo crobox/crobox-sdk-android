@@ -5,17 +5,17 @@ import com.crobox.sdk.common.CroboxEncoder
 import com.crobox.sdk.config.CroboxConfig
 import com.crobox.sdk.data.api.CroboxAPI
 import com.crobox.sdk.data.api.CroboxAPIClient
-import com.crobox.sdk.data.model.CartQueryParams
+import com.crobox.sdk.data.model.CartParams
 import com.crobox.sdk.data.model.CheckoutParams
-import com.crobox.sdk.data.model.ClickQueryParams
-import com.crobox.sdk.data.model.CustomQueryParams
-import com.crobox.sdk.data.model.ErrorQueryParams
+import com.crobox.sdk.data.model.ClickParams
+import com.crobox.sdk.data.model.CustomEventParams
+import com.crobox.sdk.data.model.ErrorParams
 import com.crobox.sdk.data.model.EventType
-import com.crobox.sdk.data.model.PageType
-import com.crobox.sdk.data.model.PageViewParams
 import com.crobox.sdk.data.model.ProductParams
 import com.crobox.sdk.data.model.PurchaseParams
-import com.crobox.sdk.data.model.RequestQueryParams
+import com.crobox.sdk.data.model.ViewContext
+import com.crobox.sdk.data.model.ViewParams
+import com.crobox.sdk.data.model.ViewType
 import com.crobox.sdk.domain.PromotionsResponse
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody
@@ -33,15 +33,15 @@ internal class CroboxAPIPresenter(@Volatile var config: CroboxConfig) {
     )
 
     fun promotions(
-        placeholderId: Int,
-        queryParams: RequestQueryParams,
-        impressions: List<String>,
-        promotionCallback: PromotionCallback
+        placementId: Int,
+        view: ViewContext,
+        productIds: List<String>,
+        callback: PromotionCallback
     ) {
 
-        val parameters = promotionsQuery(placeholderId, queryParams)
+        val parameters = promotionsQuery(placementId, view)
         val stringParameters = parameters.mapValues { it.value.toString() }
-        val requestBody = promotionRequestBody(impressions)
+        val requestBody = promotionRequestBody(productIds)
 
         apiInterface.promotions(stringParameters, requestBody)
             ?.enqueue(object : Callback<PromotionsResponse?> {
@@ -51,45 +51,45 @@ internal class CroboxAPIPresenter(@Volatile var config: CroboxConfig) {
                     try {
                         // http [200...300)
                         if (response.isSuccessful) {
-                            response.body()?.let { promotionCallback.onPromotions(it) }
-                                ?: promotionCallback.onError("Successful http but null body")
+                            response.body()?.let { callback.onPromotions(it) }
+                                ?: callback.onError("Successful http but null body")
                         } else {
                             // http errors [300...600)
                             val message = "HTTP ${response.code()}"
-                            promotionCallback.onError(message)
+                            callback.onError(message)
                             CroboxDebug.promotionError(message)
-                            reportFailure("promotions", queryParams, message)
+                            reportFailure("promotions", view, message)
                         }
                     } catch (ex: Exception) {
-                        promotionCallback.onError(ex.message ?: "")
+                        callback.onError(ex.message ?: "")
                         CroboxDebug.promotionError(ex.message ?: "")
                     }
                 }
 
                 override fun onFailure(call: Call<PromotionsResponse?>, t: Throwable) {
-                    promotionCallback.onError(t.message ?: "")
+                    callback.onError(t.message ?: "")
                     CroboxDebug.promotionError(t.message ?: "")
                     // A cancelled request is not an error
                     if (!call.isCanceled) {
-                        reportFailure("promotions", queryParams, failureMessage(t))
+                        reportFailure("promotions", view, failureMessage(t))
                     }
                 }
             })
     }
 
     /**
-     * @param pageType Overrides [RequestQueryParams.pageType] for this event only. The override is passed separately,
-     * instead of through `queryParams.copy(..)`, so the event keeps using the view's counter (`e`). A copy would
+     * @param viewType Overrides [ViewContext.viewType] for this event only. The override is passed separately,
+     * instead of through `view.copy(..)`, so the event keeps using the view's counter (`e`). A copy would
      * start again at 0, and the collector drops events whose (cid, pid, vid, e) it has seen before.
      */
     fun event(
         eventType: EventType,
-        queryParams: RequestQueryParams,
-        additionalParams: Any?,
-        pageType: PageType? = null
+        view: ViewContext,
+        params: Any?,
+        viewType: ViewType? = null
     ) {
 
-        val parameters = eventQuery(queryParams, additionalParams, eventType, pageType)
+        val parameters = eventQuery(view, params, eventType, viewType)
         val stringParameters = parameters.mapValues { it.value.toString() }
 
         apiInterface.event(stringParameters).enqueue(object : Callback<Void?> {
@@ -112,7 +112,7 @@ internal class CroboxAPIPresenter(@Volatile var config: CroboxConfig) {
                 CroboxDebug.eventError(message)
                 // Reporting a failed error event would loop
                 if (eventType != EventType.Error) {
-                    reportFailure(eventType.requestName, queryParams, message)
+                    reportFailure(eventType.requestName, view, message)
                 }
             }
         })
@@ -123,52 +123,52 @@ internal class CroboxAPIPresenter(@Volatile var config: CroboxConfig) {
      *
      * @param request The request that failed, for example `pageview` or `promotions`. Sent as the error's name.
      */
-    private fun reportFailure(request: String, queryParams: RequestQueryParams, message: String) {
-        event(EventType.Error, queryParams, failureReport(request, message))
+    private fun reportFailure(request: String, view: ViewContext, message: String) {
+        event(EventType.Error, view, failureReport(request, message))
     }
 
     internal fun eventQuery(
-        queryParams: RequestQueryParams,
-        additionalParams: Any?,
+        view: ViewContext,
+        params: Any?,
         eventType: EventType,
-        pageType: PageType?
+        viewType: ViewType?
     ): Map<String, Any> {
 
         // Mandatory parameters
-        val parameters = commonQueryParams(queryParams, pageType)
+        val parameters = commonQueryParams(view, viewType)
         parameters["t"] = eventType.type
 
         // Additional parameters based on event type
         when (eventType) {
-            EventType.Error -> (additionalParams as? ErrorQueryParams)?.let {
+            EventType.Error -> (params as? ErrorParams)?.let {
                 errorEvent(it, parameters)
             }
 
-            EventType.Click -> (additionalParams as? ClickQueryParams)?.let {
+            EventType.Click -> (params as? ClickParams)?.let {
                 clickEvent(it, parameters)
             }
 
-            EventType.AddCart -> (additionalParams as? CartQueryParams)?.let {
+            EventType.AddCart -> (params as? CartParams)?.let {
                 addToCartEvent(it, parameters)
             }
 
-            EventType.RemoveCart -> (additionalParams as? CartQueryParams)?.let {
+            EventType.RemoveCart -> (params as? CartParams)?.let {
                 removeFromCartEvent(it, parameters)
             }
 
-            EventType.CustomEvent -> (additionalParams as? CustomQueryParams)?.let {
+            EventType.CustomEvent -> (params as? CustomEventParams)?.let {
                 customEvent(it, parameters)
             }
 
-            EventType.PageView -> (additionalParams as? PageViewParams)?.let {
-                pageViewEvent(it, parameters)
+            EventType.PageView -> (params as? ViewParams)?.let {
+                viewEvent(it, parameters)
             }
 
-            EventType.Checkout -> (additionalParams as? CheckoutParams)?.let {
+            EventType.Checkout -> (params as? CheckoutParams)?.let {
                 checkoutEvent(it, parameters)
             }
 
-            EventType.Purchase -> (additionalParams as? PurchaseParams)?.let {
+            EventType.Purchase -> (params as? PurchaseParams)?.let {
                 purchaseEvent(it, parameters)
             }
         }
@@ -177,33 +177,33 @@ internal class CroboxAPIPresenter(@Volatile var config: CroboxConfig) {
     }
 
 
-    internal fun promotionRequestBody(impressions: List<String>): RequestBody {
+    internal fun promotionRequestBody(productIds: List<String>): RequestBody {
         // The server parses the body as a query string, so an id containing &, =, + or % must be encoded
-        val bodyStr = impressions.withIndex()
+        val bodyStr = productIds.withIndex()
             .joinToString("&") { (index, productId) -> "$index=${URLEncoder.encode(productId, "UTF-8")}" }
 
         return bodyStr.toRequestBody("text/plain".toMediaTypeOrNull())
     }
 
     private fun promotionsQuery(
-        placeholderId: Int, queryParams: RequestQueryParams
+        placementId: Int, view: ViewContext
     ): Map<String, Any> {
-        val parameters = commonQueryParams(queryParams)
-        parameters["vpid"] = placeholderId.toString()
+        val parameters = commonQueryParams(view)
+        parameters["vpid"] = placementId.toString()
         return parameters
     }
 
     private fun commonQueryParams(
-        queryParams: RequestQueryParams,
-        pageType: PageType? = null
+        view: ViewContext,
+        viewType: ViewType? = null
     ): MutableMap<String, Any> {
         val config = this.config
 
         // Mandatory parameters
         val parameters = mutableMapOf<String, Any>(
             "cid" to config.containerId,
-            "e" to queryParams.viewCounter(),
-            "vid" to queryParams.viewId,
+            "e" to view.viewCounter(),
+            "vid" to view.viewId,
             "pid" to config.visitorId.toString(),
             "sdk" to "2"
         )
@@ -213,11 +213,11 @@ internal class CroboxAPIPresenter(@Volatile var config: CroboxConfig) {
         config.userId?.let { parameters["uid"] = it }
         parameters["ts"] = CroboxEncoder.toBase36(System.currentTimeMillis())
         parameters["tz"] = timezoneOffsetHours(config.timezone ?: TimeZone.getDefault())
-        parameters["pt"] = (pageType ?: queryParams.pageType).value
-        queryParams.pageName?.let { parameters["lh"] = it }
+        parameters["pt"] = (viewType ?: view.viewType).value
+        view.viewName?.let { parameters["lh"] = it }
         // Visitor-level properties first, so page-level properties with the same key win
         config.customProperties?.let { customProperties(it, parameters) }
-        queryParams.customProperties?.let { customProperties(it, parameters) }
+        view.customProperties?.let { customProperties(it, parameters) }
 
         return parameters
     }
@@ -226,20 +226,20 @@ internal class CroboxAPIPresenter(@Volatile var config: CroboxConfig) {
      * The following arguments are applicable for error events( where t=error ). They are all optional.
      */
     private fun errorEvent(
-        errorQueryParams: ErrorQueryParams, parameters: MutableMap<String, Any>
+        errorParams: ErrorParams, parameters: MutableMap<String, Any>
     ) {
-        errorQueryParams.tag?.let { parameters["tg"] = it }
-        errorQueryParams.name?.let { parameters["nm"] = it }
-        errorQueryParams.message?.let { parameters["msg"] = it }
-        errorQueryParams.file?.let { parameters["f"] = it }
-        errorQueryParams.line?.let { parameters["l"] = it }
+        errorParams.tag?.let { parameters["tg"] = it }
+        errorParams.name?.let { parameters["nm"] = it }
+        errorParams.message?.let { parameters["msg"] = it }
+        errorParams.file?.let { parameters["f"] = it }
+        errorParams.line?.let { parameters["l"] = it }
     }
 
     /**
      * The following arguments are applicable for click events( where t=click ). They are all optional
      *
      */
-    private fun clickEvent(clickParams: ClickQueryParams, parameters: MutableMap<String, Any>) {
+    private fun clickEvent(clickParams: ClickParams, parameters: MutableMap<String, Any>) {
         clickParams.productId?.let { parameters["pi"] = it }
         clickParams.quantity?.let { parameters["qty"] = it }
     }
@@ -248,43 +248,43 @@ internal class CroboxAPIPresenter(@Volatile var config: CroboxConfig) {
      * The following arguments are applicable for AddToCart events( where t=cart ). They are all optional
      */
     private fun addToCartEvent(
-        addCartQueryParams: CartQueryParams, parameters: MutableMap<String, Any>
+        cartParams: CartParams, parameters: MutableMap<String, Any>
     ) {
-        addCartQueryParams.productId?.let { parameters["pi"] = it }
-        addCartQueryParams.quantity?.let { parameters["qty"] = it }
+        cartParams.productId?.let { parameters["pi"] = it }
+        cartParams.quantity?.let { parameters["qty"] = it }
     }
 
     /**
      * The following arguments are applicable for RemoveFromCart events( where t=rmcart ). They are all optional
      */
     private fun removeFromCartEvent(
-        removeFromCartQueryParams: CartQueryParams, parameters: MutableMap<String, Any>
+        cartParams: CartParams, parameters: MutableMap<String, Any>
     ) {
-        removeFromCartQueryParams.productId?.let { parameters["pi"] = it }
-        removeFromCartQueryParams.quantity?.let { parameters["qty"] = it }
+        cartParams.productId?.let { parameters["pi"] = it }
+        cartParams.quantity?.let { parameters["qty"] = it }
     }
 
     /**
      * The following arguments are applicable for click events( where t=event ). They are all optional
      */
     private fun customEvent(
-        customQueryParams: CustomQueryParams, parameters: MutableMap<String, Any>
+        customEventParams: CustomEventParams, parameters: MutableMap<String, Any>
     ) {
-        customQueryParams.name?.let { parameters["nm"] = it }
-        customQueryParams.promotionId?.let { parameters["promoId"] = it }
-        customQueryParams.productId?.let { parameters["pi"] = it }
-        customQueryParams.quantity?.let { parameters["qty"] = it }
+        customEventParams.name?.let { parameters["nm"] = it }
+        customEventParams.promotionId?.let { parameters["promoId"] = it }
+        customEventParams.productId?.let { parameters["pi"] = it }
+        customEventParams.quantity?.let { parameters["qty"] = it }
     }
 
     /**
-     * The following arguments are applicable for pageView events
+     * The following arguments are applicable for view events( where t=pageview )
      */
-    private fun pageViewEvent(pageViewParams: PageViewParams, parameters: MutableMap<String, Any>) {
-        pageViewParams.pageTitle?.let { parameters["dt"] = it }
-        pageViewParams.product?.let { productParams(it, parameters) }
-        pageViewParams.searchTerms?.let { parameters["st"] = it }
-        pageViewParams.impressions?.let { impressions(it, parameters) }
-        pageViewParams.customProperties?.let { customProperties(it, parameters) }
+    private fun viewEvent(viewParams: ViewParams, parameters: MutableMap<String, Any>) {
+        viewParams.title?.let { parameters["dt"] = it }
+        viewParams.product?.let { productParams(it, parameters) }
+        viewParams.searchTerms?.let { parameters["st"] = it }
+        viewParams.impressions?.let { impressions(it, parameters) }
+        viewParams.customProperties?.let { customProperties(it, parameters) }
     }
 
     /**
@@ -335,7 +335,7 @@ internal class CroboxAPIPresenter(@Volatile var config: CroboxConfig) {
     }
 
     internal fun failureReport(request: String, message: String) =
-        ErrorQueryParams(tag = "sdk", name = request, message = message)
+        ErrorParams(tag = "sdk", name = request, message = message)
 
     /**
      * The exception's class and message. The request URL is left out: it carries the userId and custom properties.

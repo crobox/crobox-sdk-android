@@ -2,15 +2,15 @@ package com.crobox.sdk.presenter
 
 import com.crobox.sdk.common.LocaleCode
 import com.crobox.sdk.config.CroboxConfig
-import com.crobox.sdk.data.model.CartQueryParams
-import com.crobox.sdk.data.model.ClickQueryParams
-import com.crobox.sdk.data.model.CustomQueryParams
+import com.crobox.sdk.data.model.CartParams
+import com.crobox.sdk.data.model.ClickParams
+import com.crobox.sdk.data.model.CustomEventParams
 import com.crobox.sdk.data.model.EventType
-import com.crobox.sdk.data.model.PageType
-import com.crobox.sdk.data.model.PageViewParams
 import com.crobox.sdk.data.model.ProductParams
 import com.crobox.sdk.data.model.PurchaseParams
-import com.crobox.sdk.data.model.RequestQueryParams
+import com.crobox.sdk.data.model.ViewContext
+import com.crobox.sdk.data.model.ViewParams
+import com.crobox.sdk.data.model.ViewType
 import okio.Buffer
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
@@ -33,22 +33,22 @@ class CroboxAPIPresenterTest {
 
     @Test
     fun purchaseKeepsTheViewCounter() {
-        val view = RequestQueryParams(viewId = UUID.randomUUID(), pageType = PageType.PageCheckout)
+        val view = ViewContext(viewId = UUID.randomUUID(), viewType = ViewType.Checkout)
 
-        val pageview = presenter.eventQuery(view, PageViewParams(), EventType.PageView, null)
+        val pageview = presenter.eventQuery(view, ViewParams(), EventType.PageView, null)
         val purchase = presenter.eventQuery(
-            view, PurchaseParams(transactionId = "t1"), EventType.Purchase, PageType.PageComplete
+            view, PurchaseParams(transactionId = "t1"), EventType.Purchase, ViewType.Complete
         )
 
         assertEquals(0, pageview["e"])
         assertEquals(1, purchase["e"])
-        assertEquals(PageType.PageCheckout.value, pageview["pt"])
-        assertEquals(PageType.PageComplete.value, purchase["pt"])
+        assertEquals(ViewType.Checkout.value, pageview["pt"])
+        assertEquals(ViewType.Complete.value, purchase["pt"])
     }
 
     @Test
     fun impressionsUseTheArrayFormatWithQuantityAndPosition() {
-        val view = RequestQueryParams(viewId = UUID.randomUUID(), pageType = PageType.PageComplete)
+        val view = ViewContext(viewId = UUID.randomUUID(), viewType = ViewType.Complete)
         val products = listOf(
             ProductParams(productId = "a", quantity = 2, list = "search results"),
             ProductParams(productId = "b")
@@ -72,10 +72,10 @@ class CroboxAPIPresenterTest {
 
     @Test
     fun impressionsKeepOrderAndRepeatedProducts() {
-        val view = RequestQueryParams(viewId = UUID.randomUUID(), pageType = PageType.PageOverview)
+        val view = ViewContext(viewId = UUID.randomUUID(), viewType = ViewType.Overview)
         val products = listOf(ProductParams("b"), ProductParams("a"), ProductParams("b"))
 
-        val query = presenter.eventQuery(view, PageViewParams(impressions = products), EventType.PageView, null)
+        val query = presenter.eventQuery(view, ViewParams(impressions = products), EventType.PageView, null)
 
         assertEquals("b", query["imp[0].pi"])
         assertEquals("a", query["imp[1].pi"])
@@ -85,10 +85,10 @@ class CroboxAPIPresenterTest {
 
     @Test
     fun productDetailSendsListNameAndNoPrice() {
-        val view = RequestQueryParams(viewId = UUID.randomUUID(), pageType = PageType.PageDetail)
+        val view = ViewContext(viewId = UUID.randomUUID(), viewType = ViewType.Detail)
 
         val query = presenter.eventQuery(
-            view, PageViewParams(product = ProductParams("1", quantity = 2, list = "related")), EventType.PageView, null
+            view, ViewParams(product = ProductParams("1", quantity = 2, list = "related")), EventType.PageView, null
         )
 
         assertEquals("1", query["pi"])
@@ -99,12 +99,12 @@ class CroboxAPIPresenterTest {
 
     @Test
     fun clickCartAndCustomEventsSendNoPrice() {
-        val view = RequestQueryParams(viewId = UUID.randomUUID(), pageType = PageType.PageOverview)
+        val view = ViewContext(viewId = UUID.randomUUID(), viewType = ViewType.Overview)
 
         listOf(
-            presenter.eventQuery(view, ClickQueryParams(productId = "1", quantity = 1), EventType.Click, null),
-            presenter.eventQuery(view, CartQueryParams(productId = "1", quantity = 1), EventType.AddCart, null),
-            presenter.eventQuery(view, CustomQueryParams(name = "x", productId = "1"), EventType.CustomEvent, null)
+            presenter.eventQuery(view, ClickParams(productId = "1", quantity = 1), EventType.Click, null),
+            presenter.eventQuery(view, CartParams(productId = "1", quantity = 1), EventType.AddCart, null),
+            presenter.eventQuery(view, CustomEventParams(name = "x", productId = "1"), EventType.CustomEvent, null)
         ).forEach { query ->
             assertEquals("1", query["pi"])
             assertFalse(query.containsKey("price"))
@@ -113,10 +113,10 @@ class CroboxAPIPresenterTest {
 
     @Test
     fun indexesPastNineAreKept() {
-        val view = RequestQueryParams(viewId = UUID.randomUUID(), pageType = PageType.PageOverview)
+        val view = ViewContext(viewId = UUID.randomUUID(), viewType = ViewType.Overview)
         val products = (0 until 12).map { ProductParams(productId = "p$it") }.toSet()
 
-        val query = presenter.eventQuery(view, PageViewParams(impressions = products), EventType.PageView, null)
+        val query = presenter.eventQuery(view, ViewParams(impressions = products), EventType.PageView, null)
 
         assertEquals("p11", query["imp[11].pi"])
         assertEquals(12, query["imp[11].pos"])
@@ -124,9 +124,9 @@ class CroboxAPIPresenterTest {
 
     @Test
     fun configCustomPropertiesAreSentAndPagePropertiesWin() {
-        val view = RequestQueryParams(
+        val view = ViewContext(
             viewId = UUID.randomUUID(),
-            pageType = PageType.PageIndex,
+            viewType = ViewType.Index,
             customProperties = mapOf("shared" to "page")
         )
 
@@ -139,7 +139,7 @@ class CroboxAPIPresenterTest {
     @Test
     fun updatedConfigIsUsedByLaterRequests() {
         val presenter = CroboxAPIPresenter(config)
-        val view = RequestQueryParams(viewId = UUID.randomUUID(), pageType = PageType.PageIndex)
+        val view = ViewContext(viewId = UUID.randomUUID(), viewType = ViewType.Index)
 
         presenter.config = config.copy(userId = "JohnDoe", localeCode = LocaleCode("nl_BE"))
         val query = presenter.eventQuery(view, null, EventType.Click, null)
@@ -164,7 +164,7 @@ class CroboxAPIPresenterTest {
     @Test
     fun configuredTimezoneWins() {
         val presenter = CroboxAPIPresenter(config.copy(timezone = TimeZone.getTimeZone("Asia/Kolkata")))
-        val view = RequestQueryParams(viewId = UUID.randomUUID(), pageType = PageType.PageIndex)
+        val view = ViewContext(viewId = UUID.randomUUID(), viewType = ViewType.Index)
 
         assertEquals(5.5, presenter.eventQuery(view, null, EventType.Click, null)["tz"])
     }
@@ -180,7 +180,7 @@ class CroboxAPIPresenterTest {
 
     @Test
     fun failureIsReportedAsSdkErrorEvent() {
-        val view = RequestQueryParams(viewId = UUID.randomUUID(), pageType = PageType.PageIndex)
+        val view = ViewContext(viewId = UUID.randomUUID(), viewType = ViewType.Index)
         val query = presenter.eventQuery(view, presenter.failureReport("purchase", "HTTP 400"), EventType.Error, null)
 
         assertEquals("error", query["t"])

@@ -13,7 +13,7 @@ import okhttp3.Response
  * The server derives the OS, OS version and device model from the Dalvik part. A bare `okhttp/x.y.z` or a
  * custom product string tells it nothing about the device.
  */
-class UserAgentInterceptor : Interceptor {
+internal class UserAgentInterceptor : Interceptor {
 
     override fun intercept(chain: Interceptor.Chain): Response {
         val request = chain.request().newBuilder()

@@ -74,16 +74,16 @@ croboxInstance.updateConfig(
 )
 ```
 
-RequestQueryParams contains page specific parameters, shared by all requests fired from the same
-page/view. Create **one per screen the user sees**, and use it for the pageview and for every
+A `ViewContext` contains view specific parameters, shared by all requests fired from the same
+view. Create **one per screen the user sees**, and use it for the view event and for every
 promotions and event request on that screen. Create a new one when the user goes to another screen
 or comes back to this one. The server counts every new `viewId` as a page, so a new one per request
 double-counts pages, and one for the whole app merges every screen into a single page.
 
 ```kotlin
-val overviewPageParams = RequestQueryParams(
+val overviewView = ViewContext(
     viewId = UUID.randomUUID(),
-    pageType = PageType.PageOverview
+    viewType = ViewType.Overview
 )
 ```
 
@@ -92,17 +92,17 @@ Events might also take event specific parameters:
 
 ```kotlin
 croboxInstance.clickEvent(
-    overviewPageParams,
-    clickQueryParams = ClickQueryParams(
+    overviewView,
+    params = ClickParams(
         productId = "0001ABC",
         quantity = 1
     )
 )
 
-// The products shown on the page, in the order they are shown, optionally with the list they are in
-croboxInstance.pageViewEvent(
-    overviewPageParams,
-    PageViewParams(
+// The products shown in the view, in the order they are shown, optionally with the list they are in
+croboxInstance.viewEvent(
+    overviewView,
+    ViewParams(
         impressions = listOf(
             ProductParams(productId = "0001ABC", list = "search results"),
             ProductParams(productId = "0002DEF", list = "search results")
@@ -113,8 +113,8 @@ croboxInstance.pageViewEvent(
 
 A purchase is only recorded with a `transactionId`, so `PurchaseParams` requires one.
 
-For retrieving promotions for zero, one or more products, use the specific PlaceholderId that is
-configured with specific page types and linked to campaigns via Crobox Admin App.
+For retrieving promotions for zero, one or more products, use the specific `placementId` that is
+configured with specific view types and linked to campaigns via Crobox Admin App.
 
 ```kotlin
 
@@ -124,28 +124,28 @@ val promotionsCallback = object : PromotionCallback {
     override fun onError(msg: String) {}
 }
 
-val impressions: List<String> = listOf("001ABC", "002DEF")
+val productIds: List<String> = listOf("001ABC", "002DEF")
 
 croboxInstance.promotions(
-    placeholderId = 1,
-    queryParams = overviewPageParams,
-    impressions = impressions,
-    promotionCallback = promotionsCallback
+    placementId = 1,
+    view = overviewView,
+    productIds = productIds,
+    callback = promotionsCallback
 )
 
-// Requesting for a promotion from a product detail page with another placeholderId for a single product
+// Requesting for a promotion from a product detail view with another placementId for a single product
 croboxInstance.promotions(
-    placeholderId = 2,
-    queryParams = detailPageParams,
-    impressions = listOf("001ABC"),
-    promotionCallback = promotionsCallback
+    placementId = 2,
+    view = detailView,
+    productIds = listOf("001ABC"),
+    callback = promotionsCallback
 )
 
-// Requesting for a promotion without a product, eg. from a checkout page
+// Requesting for a promotion without a product, eg. from a checkout view
 croboxInstance.promotions(
-    placeholderId = 3,
-    queryParams = checkoutPageParams,
-    promotionCallback = promotionsCallback
+    placementId = 3,
+    view = checkoutView,
+    callback = promotionsCallback
 )
 ```
 
@@ -299,9 +299,9 @@ Sample App sends Crobox event requests for the next scenarios:  <br/>
 ```kotlin
 (requireActivity() as DemoActivity).getCroboxAPI().clickEvent(product)
 ```
-**pageViewEvent**  - used to track page view events, for example list of **products, product details, checkout, etc.<br/>
+**viewEvent**  - used to track view events, for example list of **products, product details, checkout, etc.<br/>
 ```kotlin
-(requireActivity() as DemoActivity).getCroboxAPI().pageViewEvent("basket")
+(requireActivity() as DemoActivity).getCroboxAPI().viewEvent("basket")
 ```
 **addToCartEvent**  - used to track analytics when the user add products to the basket<br/>
 ```kotlin
