@@ -103,9 +103,7 @@ class ProductAdapter(private val dataSet: List<Product>) :
                 val promotion = product.promotionTL?.contentConfig()
                 if(promotion is TextBadge) {
                     text = promotion.text
-                    if (promotion.backgroundColorAndroid() != null) setBackgroundColor(
-                        promotion.backgroundColorAndroid()!!.toArgb()
-                    )
+                    setBadgeBackground(promotion)
                     if (promotion.fontColorAndroid() != null) setTextColor(
                         promotion.fontColorAndroid()!!.toArgb()
                     )
@@ -121,9 +119,7 @@ class ProductAdapter(private val dataSet: List<Product>) :
                 val promotion = product.promotionTR?.contentConfig()
                 if(promotion is TextBadge) {
                     text = promotion.text
-                    if (promotion.backgroundColorAndroid() != null) setBackgroundColor(
-                        promotion.backgroundColorAndroid()!!.toArgb()
-                    )
+                    setBadgeBackground(promotion)
                     if (promotion.fontColorAndroid() != null) setTextColor(
                         promotion.fontColorAndroid()!!.toArgb()
                     )
@@ -131,6 +127,15 @@ class ProductAdapter(private val dataSet: List<Product>) :
             } else {
                 visibility = View.GONE
             }
+        }
+    }
+
+    private fun TextView.setBadgeBackground(badge: TextBadge) {
+        val gradient = badge.backgroundGradient()
+        val color = badge.backgroundColorAndroid()
+        when {
+            gradient != null -> background = gradient.toDrawable()
+            color != null -> setBackgroundColor(color.toArgb())
         }
     }
 

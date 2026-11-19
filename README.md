@@ -199,6 +199,8 @@ object : PromotionCallback {
                       val fontColorAndroid = it.fontColorAndroid() ?: Color.valueOf(Color.WHITE)
                       val borderColorAndroid = it.borderColorAndroid() ?: Color.valueOf(Color.WHITE)
                       val backgroundColorAndroid = it.backgroundColorAndroid() ?: Color.valueOf(Color.WHITE)
+                      // A gradient background, set with the App's gradient input, as a view background
+                      val backgroundGradient = it.backgroundGradient()?.toDrawable(cornerRadius = 8f)
                     }
   
                     is ImageBadge -> {
@@ -270,12 +272,24 @@ object : PromotionCallback {
 
 ### TextBadge
 
-| Name            | Type    | Description               |
-|-----------------|---------|---------------------------|
-| text            | String  | Text message              |
-| fontColor       | String  | Font color                |
-| backgroundColor | String? | Optional background color |
-| borderColor     | String? | Optional border color     |
+| Name                 | Type      | Description                                                                                                        |
+|----------------------|-----------|--------------------------------------------------------------------------------------------------------------------|
+| text                 | String    | Text message                                                                                                       |
+| fontColor            | String    | Font color                                                                                                         |
+| backgroundColor      | String?   | Optional background color, or a CSS `linear-gradient(...)` or `radial-gradient(circle, ...)` when it is a gradient |
+| borderColor          | String?   | Optional border color                                                                                              |
+| backgroundGradient() | Gradient? | The background gradient, or null when the background is a plain color or there is none                           |
+
+### Gradient
+
+A `Gradient.Linear` with an `angle` in degrees as in CSS (0 runs from the bottom up, 90 from left to right), or a
+`Gradient.Radial` from the center out to the farthest corner.
+
+| Name                       | Type               | Description                                                                         |
+|----------------------------|--------------------|-------------------------------------------------------------------------------------|
+| stops                      | List<GradientStop> | The colors, each with its `position` from 0 at the start to 1 at the end            |
+| toDrawable(cornerRadius)   | Drawable           | A drawable that fills its bounds with the gradient, for example a view's background |
+| toShader(width, height)    | Shader?            | A shader for an area of that size, for example for a Compose `ShaderBrush`          |
 
 
 ### SecondaryMessaging
