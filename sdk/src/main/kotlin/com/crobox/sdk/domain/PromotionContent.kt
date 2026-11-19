@@ -38,9 +38,15 @@ data class PromotionContent(
                 TextBadge(text, config["fontColor"], config["backgroundColor"], config["borderColor"])
             }
 
-            "MobAppImageBadgeTsx" -> config["image"]?.let { ImageBadge(it, config["altText"]) }
+            "MobAppImageBadgeTsx" -> config["image"]?.let { ImageBadge(imageUrl(it), config["altText"]) }
             "MobAppSecondaryMessagingTsx" -> config["text"]?.let { SecondaryMessaging(it, config["fontColor"]) }
             else -> null
         }
     }
+
+    /**
+     * The App can store a CDN image without its scheme, as `//cdn.crobox.io/...`, which an app cannot load, so that
+     * gets https.
+     */
+    private fun imageUrl(value: String): String = if (value.startsWith("//")) "https:$value" else value
 }

@@ -99,6 +99,19 @@ class PromotionContentTest {
     }
 
     @Test
+    fun imageBadgeGetsHttpsForAUrlWithoutScheme() {
+        val content = PromotionContent(
+            config = mapOf("image" to "//cdn.crobox.io/content/xlrc9t/Image.png"),
+            messageId = "m",
+            componentName = "MobAppImageBadgeTsx"
+        )
+        assertEquals(
+            "https://cdn.crobox.io/content/xlrc9t/Image.png",
+            (content.component() as ImageBadge).imageUrl
+        )
+    }
+
+    @Test
     fun componentIsNullForOtherComponents() {
         val content = PromotionContent(
             config = mapOf("text" to "SALE", "backgroundColor" to "#ba031d"),
