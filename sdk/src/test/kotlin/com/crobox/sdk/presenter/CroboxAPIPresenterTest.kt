@@ -11,10 +11,13 @@ import com.crobox.sdk.data.model.PurchaseParams
 import com.crobox.sdk.data.model.ViewContext
 import com.crobox.sdk.data.model.ViewParams
 import com.crobox.sdk.data.model.ViewType
+import com.crobox.sdk.domain.CroboxError
+import com.google.gson.JsonSyntaxException
 import okio.Buffer
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotEquals
+import org.junit.Assert.assertTrue
 import org.junit.Test
 import java.net.SocketTimeoutException
 import java.util.TimeZone
@@ -187,6 +190,18 @@ class CroboxAPIPresenterTest {
         assertEquals("sdk", query["tg"])
         assertEquals("purchase", query["nm"])
         assertEquals("HTTP 400", query["msg"])
+    }
+
+    @Test
+    fun promotionsFailureTellsAMissingAnswerFromAnUnreadableOne() {
+        val timeout = SocketTimeoutException("timeout")
+        val noAnswer = presenter.promotionsFailure(timeout)
+        assertTrue(noAnswer is CroboxError.RequestFailed)
+        assertEquals(timeout, noAnswer.cause)
+
+        val unreadable = presenter.promotionsFailure(JsonSyntaxException("Expected BEGIN_OBJECT"))
+        assertTrue(unreadable is CroboxError.InvalidResponse)
+        assertEquals("JsonSyntaxException: Expected BEGIN_OBJECT", unreadable.message)
     }
 
     @Test

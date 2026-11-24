@@ -5,6 +5,7 @@ import com.crobox.sdk.config.CroboxConfig
 import com.crobox.sdk.core.Crobox
 import com.crobox.sdk.data.model.ViewContext
 import com.crobox.sdk.data.model.ViewType
+import com.crobox.sdk.domain.CroboxError
 import com.crobox.sdk.domain.PromotionsResponse
 import com.crobox.sdk.presenter.PromotionCallback
 import org.junit.After
@@ -71,8 +72,8 @@ class PromotionsIT {
                     lock.countDown()
                 }
 
-                override fun onError(msg: String) {
-                    println("Error:$msg")
+                override fun onError(error: CroboxError) {
+                    println("Error: $error")
                     lock.countDown()
                 }
             }
@@ -99,8 +100,8 @@ class PromotionsIT {
                     lock.countDown()
                 }
 
-                override fun onError(msg: String) {
-                    println("Error:$msg")
+                override fun onError(error: CroboxError) {
+                    println("Error: $error")
                     lock.countDown()
                 }
             }
@@ -126,8 +127,8 @@ class PromotionsIT {
                     lock.countDown()
                 }
 
-                override fun onError(msg: String) {
-                    println("Error:$msg")
+                override fun onError(error: CroboxError) {
+                    println("Error: $error")
                     lock.countDown()
                 }
             }
