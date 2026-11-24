@@ -18,11 +18,36 @@ repositories {
 }
 
 dependencies {
-    implementation("com.crobox.sdk:crobox-sdk-android:1.1.0")
+    implementation("com.crobox.sdk:crobox-sdk-android:2.0.0")
 }
 ```
 
 See the [releases](https://github.com/crobox/crobox-sdk-android/releases) for the latest version.
+
+### Upgrading to 2.0
+
+Version 2.0 names the API after views in an app, the way the iOS SDK does, and gives the App components
+ready-to-use colors and backgrounds. What to change:
+
+| 1.x                                                                  | 2.0                                                                  |
+|----------------------------------------------------------------------|----------------------------------------------------------------------|
+| `enableLogging()`, `disableLogging()`                                | `isLoggingEnabled = true` / `false`                                  |
+| `RequestQueryParams(viewId, pageType, customProperties, pageName)`   | `ViewContext(viewId, viewType, customProperties, viewName)`          |
+| `PageType.PageDetail`, `PageType.PageOverview`, ...                  | `ViewType.Detail`, `ViewType.Overview`, ...                          |
+| `clickEvent(queryParams = ..., clickQueryParams = ...)`, and the other events | `clickEvent(view = ..., params = ...)`                      |
+| `pageViewEvent(...)` with `PageViewParams(pageTitle = ...)`          | `viewEvent(...)` with `ViewParams(title = ...)`                      |
+| `ClickQueryParams`, `CartQueryParams`, `ErrorQueryParams`, `CustomQueryParams` | `ClickParams`, `CartParams`, `ErrorParams`, `CustomEventParams` |
+| `promotions(placeholderId, queryParams, impressions, promotionCallback)` | `promotions(placementId, view, productIds, callback)`            |
+| `PromotionCallback.onError(msg: String)`                             | `onError(error: CroboxError)`: `HttpError`, `RequestFailed` or `InvalidResponse` |
+| `Campaign.id`, `Campaign.variantId` as `String`                      | `Int`                                                                |
+| `PromotionContent.contentConfig()`                                   | `component()`, a sealed `PromotionComponent`                         |
+| `TextBadge.fontColor` / `borderColor` (CSS strings) and `fontColorAndroid()` / `borderColorAndroid()` | `fontColor` / `borderColor` as color ints |
+| `TextBadge.backgroundColor` and `backgroundColorAndroid()`           | `backgroundDrawable(cornerRadius)` or `backgroundShader(width, height)`, for a color or a gradient |
+| `SecondaryMessaging.fontColor` and `fontColorAndroid()`              | `fontColor` as a color int                                           |
+| `ImageBadge.image`                                                   | `imageUrl`                                                           |
+| `ImageBadge.name`, `TextBadge.name`, `SecondaryMessaging.name`       | `PromotionContent.componentName`                                     |
+
+The raw settings of a promotion are still in `PromotionContent.config`. What the SDK sends to Crobox is unchanged.
 
 ## Start using Crobox SDK
 
@@ -121,7 +146,13 @@ configured with specific view types and linked to campaigns via Crobox Admin App
 val promotionsCallback = object : PromotionCallback {
     override fun onPromotions(response: PromotionsResponse) {}
 
-    override fun onError(msg: String) {}
+    override fun onError(error: CroboxError) {
+        when (error) {
+            is CroboxError.HttpError -> {}        // error.statusCode, for example 404 for an unknown container
+            is CroboxError.RequestFailed -> {}    // no answer, for example no network or a timeout
+            is CroboxError.InvalidResponse -> {}  // an answer that could not be read
+        }
+    }
 }
 
 val productIds: List<String> = listOf("001ABC", "002DEF")
