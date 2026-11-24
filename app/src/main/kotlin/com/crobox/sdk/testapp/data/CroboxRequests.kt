@@ -2,15 +2,15 @@ package com.crobox.sdk.testapp.data
 
 import android.util.Log
 import com.crobox.sdk.core.Crobox
-import com.crobox.sdk.data.model.CartQueryParams
+import com.crobox.sdk.data.model.CartParams
 import com.crobox.sdk.data.model.CheckoutParams
-import com.crobox.sdk.data.model.ClickQueryParams
-import com.crobox.sdk.data.model.ErrorQueryParams
-import com.crobox.sdk.data.model.PageType
-import com.crobox.sdk.data.model.PageViewParams
+import com.crobox.sdk.data.model.ClickParams
+import com.crobox.sdk.data.model.ErrorParams
 import com.crobox.sdk.data.model.ProductParams
 import com.crobox.sdk.data.model.PurchaseParams
-import com.crobox.sdk.data.model.RequestQueryParams
+import com.crobox.sdk.data.model.ViewContext
+import com.crobox.sdk.data.model.ViewParams
+import com.crobox.sdk.data.model.ViewType
 import com.crobox.sdk.domain.ImageBadge
 import com.crobox.sdk.domain.PromotionsResponse
 import com.crobox.sdk.domain.SecondaryMessaging
@@ -22,27 +22,27 @@ import java.util.UUID
 
 class CroboxRequests(val croboxInstance: Crobox) {
 
-    private var impressions = mutableListOf<String>()
+    private var productIds = mutableListOf<String>()
 
-    var _overviewPage: RequestQueryParams? = null
-    var _cartPage: RequestQueryParams? = null
+    var _overviewPage: ViewContext? = null
+    var _cartPage: ViewContext? = null
 
-    private fun overviewPage(): RequestQueryParams {
+    private fun overviewPage(): ViewContext {
         if(_overviewPage != null) return _overviewPage!!
-        // RequestQueryParams contains page specific parameters, shared by all requests fired from the same page/view.
-        _overviewPage = RequestQueryParams(
+        // ViewContext contains view specific parameters, shared by all requests fired from the same view.
+        _overviewPage = ViewContext(
             viewId = UUID.randomUUID(),
-            pageType = PageType.PageOverview
+            viewType = ViewType.Overview
         )
 
         return _overviewPage!!;
     }
 
-    private fun getCartPage(): RequestQueryParams {
+    private fun getCartPage(): ViewContext {
         if(_cartPage != null) return _cartPage!!
-        _cartPage = RequestQueryParams(
+        _cartPage = ViewContext(
             viewId = UUID.randomUUID(),
-            pageType = PageType.PageCart
+            viewType = ViewType.Cart
         )
 
         return _cartPage!!
@@ -52,25 +52,25 @@ class CroboxRequests(val croboxInstance: Crobox) {
         // Sending Click events
         croboxInstance.clickEvent(
             overviewPage(),
-            clickQueryParams = ClickQueryParams(
+            params = ClickParams(
                 productId = product.id.toString(),
                 quantity = 1
             )
         )
     }
 
-    fun pageViewEvent(pageName: String) {
-        // The moment user visits a page/view, eg. CartPage, new request params must be created
-        val indexPageParams = RequestQueryParams(
+    fun viewEvent(viewName: String) {
+        // The moment user visits a view, eg. the cart, a new ViewContext must be created
+        val indexView = ViewContext(
             viewId = UUID.randomUUID(),
-            pageType = PageType.PageIndex
+            viewType = ViewType.Index
         )
 
-        // Sending Page View events
-        croboxInstance.pageViewEvent(
-            indexPageParams,
-            PageViewParams(
-                pageTitle = pageName,
+        // Sending View events
+        croboxInstance.viewEvent(
+            indexView,
+            ViewParams(
+                title = viewName,
                 product = ProductParams(
                     productId = "1",
                     quantity = 1
@@ -90,7 +90,7 @@ class CroboxRequests(val croboxInstance: Crobox) {
         // Sending AddToCart events
         croboxInstance.addToCartEvent(
             overviewPage(),
-            cartQueryParams = CartQueryParams(
+            params = CartParams(
                 productId = item.product.id.toString(),
                 quantity = item.quantity
             )
@@ -101,7 +101,7 @@ class CroboxRequests(val croboxInstance: Crobox) {
         // Sending Remove From Cart events
         croboxInstance.removeFromCartEvent(
             getCartPage(),
-            cartQueryParams = CartQueryParams(
+            params = CartParams(
                 productId = item.product.id.toString(),
                 quantity = item.quantity
             )
@@ -112,7 +112,7 @@ class CroboxRequests(val croboxInstance: Crobox) {
         // Sending Error events
         croboxInstance.errorEvent(
             getCartPage(),
-            errorQueryParams = ErrorQueryParams(
+            params = ErrorParams(
                 tag = "ParsingError",
                 name = "IllegalArgumentException",
                 message = "bad input",
@@ -133,14 +133,14 @@ class CroboxRequests(val croboxInstance: Crobox) {
 
     fun checkOutEvent(items: MutableList<PurchaseItem>) {
         // Sending Checkout events
-        val checkoutPage = RequestQueryParams(
+        val checkoutView = ViewContext(
             viewId = UUID.randomUUID(),
-            pageType = PageType.PageCheckout
+            viewType = ViewType.Checkout
         )
         // Sending Page View events
         val productParams = purchaseItemsToProductItems(items)
         croboxInstance.checkoutEvent(
-            checkoutPage,
+            checkoutView,
             CheckoutParams(
                 products = productParams,
                 step = "1",
@@ -151,14 +151,14 @@ class CroboxRequests(val croboxInstance: Crobox) {
 
     fun purchaseEvent(items: MutableList<PurchaseItem>) {
         // Sending Purchase Events
-        val pageComplete = RequestQueryParams(
+        val completeView = ViewContext(
             viewId = UUID.randomUUID(),
-            pageType = PageType.PageComplete
+            viewType = ViewType.Complete
         )
         // Sending Page View events
         val productParams = purchaseItemsToProductItems(items)
         croboxInstance.purchaseEvent(
-            pageComplete,
+            completeView,
             PurchaseParams(
                 products = productParams,
                 transactionId = "abc123",
@@ -171,9 +171,9 @@ class CroboxRequests(val croboxInstance: Crobox) {
     }
 
     fun getPromotions() {
-        val detailPageParams = RequestQueryParams(
+        val detailView = ViewContext(
             viewId = UUID.randomUUID(),
-            pageType = PageType.PageDetail
+            viewType = ViewType.Detail
         )
         // A stub implementation for promotion response handling
         val stubPromotionCallback = object : PromotionCallback {
@@ -188,31 +188,31 @@ class CroboxRequests(val croboxInstance: Crobox) {
             }
         }
 
-        // Requesting for a promotion from an overview Page with placeholderId configured for Overview Pages in Crobox Container
+        // Requesting for a promotion from an overview Page with a placementId configured for Overview views in Crobox Container
         croboxInstance.promotions(
-            placeholderId = 1,
-            queryParams = overviewPage(),
-            impressions = impressions,
-            promotionCallback = stubPromotionCallback
+            placementId = 1,
+            view = overviewPage(),
+            productIds = productIds,
+            callback = stubPromotionCallback
         )
 
-        // Requesting for a promotion from a product detail page with another placeholderId for a single product
+        // Requesting for a promotion from a product detail page with another placementId for a single product
         croboxInstance.promotions(
-            placeholderId = 2,
-            queryParams = detailPageParams,
-            impressions = impressions.subList(0, 1),
-            promotionCallback = stubPromotionCallback
+            placementId = 2,
+            view = detailView,
+            productIds = productIds.subList(0, 1),
+            callback = stubPromotionCallback
         )
 
-        // Requesting for a promotion from another page with another placeholderId without any product
+        // Requesting for a promotion from another page with another placementId without any product
         croboxInstance.promotions(
-            placeholderId = 1,
-            queryParams = detailPageParams,
-            promotionCallback = stubPromotionCallback
+            placementId = 1,
+            view = detailView,
+            callback = stubPromotionCallback
         )
 
         // Disable error logging
-        croboxInstance.disableLogging()
+        croboxInstance.isLoggingEnabled = false
 
         Thread.sleep(2000)
     }
@@ -240,33 +240,27 @@ class CroboxRequests(val croboxInstance: Crobox) {
             val campaignId = promotion.campaignId
             val variantId = promotion.variantId
             val productId = promotion.productId ?: ""
-            val configStr = promotion.content?.contentConfig()?.let {
+            val configStr = promotion.content?.component()?.let {
                 when (it) {
                     is SecondaryMessaging ->
                         """
                             Secondary Messaging Text: ${it.text}
-                            Secondary Messaging Font Color:${it.fontColor}"
-                            Secondary Messaging Font Android Color:${it.fontColorAndroid()}"
+                            Secondary Messaging Font Color: ${it.fontColor?.let { color -> "#%08x".format(color) }}
                         """.trimIndent()
 
                     is TextBadge ->
                         """
                             Text: ${it.text}
-                            Font Color: ${it.fontColor}
-                            Border Color: ${it.borderColor}
-                            Background Color: ${it.backgroundColor}"
-                            Font Android Color: ${it.fontColorAndroid()}
-                            Border Android Color: ${it.borderColorAndroid()}
-                            Background Android Color: ${it.backgroundColorAndroid()}"
+                            Font Color: ${it.fontColor?.let { color -> "#%08x".format(color) }}
+                            Border Color: ${it.borderColor?.let { color -> "#%08x".format(color) }}
+                            Background: ${it.backgroundDrawable()}
                         """.trimIndent()
 
                     is ImageBadge ->
                         """
-                            Image: ${it.image}
+                            Image URL: ${it.imageUrl}
                             AltText: ${it.altText}
                         """.trimIndent()
-
-                    else -> "unknown"
                 }
             }
 
@@ -293,7 +287,7 @@ class CroboxRequests(val croboxInstance: Crobox) {
 
     }
 
-    fun setImpressions(impressions: List<String>) {
-        this.impressions = impressions.toMutableList()
+    fun setProductIds(productIds: List<String>) {
+        this.productIds = productIds.toMutableList()
     }
 }

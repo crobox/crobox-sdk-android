@@ -3,8 +3,8 @@ package com.crobox.sdk
 import com.crobox.sdk.common.LocaleCode
 import com.crobox.sdk.config.CroboxConfig
 import com.crobox.sdk.core.Crobox
-import com.crobox.sdk.data.model.PageType
-import com.crobox.sdk.data.model.RequestQueryParams
+import com.crobox.sdk.data.model.ViewContext
+import com.crobox.sdk.data.model.ViewType
 import com.crobox.sdk.domain.PromotionsResponse
 import com.crobox.sdk.presenter.PromotionCallback
 import org.junit.After
@@ -25,8 +25,8 @@ class PromotionsIT {
 
     // FL TEST
     private val containerId = "xlrc9t"
-    private val placeholderId = 1
-    private val placeholderId2 = 2
+    private val placementId = 1
+    private val placementId2 = 2
 
     private val croboxInstance = Crobox.getInstance(
         CroboxConfig(
@@ -36,17 +36,17 @@ class PromotionsIT {
         )
     )
 
-    private val overviewPageParams = RequestQueryParams(
+    private val overviewView = ViewContext(
         viewId = Conf.vid,
-        pageType = PageType.PageOverview
+        viewType = ViewType.Overview
     )
 
-    private val detailPageParams = RequestQueryParams(
+    private val detailView = ViewContext(
         viewId = UUID.randomUUID(),
-        pageType = PageType.PageDetail
+        viewType = ViewType.Detail
     )
 
-    private val impressions: List<String> =
+    private val productIds: List<String> =
         listOf("product1", "product2", "product3", "product4", "product5")
 
     @After
@@ -60,10 +60,10 @@ class PromotionsIT {
         var visitorId: UUID? = null
         var sessionId: UUID? = null
         croboxInstance.promotions(
-            placeholderId = placeholderId,
-            queryParams = overviewPageParams,
-            impressions = impressions,
-            promotionCallback = object : PromotionCallback {
+            placementId = placementId,
+            view = overviewView,
+            productIds = productIds,
+            callback = object : PromotionCallback {
                 override fun onPromotions(response: PromotionsResponse) {
                     println(response)
                     visitorId = response.context.visitorId
@@ -88,10 +88,10 @@ class PromotionsIT {
         var visitorId: UUID? = null
         var sessionId: UUID? = null
         croboxInstance.promotions(
-            placeholderId = placeholderId2,
-            queryParams = detailPageParams,
-            impressions = impressions.subList(0, 1),
-            promotionCallback = object : PromotionCallback {
+            placementId = placementId2,
+            view = detailView,
+            productIds = productIds.subList(0, 1),
+            callback = object : PromotionCallback {
                 override fun onPromotions(response: PromotionsResponse) {
                     println(response)
                     visitorId = response.context.visitorId
@@ -116,9 +116,9 @@ class PromotionsIT {
         var visitorId: UUID? = null
         var sessionId: UUID? = null
         croboxInstance.promotions(
-            placeholderId = placeholderId,
-            queryParams = overviewPageParams,
-            promotionCallback = object : PromotionCallback {
+            placementId = placementId,
+            view = overviewView,
+            callback = object : PromotionCallback {
                 override fun onPromotions(response: PromotionsResponse) {
                     println(response)
                     visitorId = response.context.visitorId

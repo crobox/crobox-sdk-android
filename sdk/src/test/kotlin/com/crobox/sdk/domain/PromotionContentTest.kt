@@ -3,6 +3,7 @@ package com.crobox.sdk.domain
 import android.graphics.Color
 import com.google.gson.Gson
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertNull
 import org.junit.Assert.fail
 import org.junit.Test
@@ -15,7 +16,7 @@ class PromotionContentTest {
     val Gson: Gson = Gson()
 
     @Test
-    fun contentConfigAsTextBadge() {
+    fun componentAsTextBadge() {
         val contentWithTextBadge = """
             {
                 "component": "MobAppTextBadgeTsx",
@@ -28,23 +29,13 @@ class PromotionContentTest {
             }
         """.trimIndent()
         val pc = Gson.fromJson(contentWithTextBadge, PromotionContent::class.java)
-        pc.contentConfig()?.let {
+        pc.component()?.let {
             when (it) {
                 is TextBadge -> {
                     assertEquals("text badge text", it.text)
-                    assertEquals("MobAppTextBadgeTsx", it.name)
-                    assertEquals("#aaaaaa", it.fontColor)
-                    assertEquals("#bbbbbb", it.backgroundColor)
-                    assertEquals("rgba(204, 204, 204, 0.5)", it.borderColor)
-                    assertEquals(Color.valueOf(Color.rgb(170, 170, 170)), it.fontColorAndroid())
-                    assertEquals(
-                        Color.valueOf(Color.rgb(187, 187, 187)),
-                        it.backgroundColorAndroid()
-                    )
-                    assertEquals(
-                        Color.valueOf(Color.argb(128, 204, 204, 204)),
-                        it.borderColorAndroid()
-                    )
+                    assertEquals(Color.rgb(170, 170, 170), it.fontColor)
+                    assertEquals(Color.argb(128, 204, 204, 204), it.borderColor)
+                    assertNotNull(it.backgroundDrawable())
                 }
 
                 else ->
@@ -55,7 +46,7 @@ class PromotionContentTest {
     }
 
     @Test
-    fun contentConfigAsImageBadge() {
+    fun componentAsImageBadge() {
         val contentWithImageBadge = """
             {
                 "component": "MobAppImageBadgeTsx",
@@ -66,11 +57,10 @@ class PromotionContentTest {
             }
         """.trimIndent()
         val pc = Gson.fromJson(contentWithImageBadge, PromotionContent::class.java)
-        pc.contentConfig()?.let {
+        pc.component()?.let {
             when (it) {
                 is ImageBadge -> {
-                    assertEquals("some image url", it.image)
-                    assertEquals("MobAppImageBadgeTsx", it.name)
+                    assertEquals("some image url", it.imageUrl)
                     assertEquals("some image altText", it.altText)
                 }
 
@@ -82,7 +72,7 @@ class PromotionContentTest {
     }
 
     @Test
-    fun contentConfigAsSecondaryMessaging() {
+    fun componentAsSecondaryMessaging() {
         val contentWithSecondaryMessaging = """
             {
                 "component": "MobAppSecondaryMessagingTsx",
@@ -94,12 +84,11 @@ class PromotionContentTest {
         """.trimIndent()
 
         val pc = Gson.fromJson(contentWithSecondaryMessaging, PromotionContent::class.java)
-        pc.contentConfig()?.let {
+        pc.component()?.let {
             when (it) {
                 is SecondaryMessaging -> {
                     assertEquals("secondary badge text", it.text)
-                    assertEquals("MobAppSecondaryMessagingTsx", it.name)
-                    assertEquals("#aaaaaa", it.fontColor)
+                    assertEquals(Color.rgb(170, 170, 170), it.fontColor)
                 }
 
                 else ->
@@ -110,12 +99,25 @@ class PromotionContentTest {
     }
 
     @Test
-    fun contentConfigIsNullForOtherComponents() {
+    fun imageBadgeGetsHttpsForAUrlWithoutScheme() {
+        val content = PromotionContent(
+            config = mapOf("image" to "//cdn.crobox.io/content/xlrc9t/Image.png"),
+            messageId = "m",
+            componentName = "MobAppImageBadgeTsx"
+        )
+        assertEquals(
+            "https://cdn.crobox.io/content/xlrc9t/Image.png",
+            (content.component() as ImageBadge).imageUrl
+        )
+    }
+
+    @Test
+    fun componentIsNullForOtherComponents() {
         val content = PromotionContent(
             config = mapOf("text" to "SALE", "backgroundColor" to "#ba031d"),
             messageId = "m",
             componentName = "PlpHighlightMobileTsx"
         )
-        assertNull(content.contentConfig())
+        assertNull(content.component())
     }
 }

@@ -3,15 +3,15 @@ package com.crobox.sdk
 import com.crobox.sdk.common.LocaleCode
 import com.crobox.sdk.config.CroboxConfig
 import com.crobox.sdk.core.Crobox
-import com.crobox.sdk.data.model.CartQueryParams
+import com.crobox.sdk.data.model.CartParams
 import com.crobox.sdk.data.model.CheckoutParams
-import com.crobox.sdk.data.model.ClickQueryParams
-import com.crobox.sdk.data.model.ErrorQueryParams
-import com.crobox.sdk.data.model.PageType
-import com.crobox.sdk.data.model.PageViewParams
+import com.crobox.sdk.data.model.ClickParams
+import com.crobox.sdk.data.model.ErrorParams
 import com.crobox.sdk.data.model.ProductParams
 import com.crobox.sdk.data.model.PurchaseParams
-import com.crobox.sdk.data.model.RequestQueryParams
+import com.crobox.sdk.data.model.ViewContext
+import com.crobox.sdk.data.model.ViewParams
+import com.crobox.sdk.data.model.ViewType
 import org.junit.After
 import org.junit.Test
 import java.util.UUID
@@ -28,19 +28,19 @@ class EventsIT {
         )
     )
 
-    private val overviewPageParams = RequestQueryParams(
+    private val overviewView = ViewContext(
         viewId = UUID.randomUUID(),
-        pageType = PageType.PageOverview
+        viewType = ViewType.Overview
     )
 
-    private val indexPageParams = RequestQueryParams(
+    private val indexView = ViewContext(
         viewId = UUID.randomUUID(),
-        pageType = PageType.PageIndex
+        viewType = ViewType.Index
     )
 
-    private val cartPageParams = RequestQueryParams(
+    private val cartView = ViewContext(
         viewId = UUID.randomUUID(),
-        pageType = PageType.PageCart
+        viewType = ViewType.Cart
     )
 
     private val productId = "product1"
@@ -52,12 +52,12 @@ class EventsIT {
 
     @Test
     fun testClick() {
-        croboxInstance.enableLogging()
+        croboxInstance.isLoggingEnabled = true
 
         // Sending Click events
         croboxInstance.clickEvent(
-            overviewPageParams,
-            clickQueryParams = ClickQueryParams(
+            overviewView,
+            params = ClickParams(
                 productId = productId,
                 quantity = 1
             )
@@ -65,13 +65,13 @@ class EventsIT {
     }
 
     @Test
-    fun testPageView() {
-        croboxInstance.enableLogging()
+    fun testView() {
+        croboxInstance.isLoggingEnabled = true
 
-        // Sending Page View events
-        croboxInstance.pageViewEvent(
-            indexPageParams, PageViewParams(
-                pageTitle = "some page title",
+        // Sending View events
+        croboxInstance.viewEvent(
+            indexView, ViewParams(
+                title = "some page title",
                 product = ProductParams(
                     productId = "1",
                     quantity = 1
@@ -89,14 +89,14 @@ class EventsIT {
 
     @Test
     fun testCheckoutEvent() {
-        croboxInstance.enableLogging()
-        val checkoutPage = RequestQueryParams(
+        croboxInstance.isLoggingEnabled = true
+        val checkoutView = ViewContext(
             viewId = UUID.randomUUID(),
-            pageType = PageType.PageCheckout
+            viewType = ViewType.Checkout
         )
         // Sending Page View events
         croboxInstance.checkoutEvent(
-            checkoutPage,
+            checkoutView,
             CheckoutParams(
                 products = listOf(
                     ProductParams(
@@ -115,14 +115,14 @@ class EventsIT {
 
     @Test
     fun testPurchaseEvent() {
-        croboxInstance.enableLogging()
-        val pageComplete = RequestQueryParams(
+        croboxInstance.isLoggingEnabled = true
+        val completeView = ViewContext(
             viewId = UUID.randomUUID(),
-            pageType = PageType.PageComplete
+            viewType = ViewType.Complete
         )
         // Sending Page View events
         croboxInstance.purchaseEvent(
-            pageComplete,
+            completeView,
             PurchaseParams(
                 products = listOf(
                     ProductParams(
@@ -144,12 +144,12 @@ class EventsIT {
 
     @Test
     fun testAddCart() {
-        croboxInstance.enableLogging()
+        croboxInstance.isLoggingEnabled = true
 
         // Sending AddToCart events
         croboxInstance.addToCartEvent(
-            overviewPageParams,
-            cartQueryParams = CartQueryParams(
+            overviewView,
+            params = CartParams(
                 productId = productId,
                 quantity = 1
             )
@@ -159,11 +159,11 @@ class EventsIT {
 
     @Test
     fun testRmCart() {
-        croboxInstance.enableLogging()
+        croboxInstance.isLoggingEnabled = true
         // Sending Remove From Cart events
         croboxInstance.removeFromCartEvent(
-            cartPageParams,
-            cartQueryParams = CartQueryParams(
+            cartView,
+            params = CartParams(
                 productId = productId,
                 quantity = 1
             )
@@ -172,12 +172,12 @@ class EventsIT {
 
     @Test
     fun testError() {
-        croboxInstance.enableLogging()
+        croboxInstance.isLoggingEnabled = true
 
         // Sending Error events
         croboxInstance.errorEvent(
-            cartPageParams,
-            errorQueryParams = ErrorQueryParams(
+            cartView,
+            params = ErrorParams(
                 tag = "ParsingError",
                 name = "IllegalArgumentException",
                 message = "bad input",
@@ -190,12 +190,12 @@ class EventsIT {
 
     @Test
     fun testCounter_e() {
-        croboxInstance.enableLogging()
+        croboxInstance.isLoggingEnabled = true
 
         // Sending two Error events
         croboxInstance.errorEvent(
-            cartPageParams,
-            errorQueryParams = ErrorQueryParams(
+            cartView,
+            params = ErrorParams(
                 tag = "ParsingError",
                 name = "IllegalArgumentException",
                 message = "bad input",
@@ -205,8 +205,8 @@ class EventsIT {
         )
 
         croboxInstance.errorEvent(
-            cartPageParams,
-            errorQueryParams = ErrorQueryParams(
+            cartView,
+            params = ErrorParams(
                 tag = "ParsingError",
                 name = "IllegalArgumentException",
                 message = "bad input",
@@ -216,8 +216,8 @@ class EventsIT {
         )
 
         croboxInstance.errorEvent(
-            cartPageParams,
-            errorQueryParams = ErrorQueryParams(
+            cartView,
+            params = ErrorParams(
                 tag = "ParsingError",
                 name = "IllegalArgumentException",
                 message = "bad input",

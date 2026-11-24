@@ -77,7 +77,7 @@ class ProductFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         initData()
         initListener()
-        (requireActivity() as DemoActivity).getCroboxAPI().pageViewEvent("product-details")
+        (requireActivity() as DemoActivity).getCroboxAPI().viewEvent("product-details")
     }
 
     private fun initView() {

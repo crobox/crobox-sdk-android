@@ -14,7 +14,8 @@ class LenientDeserializersTest {
     private fun response(promotions: String): PromotionsResponse = CroboxAPIClient.gson.fromJson(
         """
         {
-          "context": {"pid": "$visitorId", "sid": "$sessionId", "groupName": "g", "experiments": []},
+          "context": {"pid": "$visitorId", "sid": "$sessionId", "groupName": "g",
+            "experiments": [{"id": 7, "name": "Badges", "variantId": 8, "variantName": "Crobox", "control": false}]},
           "promotions": $promotions
         }
         """.trimIndent(),
@@ -31,6 +32,9 @@ class LenientDeserializersTest {
 
         assertEquals(visitorId, response.context.visitorId)
         assertEquals(sessionId, response.context.sessionId)
+        val campaign = response.context.campaigns.single()
+        assertEquals(7, campaign.id)
+        assertEquals(8, campaign.variantId)
         val promotion = response.promotions.single()
         assertEquals(promotionId, promotion.id)
         assertEquals("p1", promotion.productId)

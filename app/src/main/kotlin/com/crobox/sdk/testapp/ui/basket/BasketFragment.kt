@@ -54,7 +54,7 @@ class BasketFragment : BottomSheetDialogFragment() {
         super.onViewCreated(view, savedInstanceState)
         initData()
         initListener()
-        (requireActivity() as DemoActivity).getCroboxAPI().pageViewEvent("basket")
+        (requireActivity() as DemoActivity).getCroboxAPI().viewEvent("basket")
     }
 
     fun initView() {
