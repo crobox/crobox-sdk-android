@@ -11,6 +11,7 @@ import com.crobox.sdk.data.model.PurchaseParams
 import com.crobox.sdk.data.model.ViewContext
 import com.crobox.sdk.data.model.ViewParams
 import com.crobox.sdk.data.model.ViewType
+import com.crobox.sdk.domain.CroboxError
 import com.crobox.sdk.domain.ImageBadge
 import com.crobox.sdk.domain.PromotionsResponse
 import com.crobox.sdk.domain.SecondaryMessaging
@@ -183,8 +184,8 @@ class CroboxRequests(val croboxInstance: Crobox) {
                 printPromotionResponse(response)
             }
 
-            override fun onError(msg: String) {
-                Log.d(TAG, "Promotion failed with $msg")
+            override fun onError(error: CroboxError) {
+                Log.d(TAG, "Promotion failed", error)
             }
         }
 

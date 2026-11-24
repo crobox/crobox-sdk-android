@@ -16,6 +16,7 @@ import com.crobox.sdk.data.model.PurchaseParams
 import com.crobox.sdk.data.model.ViewContext
 import com.crobox.sdk.data.model.ViewParams
 import com.crobox.sdk.data.model.ViewType
+import com.crobox.sdk.domain.CroboxError
 import com.crobox.sdk.domain.PromotionsResponse
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody
@@ -23,6 +24,7 @@ import okhttp3.RequestBody.Companion.toRequestBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.io.IOException
 import java.net.URLEncoder
 import java.util.TimeZone
 
@@ -52,22 +54,22 @@ internal class CroboxAPIPresenter(@Volatile var config: CroboxConfig) {
                         // http [200...300)
                         if (response.isSuccessful) {
                             response.body()?.let { callback.onPromotions(it) }
-                                ?: callback.onError("Successful http but null body")
+                                ?: callback.onError(CroboxError.InvalidResponse("The response has no body"))
                         } else {
                             // http errors [300...600)
-                            val message = "HTTP ${response.code()}"
-                            callback.onError(message)
-                            CroboxDebug.promotionError(message)
-                            reportFailure("promotions", view, message)
+                            val error = CroboxError.HttpError(response.code())
+                            callback.onError(error)
+                            CroboxDebug.promotionError(error.message ?: "")
+                            reportFailure("promotions", view, error.message ?: "")
                         }
                     } catch (ex: Exception) {
-                        callback.onError(ex.message ?: "")
+                        callback.onError(CroboxError.InvalidResponse(ex.message ?: ex.javaClass.simpleName, ex))
                         CroboxDebug.promotionError(ex.message ?: "")
                     }
                 }
 
                 override fun onFailure(call: Call<PromotionsResponse?>, t: Throwable) {
-                    callback.onError(t.message ?: "")
+                    callback.onError(promotionsFailure(t))
                     CroboxDebug.promotionError(t.message ?: "")
                     // A cancelled request is not an error
                     if (!call.isCanceled) {
@@ -333,6 +335,13 @@ internal class CroboxAPIPresenter(@Volatile var config: CroboxConfig) {
             parameters["imp[$index].pos"] = index + 1
         }
     }
+
+    /**
+     * The error for a promotions request that failed without an HTTP status. Retrofit reports a response it cannot
+     * read this way too, not only a request that got no answer.
+     */
+    internal fun promotionsFailure(t: Throwable): CroboxError =
+        if (t is IOException) CroboxError.RequestFailed(t) else CroboxError.InvalidResponse(failureMessage(t), t)
 
     internal fun failureReport(request: String, message: String) =
         ErrorParams(tag = "sdk", name = request, message = message)
