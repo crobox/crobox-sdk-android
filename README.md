@@ -9,7 +9,7 @@ Crobox SDK for Android
 This is an asynchronous SDK kit for consuming Crobox API for android applications. Written in Kotlin
 from the ground up.
 
-The SDK is published to Maven Central and needs `minSdk` 26 (Android 8.0) or later. Add the
+The SDK is published to Maven Central and needs `minSdk` 24 (Android 7.0) or later. Add the
 dependency to your project:
 
 ```kotlin
@@ -202,7 +202,6 @@ object : PromotionCallback {
         for (promotion in promotions) {
             val promotionId = promotion.id
             val campaignId = promotion.campaignId
-            val variantId = promotion.variantId
             val productId = promotion.productId ?: ""
             promotion.content?.let { content: PromotionContent ->
                 val messageId = content.messageId
@@ -268,11 +267,12 @@ object : PromotionCallback {
 
 | Name       | Type              | Description                                          |
 |------------|-------------------|------------------------------------------------------|
-| id         | String            | Unique id for this promotion                         |
+| id         | UUID              | Unique id for this promotion                         |
 | productId  | String?           | Product ID if requested                              |
 | campaignId | Int               | The campaign which this promotion belongs to         |
-| variantId  | Int               | ID of the variant that this promotion is assigned to |
 | content    | PromotionContent? | Promotion Content                                    |
+
+The variant a promotion belongs to is the `variantId` of the campaign in `context.campaigns` with the same `campaignId`.
 
 ### PromotionContent
 

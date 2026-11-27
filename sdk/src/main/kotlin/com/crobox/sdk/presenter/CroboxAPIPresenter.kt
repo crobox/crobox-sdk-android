@@ -187,7 +187,7 @@ internal class CroboxAPIPresenter(@Volatile var config: CroboxConfig) {
         return bodyStr.toRequestBody("text/plain".toMediaTypeOrNull())
     }
 
-    private fun promotionsQuery(
+    internal fun promotionsQuery(
         placementId: Int, view: ViewContext
     ): Map<String, Any> {
         val parameters = commonQueryParams(view)
@@ -201,7 +201,8 @@ internal class CroboxAPIPresenter(@Volatile var config: CroboxConfig) {
     ): MutableMap<String, Any> {
         val config = this.config
 
-        // Mandatory parameters
+        // Mandatory parameters. Only with "sdk" does the API return the visitor and session ids in the promotions
+        // response as standard UUIDs; without it they come in a 22-character short form the SDK can't read.
         val parameters = mutableMapOf<String, Any>(
             "cid" to config.containerId,
             "e" to view.viewCounter(),

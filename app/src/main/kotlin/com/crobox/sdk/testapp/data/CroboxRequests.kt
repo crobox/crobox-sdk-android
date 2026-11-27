@@ -239,7 +239,6 @@ class CroboxRequests(val croboxInstance: Crobox) {
         val promotionsStr = promotions.map { promotion ->
             val promotionId = promotion.id
             val campaignId = promotion.campaignId
-            val variantId = promotion.variantId
             val productId = promotion.productId ?: ""
             val configStr = promotion.content?.component()?.let {
                 when (it) {
@@ -270,7 +269,6 @@ class CroboxRequests(val croboxInstance: Crobox) {
                     Id:$promotionId
                     Product:$productId
                     Campaign:$campaignId
-                    Variant:$variantId
                     Msg Id:${promotion.content?.messageId}
                     Component:${promotion.content?.componentName}
                     Msg Config:${promotion.content?.config}
