@@ -26,12 +26,6 @@ data class Promotion (
     val campaignId: Int,
 
     /**
-     *  The variant which this promotion belongs to
-     */
-    @SerializedName("variantId")
-    val variantId: Int,
-
-    /**
      *  Promotion Content
      */
     @SerializedName("content")

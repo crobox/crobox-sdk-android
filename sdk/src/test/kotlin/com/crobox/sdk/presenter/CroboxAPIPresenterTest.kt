@@ -173,6 +173,16 @@ class CroboxAPIPresenterTest {
     }
 
     @Test
+    fun promotionsQueryIdentifiesTheAndroidSdk() {
+        val view = ViewContext(viewId = UUID.randomUUID(), viewType = ViewType.Overview)
+
+        val query = presenter.promotionsQuery(12, view)
+
+        assertEquals("2", query["sdk"])
+        assertEquals("12", query["vpid"])
+    }
+
+    @Test
     fun promotionBodyIsUrlEncoded() {
         val body = presenter.promotionRequestBody(listOf("a&b=c", "100%", "plain"))
         val buffer = Buffer()

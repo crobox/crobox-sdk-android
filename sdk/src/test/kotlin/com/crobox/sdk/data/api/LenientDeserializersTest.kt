@@ -1,6 +1,7 @@
 package com.crobox.sdk.data.api
 
 import com.crobox.sdk.domain.PromotionsResponse
+import com.google.gson.JsonParseException
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import java.util.UUID
@@ -23,7 +24,7 @@ class LenientDeserializersTest {
     )
 
     private fun promotion(id: String, config: String = """{"text": "Best Seller"}""") =
-        """{"id": "$id", "productId": "p1", "campaignId": 1, "variantId": 2,
+        """{"id": "$id", "productId": "p1", "campaignId": 1,
             "content": {"id": "m1", "component": "MobAppTextBadgeTsx", "config": $config}}"""
 
     @Test
@@ -39,7 +40,6 @@ class LenientDeserializersTest {
         assertEquals(promotionId, promotion.id)
         assertEquals("p1", promotion.productId)
         assertEquals(1, promotion.campaignId)
-        assertEquals(2, promotion.variantId)
         assertEquals("m1", promotion.content?.messageId)
         assertEquals("MobAppTextBadgeTsx", promotion.content?.componentName)
         assertEquals(mapOf("text" to "Best Seller"), promotion.content?.config)
@@ -66,6 +66,14 @@ class LenientDeserializersTest {
         val content = response("[${promotion("$promotionId", config)}]").promotions.single().content
 
         assertEquals(mapOf("text" to "Sale", "size" to "12", "bold" to "true"), content?.config)
+    }
+
+    @Test(expected = JsonParseException::class)
+    fun aContextIdThatIsNotAStandardUuidFailsTheResponse() {
+        CroboxAPIClient.gson.fromJson(
+            """{"context": {"pid": "AAECAwQFBgcICQoLDA0ODw", "sid": "$sessionId", "experiments": []}, "promotions": []}""",
+            PromotionsResponse::class.java
+        )
     }
 
     @Test

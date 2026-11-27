@@ -9,7 +9,6 @@ import com.google.gson.Strictness
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import java.util.UUID
 import java.util.concurrent.TimeUnit
 
 internal object CroboxAPIClient {
@@ -19,7 +18,6 @@ internal object CroboxAPIClient {
             .setStrictness(Strictness.LENIENT)
             .disableHtmlEscaping()
             .enableComplexMapKeySerialization()
-            .registerTypeAdapter(UUID::class.java, CustomUUIDDeserializer())
             .registerTypeAdapter(PromotionsResponse::class.java, PromotionsResponseDeserializer())
             .registerTypeAdapter(PromotionContent::class.java, PromotionContentDeserializer())
             .create()
