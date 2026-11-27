@@ -90,6 +90,7 @@ internal class CroboxAPIPresenter(@Volatile var config: CroboxConfig) {
         params: Any?,
         viewType: ViewType? = null
     ) {
+        if (!sendsEvents) return
 
         val parameters = eventQuery(view, params, eventType, viewType)
         val stringParameters = parameters.mapValues { it.value.toString() }
@@ -119,6 +120,12 @@ internal class CroboxAPIPresenter(@Volatile var config: CroboxConfig) {
             }
         })
     }
+
+    /**
+     * Without a visitorId the user hasn't consented to tracking, so no event leaves the device, error events included.
+     */
+    internal val sendsEvents: Boolean
+        get() = config.visitorId != null
 
     /**
      * Sends an error event for a request that failed, so that failures on users' devices show up in Crobox.
@@ -206,14 +213,21 @@ internal class CroboxAPIPresenter(@Volatile var config: CroboxConfig) {
         val parameters = mutableMapOf<String, Any>(
             "cid" to config.containerId,
             "e" to view.viewCounter(),
-            "vid" to view.viewId,
-            "pid" to config.visitorId.toString(),
             "sdk" to "2"
         )
 
+        val visitorId = config.visitorId
+        if (visitorId != null) {
+            parameters["pid"] = visitorId.toString()
+            parameters["vid"] = view.viewId
+            config.userId?.let { parameters["uid"] = it }
+        } else {
+            // Opted out, as the website's optOut(): nothing that identifies the visitor, and Crobox stores nothing
+            parameters["dnp"] = "true"
+        }
+
         // Optional parameters
         config.localeCode?.let { parameters["lc"] = it.code }
-        config.userId?.let { parameters["uid"] = it }
         parameters["ts"] = CroboxEncoder.toBase36(System.currentTimeMillis())
         parameters["tz"] = timezoneOffsetHours(config.timezone ?: TimeZone.getDefault())
         parameters["pt"] = (viewType ?: view.viewType).value

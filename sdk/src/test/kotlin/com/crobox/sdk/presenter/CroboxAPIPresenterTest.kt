@@ -183,6 +183,45 @@ class CroboxAPIPresenterTest {
     }
 
     @Test
+    fun withAVisitorIdRequestsIdentifyTheVisitor() {
+        val view = ViewContext(viewId = UUID.randomUUID(), viewType = ViewType.Overview)
+        val presenter = CroboxAPIPresenter(config.copy(userId = "JohnDoe"))
+
+        val query = presenter.promotionsQuery(12, view)
+
+        assertEquals(config.visitorId.toString(), query["pid"])
+        assertEquals(view.viewId, query["vid"])
+        assertEquals("JohnDoe", query["uid"])
+        assertFalse(query.containsKey("dnp"))
+        assertTrue(presenter.sendsEvents)
+    }
+
+    @Test
+    fun withoutAVisitorIdPromotionsAreAnonymousAndNotStored() {
+        val view = ViewContext(viewId = UUID.randomUUID(), viewType = ViewType.Overview)
+        val presenter = CroboxAPIPresenter(config.copy(visitorId = null, userId = "JohnDoe"))
+
+        val query = presenter.promotionsQuery(12, view)
+
+        assertEquals("true", query["dnp"])
+        assertFalse(query.containsKey("pid"))
+        assertFalse(query.containsKey("vid"))
+        assertFalse(query.containsKey("uid"))
+        assertEquals("2", query["sdk"])
+        assertEquals("12", query["vpid"])
+        assertFalse(presenter.sendsEvents)
+    }
+
+    @Test
+    fun clearingTheVisitorIdStopsEvents() {
+        val presenter = CroboxAPIPresenter(config)
+
+        presenter.config = config.copy(visitorId = null)
+
+        assertFalse(presenter.sendsEvents)
+    }
+
+    @Test
     fun promotionBodyIsUrlEncoded() {
         val body = presenter.promotionRequestBody(listOf("a&b=c", "100%", "plain"))
         val buffer = Buffer()
