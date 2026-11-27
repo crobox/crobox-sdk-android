@@ -57,7 +57,8 @@ First configure and create a `Crobox` singleton as below, where
 - `visitorId` identifies the visitor. It must stay the same across app launches: Crobox assigns
   campaign variants and the control group per visitor, so a new visitorId on every launch re-buckets
   the user and makes A/B results unreliable. Use `CroboxVisitor.visitorId(context)`, which stores it
-  on the device, or persist your own
+  on the device, or persist your own. Pass `null` while the user hasn't consented to tracking; see
+  [Consent](#consent)
 - `localeCode` selects one of the regions (language, country and currency) configured for your
   container in Crobox, for example `LocaleCode("en_US")` or `LocaleCode.of(Locale.getDefault())`.
   Without it, or when it matches no region, the container's fallback region is used
@@ -97,6 +98,35 @@ croboxInstance.updateConfig(croboxInstance.config.copy(userId = "JohnDoe"))
 croboxInstance.updateConfig(
     croboxInstance.config.copy(userId = null, visitorId = CroboxVisitor.reset(context))
 )
+```
+
+### Consent
+
+The `visitorId` is what makes the SDK track the user. Without one, the SDK works the way the website does
+for a visitor who opted out:
+
+- It sends no events at all, error events included.
+- It still requests promotions, so the app can show campaign messages, but without the `visitorId`,
+  view id and `userId`, and marked "do not persist": Crobox stores nothing about the request. Crobox
+  picks the campaign variant from an anonymous id that changes every day, and `context.visitorId` in
+  the response is that id.
+
+If your app needs consent before tracking, pass `visitorId = null` until the user gives it:
+
+```kotlin
+val crobox = Crobox.getInstance(
+    CroboxConfig(
+        containerId = "xlrc9t",
+        visitorId = if (hasConsent) CroboxVisitor.visitorId(context) else null
+    )
+)
+
+// The user consents
+crobox.updateConfig(crobox.config.copy(visitorId = CroboxVisitor.visitorId(context)))
+
+// The user withdraws consent: stop tracking, and start as a new visitor if they consent again
+CroboxVisitor.reset(context)
+crobox.updateConfig(crobox.config.copy(visitorId = null))
 ```
 
 A `ViewContext` contains view specific parameters, shared by all requests fired from the same
@@ -249,7 +279,7 @@ object : PromotionCallback {
 | Name      | Type           | Description                                      |
 |-----------|----------------|--------------------------------------------------|
 | sessionId | UUID           | Session ID                                       |
-| visitorId | UUID           | Visitor ID                                       |
+| visitorId | UUID           | Visitor ID; without a configured `visitorId`, the anonymous id of the day |
 | groupName | String?        | The list of campaign and variant names, combined |
 | campaigns | List<Campaign> | The list of ongoing campaigns                    |
 
