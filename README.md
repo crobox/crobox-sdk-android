@@ -18,7 +18,7 @@ repositories {
 }
 
 dependencies {
-    implementation("com.crobox.sdk:crobox-sdk-android:2.0.1")
+    implementation("com.crobox.sdk:crobox-sdk-android:2.1.0")
 }
 ```
 
